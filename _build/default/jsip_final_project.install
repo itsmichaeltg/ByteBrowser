@@ -1,0 +1,11 @@
+lib: [
+  "_build/install/default/lib/jsip_final_project/META"
+  "_build/install/default/lib/jsip_final_project/dune-package"
+  "_build/install/default/lib/jsip_final_project/opam"
+]
+bin: [
+  "_build/install/default/bin/jsip_final_project"
+]
+doc: [
+  "_build/install/default/doc/jsip_final_project/README.md"
+]
