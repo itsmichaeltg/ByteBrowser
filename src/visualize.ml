@@ -37,4 +37,13 @@ let%expect_test( "visualize" )=
   Hashtbl.add_exn mat ~key:"child1" ~data:[".gitignore"; "blah"];
   let res = visualize mat ~current_directory:"home" in
   print_endline res;
+  [%expect {|
+    .
+    |__ home
+      |__ home_dir1
+        |__ child1
+          |__ .gitignore
+          |__ blah
+        |__ child2
+      |__ home_dir2 |}]
 
