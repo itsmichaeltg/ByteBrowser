@@ -1,8 +1,8 @@
 ;; -*- mode: scheme; -*-
 
 (library
- (name jsip_final_project)
- (libraries async core ocolor)
+ (name file_manager_lib)
+ (libraries async core)
  (inline_tests)
  (preprocess
   (pps ppx_jane)))
