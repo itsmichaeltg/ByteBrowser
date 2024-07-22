@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; -*-
 
 (library
- (name jsip-final-project)
+ (name jsip_final_project)
  (libraries async core)
  (inline_tests)
  (preprocess

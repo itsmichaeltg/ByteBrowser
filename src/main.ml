@@ -72,7 +72,7 @@ let visualize_command =
     ~summary:
       "build directory tree"
     [%map_open
-      let origin = flag "origin" (required string) ~doc:" the starting directory"
+      let origin = flag "origin" (optional string) ~doc:" the starting directory"
       and max_depth =
         flag
           "max-depth"
