@@ -2,7 +2,7 @@
 
 (library
  (name file_manager_lib)
- (libraries async core minttea)
+ (libraries async core)
  (inline_tests)
  (preprocess
   (pps ppx_jane)))
