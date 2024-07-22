@@ -1,5 +1,0 @@
-(library
- (name jsip_final_project)
- (preprocess
-  (pps ppx_jane))
- (libraries async core core_unix.command_unix))

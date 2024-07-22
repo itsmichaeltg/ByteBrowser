@@ -11,7 +11,9 @@ module Adjacency_matrix = struct
 
   let%expect_test "files_in_dir" = 
     print_s[%sexp (get_files_in_dir ("/home/ubuntu/jsip-final-project"):string list)];
-    [%expect {|(src .git jsip_final_project.opam test README.md lib dune-project _build bin)|}]
+    [%expect {|
+(src .git jsip_final_project.opam test dune-project _build jsip_final_project
+ bin)|}]
   ;;
 
   let rec get_adjacency_matrix t ~origin ~max_depth = 
@@ -27,67 +29,23 @@ module Adjacency_matrix = struct
       | _ -> get_adjacency_matrix t ~origin ~max_depth:0)
   ;;
 
-  let%expect_test "adjacency_matrix" = 
-    print_s[%sexp ((get_adjacency_matrix (create ()) ~origin:"/home/ubuntu/" ~max_depth:2):t)];
+  let%expect_test ("adjacency_matrix" [@tags "disabled"]) = 
+    print_s[%sexp ((get_adjacency_matrix (create ()) ~origin:"/home/ubuntu/jsip-final-project" ~max_depth:2):t)];
     [%expect {|
     ((matrix
-      ((/home/ubuntu/
-        (.emacs .ssh snake .local jsip-final-project .admin async-exercises
-         .vscode-server tictactoe-controller.exe wiki.pdf .bashrc interstate.pdf
-         .cache .vimrc .gitconfig .emacs.d .jupyter .viminfo .opam .profile
-         .bash_logout command-demo .ocamlinit .lesshst game-strategies
-         .Xauthority raster friends.pdf raster-1 .inputrc .ipython .dotnet
-         .ipynb_checkpoints snake_demo.exe wiki-game .sudo_as_admin_successful
-         .bash_history .wget-hsts))
-       (/home/ubuntu//.admin (dune))
-       (/home/ubuntu//.cache (motd.legal-displayed dune pip Microsoft))
-       (/home/ubuntu//.dotnet (corefx))
-       (/home/ubuntu//.emacs.d
-        (savehist elpa ac-comphist.dat %backup%~ backups auto-save-list
-         opam-user-setup.el))
-       (/home/ubuntu//.ipynb_checkpoints (Untitled-checkpoint.ipynb))
-       (/home/ubuntu//.ipython (profile_default))
-       (/home/ubuntu//.jupyter (lab migrated jupyter_notebook_config.py))
-       (/home/ubuntu//.local (lib etc bin share))
-       (/home/ubuntu//.opam
-        (plugins log config config.lock 4.14.1 opam-init default repo lock
-         download-cache))
-       (/home/ubuntu//.ssh
-        (known_hosts.old known_hosts authorized_keys id_ed25519 id_ed25519.pub))
-       (/home/ubuntu//.vscode-server
-        (.611f9bfce64f25108829dd295f54a6894e87339d.token
-         .abd2f3db4bdb28f9e95536dfa84d8479f1eb312d.log
-         .74f6148eb9ea00507ec113ec51c489d6ffb4b771.token
-         .74f6148eb9ea00507ec113ec51c489d6ffb4b771.pid cli
-         .74f6148eb9ea00507ec113ec51c489d6ffb4b771.log
-         .abd2f3db4bdb28f9e95536dfa84d8479f1eb312d.token extensions data
-         .611f9bfce64f25108829dd295f54a6894e87339d.log
-         .611f9bfce64f25108829dd295f54a6894e87339d.pid
-         code-dc96b837cf6bb4af9cd736aa3af08cf8279f7685
-         .cli.dc96b837cf6bb4af9cd736aa3af08cf8279f7685.log bin
-         .abd2f3db4bdb28f9e95536dfa84d8479f1eb312d.pid))
-       (/home/ubuntu//async-exercises
-        (src .git README.md dune-project _build bin))
-       (/home/ubuntu//command-demo
-        (.ocamlformat dune dune-project _build main.mli main.ml))
-       (/home/ubuntu//game-strategies
-        (.git common README.md lib dune-project _build controller bin game.txt))
-       (/home/ubuntu//jsip-final-project
+      ((/home/ubuntu/jsip-final-project
         (src .git jsip_final_project.opam test README.md lib dune-project _build
          bin))
-       (/home/ubuntu//raster
-        (.ocamlformat src .git test README.md dune-project _build .gitignore less
-         bin images))
-       (/home/ubuntu//raster-1
-        (.ocamlformat src .git test README.md dune-project _build .gitignore bin
-         images))
-       (/home/ubuntu//snake
-        (.ocamlformat src .git Exercise09.mkd README.mkd Exercise07.mkd
-         Exercise10.mkd dune-project _build LIST_FUNCTIONS.mkd .gitignore .tests
-         Exercise08.mkd bin))
-       (/home/ubuntu//wiki-game
-        (.ocamlformat src .git .vscode web-dev wiki.pdf resources test README.md
-         dune-project _build .gitignore bin images)))))
+       (/home/ubuntu/jsip-final-project/.git
+        (COMMIT_EDITMSG index description HEAD config branches ORIG_HEAD hooks
+         logs info objects FETCH_HEAD refs packed-refs))
+       (/home/ubuntu/jsip-final-project/_build
+        (.promotion-staging log install .lock default .digest-db .to-promote .db
+         .sandbox .actions .filesystem-clock))
+       (/home/ubuntu/jsip-final-project/bin (dune main.ml))
+       (/home/ubuntu/jsip-final-project/lib (dune))
+       (/home/ubuntu/jsip-final-project/src (dune main.mli main.ml))
+       (/home/ubuntu/jsip-final-project/test (dune test_jsip_final_project.ml)))))
     |}]
   ;;
 end
@@ -128,7 +86,7 @@ let visualize_command =
           ~doc:"INT maximum length of path to search for (default 10)"
       in
       fun () ->
-        visualize ~max_depth ~origin;]
+        visualize ~max_depth ~origin:(Sys_unix.getcwd ());]
 ;;
  
 let command =

@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; -*-
 
 (library
- (name snake_lib)
+ (name jsip_final_project)
  (libraries async core)
  (inline_tests)
  (preprocess

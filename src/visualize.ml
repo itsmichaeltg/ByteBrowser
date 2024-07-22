@@ -13,5 +13,5 @@ let rec helper ~(so_far : string) (tree : (string, string list) Hashtbl.t) ~(dep
   let init = get_formatted_tree_with_new_parent ~parent ~depth ~so_far in
   List.fold current_children ~init ~f:(fun acc child -> helper ~so_far:acc tree ~depth:(depth + 1) ~parent:child)
 
-let visualize (tree : (string, string list) Hashtbl.t) (current_directory : string): string =
+let visualize (tree : (string, string list) Hashtbl.t) ~(current_directory : string): string =
   helper tree ~depth:1 ~so_far:"." ~parent:current_directory
