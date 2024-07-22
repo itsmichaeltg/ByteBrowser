@@ -12,7 +12,7 @@ module Adjacency_matrix = struct
   let%expect_test "files_in_dir" = 
     print_s[%sexp (get_files_in_dir ("/home/ubuntu/jsip-final-project/test_dir"):string list)];
     [%expect {|
-    (dir1)|}]
+    (dir1 dir5)|}]
   ;;
 
   let rec get_adjacency_matrix t ~origin ~max_depth = 
@@ -32,15 +32,17 @@ module Adjacency_matrix = struct
     [%expect {|
       ((matrix
         ((/home/ubuntu/jsip-final-project/test_dir 
-          (/home/ubuntu/jsip-final-project/test_dir/dir1))
-         (/home/ubuntu/jsip-final-project/test_dir/dir1 
+          (/home/ubuntu/jsip-final-project/test_dir/dir1
+           /home/ubuntu/jsip-final-project/test_dir/dir5))
+         (/home/ubuntu/jsip-final-project/test_dir/dir1
           (/home/ubuntu/jsip-final-project/test_dir/dir1/dir2))
-         (/home/ubuntu/jsip-final-project/test_dir/dir1/dir2 
+         (/home/ubuntu/jsip-final-project/test_dir/dir1/dir2
           (/home/ubuntu/jsip-final-project/test_dir/dir1/dir2/dir3))
          (/home/ubuntu/jsip-final-project/test_dir/dir1/dir2/dir3
           (/home/ubuntu/jsip-final-project/test_dir/dir1/dir2/dir3/dir4))
          (/home/ubuntu/jsip-final-project/test_dir/dir1/dir2/dir3/dir4
-          (/home/ubuntu/jsip-final-project/test_dir/dir1/dir2/dir3/dir4/tmp.txt))))) |}]
+          (/home/ubuntu/jsip-final-project/test_dir/dir1/dir2/dir3/dir4/tmp.txt))
+         (/home/ubuntu/jsip-final-project/test_dir/dir5 ())))) |}]
   ;;
 end
 
@@ -60,7 +62,8 @@ let%expect_test "visualize" =
         |__ dir2
           |__ dir3
             |__ dir4
-              |__ tmp.txt"];
+              |__ tmp.txt
+      |__ dir5"];
 ;;
 
 let visualize_command = 
@@ -78,10 +81,4 @@ let visualize_command =
       in
       fun () ->
         visualize ~max_depth ~origin:(Sys_unix.getcwd ());]
-;;
- 
-let command =
-  Command.group
-    ~summary:"directory manager commands"
-    ["visualize", visualize_command]
 ;;
