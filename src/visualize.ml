@@ -85,12 +85,12 @@ let%expect_test "visualize" =
 let pwd_visualize_command =
   let open Command.Let_syntax in
   Command.basic
-    ~summary:"build directory tree"
+    ~summary:"starts at the current working directory"
     [%map_open
       let max_depth =
         flag
           "max-depth"
-          (optional_with_default 10 int)
+          (optional_with_default 3 int)
           ~doc:"INT maximum length of path to search for (default 10)"
       in
       fun () -> visualize ~max_depth ~origin:(Sys_unix.getcwd ())]
@@ -99,7 +99,7 @@ let pwd_visualize_command =
 let start_visualize_command =
   let open Command.Let_syntax in
   Command.basic
-    ~summary:"build directory tree"
+    ~summary:"starts at a given path"
     [%map_open
       let origin = flag "start" (required string) ~doc:" the starting path"
       and max_depth =
@@ -114,5 +114,5 @@ let start_visualize_command =
 let command =
   Command.group
     ~summary:"file manager commands"
-    [ "pwd", pwd_visualize_command; "diff", start_visualize_command ]
+    [ "pwd", pwd_visualize_command; "dir", start_visualize_command ]
 ;;
