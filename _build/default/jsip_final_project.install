@@ -6,6 +6,3 @@ lib: [
 bin: [
   "_build/install/default/bin/jsip_final_project"
 ]
-doc: [
-  "_build/install/default/doc/jsip_final_project/README.md"
-]

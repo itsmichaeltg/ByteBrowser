@@ -20,8 +20,9 @@ let visualize ~max_depth ~origin =
   |> print_dir;
 ;;
 
-let visualize_command =
-  let open Command.Let_syntax in
+let visualize_command = 
+
+let open Command.Let_syntax in
   Command.basic
     ~summary:
       "build directory tree"
