@@ -1,3 +1,3 @@
 open! Core
 
-val command : Command.t
+val visualize_command : Command.t
