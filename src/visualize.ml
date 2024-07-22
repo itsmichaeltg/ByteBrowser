@@ -101,8 +101,8 @@ let start_visualize_command =
   Command.basic
     ~summary:"build directory tree"
     [%map_open
-      let origin =  flag "start" (required string) ~doc:" the starting path" and
-       max_depth =
+      let origin = flag "start" (required string) ~doc:" the starting path"
+      and max_depth =
         flag
           "max-depth"
           (optional_with_default 3 int)
@@ -114,6 +114,5 @@ let start_visualize_command =
 let command =
   Command.group
     ~summary:"file manager commands"
-    [ "pwd", pwd_visualize_command 
-    ; "diff", start_visualize_command]
+    [ "pwd", pwd_visualize_command; "diff", start_visualize_command ]
 ;;
