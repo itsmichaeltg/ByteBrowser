@@ -1,4 +1,4 @@
-open! Core
+(* open! Core
 
 module Adjacency_matrix = struct
   type t = {
@@ -48,4 +48,4 @@ let command =
   Command.group
     ~summary:"directory manager commands"
     ["visualize", visualize_command]
-;;
+;; *)
