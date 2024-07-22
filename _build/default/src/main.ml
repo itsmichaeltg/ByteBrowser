@@ -12,7 +12,11 @@ module Adjacency_matrix = struct
   let%expect_test "files_in_dir" = 
     print_s[%sexp (get_files_in_dir ("/home/ubuntu/test_dir"):string list)];
     [%expect {|
+<<<<<<< HEAD
     (dir1)|}]
+=======
+    (src .git jsip_final_project.opam test dune-project _build .gitignore bin)|}]
+>>>>>>> f1c05e977ad2608d5dfbc59ec275c2006f0d1a0d
   ;;
 
   let rec get_adjacency_matrix t ~origin ~max_depth = 
