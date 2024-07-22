@@ -7,6 +7,15 @@ let get_name path =
   | false -> path 
   | true -> List.last_exn (String.split path ~on:'/') ;;
 
+let%expect_test "get_name" = 
+print_endline (get_name "/home/ubuntu/jsip-final-project");
+print_endline (get_name "dune-project"); 
+[%expect {|
+  jsip-final-project
+  dune-project
+  |}]
+;;
+
 let get_formatted_tree_with_new_parent ~(parent : string) ~(depth : int) ~(so_far : string) =
   Printf.sprintf "%s\n%s%s" so_far (get_depth_space ~depth) (get_name parent)
 

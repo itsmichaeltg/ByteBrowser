@@ -10,7 +10,7 @@ module Adjacency_matrix = struct
   let get_files_in_dir origin : string list = Sys_unix.ls_dir origin;;
 
   let%expect_test "files_in_dir" = 
-    print_s[%sexp (get_files_in_dir ("/home/ubuntu/test_dir"):string list)];
+    print_s[%sexp (get_files_in_dir ("/home/ubuntu/jsip-final-project/test_dir"):string list)];
     [%expect {|
     (dir1)|}]
   ;;
@@ -28,32 +28,21 @@ module Adjacency_matrix = struct
   ;;
 
   let%expect_test ("adjacency_matrix" ) = 
-    print_s[%sexp ((get_adjacency_matrix (create ()) ~origin:"/home/ubuntu/test_dir" ~max_depth:10):t)];
+    print_s[%sexp ((get_adjacency_matrix (create ()) ~origin:"/home/ubuntu/jsip-final-project/test_dir" ~max_depth:10):t)];
     [%expect {|
       ((matrix
-        ((/home/ubuntu/test_dir (/home/ubuntu/test_dir/dir1))
-         (/home/ubuntu/test_dir/dir1 (/home/ubuntu/test_dir/dir1/dir2))
-         (/home/ubuntu/test_dir/dir1/dir2 (/home/ubuntu/test_dir/dir1/dir2/dir3))
-         (/home/ubuntu/test_dir/dir1/dir2/dir3
-          (/home/ubuntu/test_dir/dir1/dir2/dir3/dir4))
-         (/home/ubuntu/test_dir/dir1/dir2/dir3/dir4
-          (/home/ubuntu/test_dir/dir1/dir2/dir3/dir4/tmp.txt))))) |}]
+        ((/home/ubuntu/jsip-final-project/test_dir 
+          (/home/ubuntu/jsip-final-project/test_dir/dir1))
+         (/home/ubuntu/jsip-final-project/test_dir/dir1 
+          (/home/ubuntu/jsip-final-project/test_dir/dir1/dir2))
+         (/home/ubuntu/jsip-final-project/test_dir/dir1/dir2 
+          (/home/ubuntu/jsip-final-project/test_dir/dir1/dir2/dir3))
+         (/home/ubuntu/jsip-final-project/test_dir/dir1/dir2/dir3
+          (/home/ubuntu/jsip-final-project/test_dir/dir1/dir2/dir3/dir4))
+         (/home/ubuntu/jsip-final-project/test_dir/dir1/dir2/dir3/dir4
+          (/home/ubuntu/jsip-final-project/test_dir/dir1/dir2/dir3/dir4/tmp.txt))))) |}]
   ;;
 end
-
-let get_name path = 
-  match String.contains path '/' with
-  | false -> path 
-  | true -> List.last_exn (String.split path ~on:'/') ;;
-
-let%expect_test "get_name" = 
-  print_endline (get_name "/home/ubuntu/jsip-final-project");
-  print_endline (get_name "dune-project"); 
-  [%expect {|
-    jsip-final-project
-    dune-project
-    |}]
-;;
 
 let print_dir (tree:Adjacency_matrix.t) ~origin = Visualize.visualize tree.matrix ~current_directory:origin;;
 
@@ -63,15 +52,15 @@ let visualize ~max_depth ~origin =
 ;;
 
 let%expect_test "visualize" = 
-  visualize ~max_depth:10 ~origin:"/home/ubuntu/test_dir";
+  visualize ~max_depth:10 ~origin:"/home/ubuntu/jsip-final-project/test_dir";
   [%expect "
     .
-    |--> test_dir
-      |--> dir1
-        |--> dir2
-          |--> dir3
-            |--> dir4
-              |--> tmp.txt"]
+    |__ test_dir
+      |__ dir1
+        |__ dir2
+          |__ dir3
+            |__ dir4
+              |__ tmp.txt"];
 ;;
 
 let visualize_command = 
