@@ -3,7 +3,7 @@
 a command line tool that manages and visualizes directories
 
 ```
-$ dune exec bin/main.exe -- visualize pwd
+$ ./demos/demo1.exe visualize pwd
 
-$ dune exec bin/main.exe -- visualize dir -start "/home/"
+$ ./demos/demo1.exe visualize dir -start "/home/"
 ```
