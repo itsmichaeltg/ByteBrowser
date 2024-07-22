@@ -1,4 +1,3 @@
 (executable
- (public_name jsip_final_project)
  (name main)
- (libraries jsip_final_project core core_unix.command_unix))
+ (libraries file_manager_lib core core_unix.command_unix))
