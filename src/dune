@@ -2,7 +2,7 @@
 
 (library
  (name jsip_final_project)
- (libraries async core)
+ (libraries async core ocolor)
  (inline_tests)
  (preprocess
   (pps ppx_jane)))
