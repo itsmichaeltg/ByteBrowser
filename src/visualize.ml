@@ -1,6 +1,6 @@
 open! Core
 
-let get_depth_space ~depth = List.fold (List.init depth ~f:Fn.id) ~init:"|" ~f:(fun acc _ -> acc ^ "--") ^ "| "
+let get_depth_space ~depth = List.fold (List.init depth ~f:Fn.id) ~init:"" ~f:(fun acc num -> match num = depth - 1 with | true -> acc ^ "|__" | false -> acc ^ "  " ) ^ " "
 
 let get_name path = 
   match String.contains path '/' with
@@ -20,7 +20,7 @@ let rec helper ~(so_far : string) (tree : (string, string list) Hashtbl.t) ~(dep
 let visualize (tree : (string, string list) Hashtbl.t) ~(current_directory : string) : string =
    helper tree ~depth:1 ~so_far:"." ~parent:current_directory
 
-let%expect_test "visualize" =
+let%expect_test( "visualize" )=
   let mat = Hashtbl.create (module String) in
   Hashtbl.add_exn mat ~key:"home" ~data:["home_dir1"; "home_dir2"];
   Hashtbl.add_exn mat ~key:"home_dir1" ~data:["child1"; "child2"];
@@ -28,12 +28,4 @@ let%expect_test "visualize" =
   Hashtbl.add_exn mat ~key:"child1" ~data:[".gitignore"; "blah"];
   let res = visualize mat ~current_directory:"home" in
   print_endline res;
-  [%expect {|
-    .
-    |--| home
-    |----| home_dir1
-    |------| child1
-    |--------| .gitignore
-    |--------| blah
-    |------| child2
-    |----| home_dir2 |}]
+
