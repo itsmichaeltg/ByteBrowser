@@ -90,7 +90,7 @@ let pwd_visualize_command =
       let max_depth =
         flag
           "max-depth"
-          (optional_with_default 10 int)
+          (optional_with_default 3 int)
           ~doc:"INT maximum length of path to search for (default 10)"
       in
       fun () -> visualize ~max_depth ~origin:(Sys_unix.getcwd ())]
