@@ -7,6 +7,7 @@ module Adjacency_matrix = struct
 
   let create () = {matrix = Hashtbl.create (module String)};;
 
+<<<<<<< HEAD
   let get_files_in_dir origin : string list = Sys_unix.ls_dir origin;;
 
   let%expect_test "files_in_dir" = 
@@ -61,17 +62,39 @@ let%expect_test "get_name" =
     dune-project
     |}]
 ;;
+=======
+  let get_files_in_dir origin : string list = [] ;;
+
+  let rec get_adjacency_matrix ~origin ~max_depth ~matrix = 
+    match max_depth with
+    | 0 -> matrix
+    | _ -> 
+      let data = get_files_in_dir origin in 
+      Hashtbl.add_exn ~key:origin ~data 
+  ;;
+end
+>>>>>>> e33e5225f5a8b9fae6b52daa373086d35455fa8e
 
 let print_dir map : unit = () ;;
 
 let visualize ~max_depth ~origin = 
+<<<<<<< HEAD
   let matrix = Adjacency_matrix.create () in
   Adjacency_matrix.get_adjacency_matrix ~origin ~max_depth matrix
+=======
+
+  get_adjacency_matrix ~origin ~max_depth ~matrix:
+>>>>>>> e33e5225f5a8b9fae6b52daa373086d35455fa8e
   |> print_dir;
 ;;
 
 let visualize_command = 
+<<<<<<< HEAD
   let open Command.Let_syntax in
+=======
+
+let open Command.Let_syntax in
+>>>>>>> e33e5225f5a8b9fae6b52daa373086d35455fa8e
   Command.basic
     ~summary:
       "build directory tree"
