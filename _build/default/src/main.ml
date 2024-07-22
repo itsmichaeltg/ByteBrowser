@@ -1,27 +1,34 @@
 open! Core
-open! Unix
 
-let get_files_in_dir origin :string list = [] ;;
+module Adjacency_matrix = struct
+  type t = {
+    matrix : (string, string list) Hashtbl.t
+  }[@@deriving sexp_of]
 
-let rec get_adjacency_matrix ~origin ~max_depth ~map = 
-  match max_depth with
-  | 0 -> map
-  | _ -> 
-    let data = get_files_in_dir origin in 
-    List.fold data ~init:(String.Map.create ()) 
-    ~f:(fun file -> Map.add_exn map ~key:origin ~data 
-  |> get_adjacency_matrix ~origin:file ~max_depth:(max_depth - 1)); 
-;;
+  let create () = {matrix = Hashtbl.create (module String)};;
+
+  let get_files_in_dir origin : string list = [] ;;
+
+  let rec get_adjacency_matrix ~origin ~max_depth ~matrix = 
+    match max_depth with
+    | 0 -> matrix
+    | _ -> 
+      let data = get_files_in_dir origin in 
+      Hashtbl.add_exn ~key:origin ~data 
+  ;;
+end
 
 let print_dir map : unit = () ;;
 
 let visualize ~max_depth ~origin = 
-  get_adjacency_matrix ~origin ~max_depth ~map:(String.Map.create ()) 
+
+  get_adjacency_matrix ~origin ~max_depth ~matrix:
   |> print_dir;
 ;;
 
-let visualize_command =
-  let open Command.Let_syntax in
+let visualize_command = 
+
+let open Command.Let_syntax in
   Command.basic
     ~summary:
       "build directory tree"
