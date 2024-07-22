@@ -1,7 +1,3 @@
 open! Core
 
-let command =
-  Command.group
-    ~summary:""
-    [ "visualize", Visualize.command]
-;;
+let command = Command.group ~summary:"" [ "visualize", Visualize.command ]
