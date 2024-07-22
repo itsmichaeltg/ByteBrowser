@@ -10,43 +10,34 @@ module Adjacency_matrix = struct
   let get_files_in_dir origin : string list = Sys_unix.ls_dir origin;;
 
   let%expect_test "files_in_dir" = 
-    print_s[%sexp (get_files_in_dir ("/home/ubuntu/jsip-final-project"):string list)];
+    print_s[%sexp (get_files_in_dir ("/home/ubuntu/test_dir"):string list)];
     [%expect {|
-    (src .git jsip_final_project.opam test dune-project _build jsip_final_project
-     bin)|}]
+    (dir1)|}]
   ;;
 
   let rec get_adjacency_matrix t ~origin ~max_depth = 
     match max_depth with
     | 0 -> t
     | _ -> 
-      let data = get_files_in_dir origin in 
+      let data = List.map (get_files_in_dir origin) ~f:(fun i -> String.concat [origin; "/"; i]) in 
       Hashtbl.add_exn t.matrix ~key:origin ~data;
       List.fold ~init:t data ~f:(fun _ i -> 
-        let new_path = String.concat [origin; "/"; i] in 
-        match Sys_unix.is_directory new_path with 
-      | `Yes -> get_adjacency_matrix t ~origin:new_path ~max_depth:(max_depth - 1)
+        match Sys_unix.is_directory i with 
+      | `Yes -> get_adjacency_matrix t ~origin:i ~max_depth:(max_depth - 1)
       | _ -> get_adjacency_matrix t ~origin ~max_depth:0)
   ;;
 
-  let%expect_test ("adjacency_matrix" [@tags "disabled"]) = 
-    print_s[%sexp ((get_adjacency_matrix (create ()) ~origin:"/home/ubuntu/jsip-final-project" ~max_depth:2):t)];
+  let%expect_test ("adjacency_matrix" ) = 
+    print_s[%sexp ((get_adjacency_matrix (create ()) ~origin:"/home/ubuntu/test_dir" ~max_depth:10):t)];
     [%expect {|
-    ((matrix
-      ((/home/ubuntu/jsip-final-project
-        (src .git jsip_final_project.opam test README.md lib dune-project _build
-         bin))
-       (/home/ubuntu/jsip-final-project/.git
-        (COMMIT_EDITMSG index description HEAD config branches ORIG_HEAD hooks
-         logs info objects FETCH_HEAD refs packed-refs))
-       (/home/ubuntu/jsip-final-project/_build
-        (.promotion-staging log install .lock default .digest-db .to-promote .db
-         .sandbox .actions .filesystem-clock))
-       (/home/ubuntu/jsip-final-project/bin (dune main.ml))
-       (/home/ubuntu/jsip-final-project/lib (dune))
-       (/home/ubuntu/jsip-final-project/src (dune main.mli main.ml))
-       (/home/ubuntu/jsip-final-project/test (dune test_jsip_final_project.ml)))))
-    |}]
+      ((matrix
+        ((/home/ubuntu/test_dir (/home/ubuntu/test_dir/dir1))
+         (/home/ubuntu/test_dir/dir1 (/home/ubuntu/test_dir/dir1/dir2))
+         (/home/ubuntu/test_dir/dir1/dir2 (/home/ubuntu/test_dir/dir1/dir2/dir3))
+         (/home/ubuntu/test_dir/dir1/dir2/dir3
+          (/home/ubuntu/test_dir/dir1/dir2/dir3/dir4))
+         (/home/ubuntu/test_dir/dir1/dir2/dir3/dir4
+          (/home/ubuntu/test_dir/dir1/dir2/dir3/dir4/tmp.txt))))) |}]
   ;;
 end
 
@@ -64,12 +55,23 @@ let%expect_test "get_name" =
     |}]
 ;;
 
-let print_dir map : unit = () ;;
+let print_dir (tree:Adjacency_matrix.t) ~origin = Visualize.visualize tree.matrix ~current_directory:origin;;
 
 let visualize ~max_depth ~origin = 
-  let matrix = Adjacency_matrix.create () in
-  Adjacency_matrix.get_adjacency_matrix ~origin ~max_depth matrix
-  |> print_dir;
+  let matrix = Adjacency_matrix.create () |> Adjacency_matrix.get_adjacency_matrix ~origin ~max_depth in
+  print_dir ~origin matrix |> print_endline;
+;;
+
+let%expect_test "visualize" = 
+  visualize ~max_depth:10 ~origin:"/home/ubuntu/test_dir";
+  [%expect "
+    .
+    |--> test_dir
+      |--> dir1
+        |--> dir2
+          |--> dir3
+            |--> dir4
+              |--> tmp.txt"]
 ;;
 
 let visualize_command = 
