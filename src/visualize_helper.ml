@@ -24,31 +24,41 @@ let%expect_test "get_name" =
   |}]
 ;;
 
+let get_new_tree
+tree
+~(parent : string)
+~(depth : int)
+~(so_far : string) =
+match is_directory tree ~parent with
+| true ->
+  so_far
+  ^ "\n"
+  ^ get_depth_space ~depth
+  ^ "📁"
+  ^ Printf.sprintf "\x1b[36m%s\x1b[37m" (get_name parent)
+| false ->
+  (match is_hidden_file (get_name parent) with
+   | true -> 
+     so_far
+     ^ "\n"
+     ^ get_depth_space ~depth
+     ^ Printf.sprintf "\x1b[35m%s\x1b[37m" (get_name parent)
+   | false ->
+     so_far
+     ^ "\n"
+     ^ get_depth_space ~depth
+     ^ Printf.sprintf "%s" (get_name parent))
+
 let get_formatted_tree_with_new_parent
   tree
+  ~(path_to_be_underlined : string)
   ~(parent : string)
   ~(depth : int)
   ~(so_far : string)
   =
-  match is_directory tree ~parent with
-  | true ->
-    so_far
-    ^ "\n"
-    ^ get_depth_space ~depth
-    ^ "📁"
-    ^ Printf.sprintf "\x1b[36m%s\x1b[37m" (get_name parent)
-  | false ->
-    (match is_hidden_file (get_name parent) with
-     | true ->
-       so_far
-       ^ "\n"
-       ^ get_depth_space ~depth
-       ^ Printf.sprintf "\x1b[35m%s\x1b[37m" (get_name parent)
-     | false ->
-       so_far
-       ^ "\n"
-       ^ get_depth_space ~depth
-       ^ Printf.sprintf "%s" (get_name parent))
+  (match String.equal path_to_be_underlined parent with
+  | true -> "\x1b[4m" ^ (get_new_tree tree ~parent ~path_to_be_underlined ~depth ~so_far) ^ "\x1b[4m"
+  | false -> get_new_tree tree ~parent ~path_to_be_underlined ~depth ~so_far);
 ;;
 
 let rec helper
