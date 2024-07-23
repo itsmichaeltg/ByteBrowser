@@ -87,11 +87,11 @@ let%expect_test "visualize" =
   [%expect
     {|
     .
-    |__ home
-      |__ home_dir1
-        |__ child1
-          |__ .gitignore
+    |__ 📁[36mhome[37m
+      |__ 📁[36mhome_dir1[37m
+        |__ 📁[36mchild1[37m
+          |__ [35m.gitignore[37m
           |__ blah
         |__ child2
-      |__ home_dir2 |}]
+      |__ 📁[36mhome_dir2[37m |}]
 ;;

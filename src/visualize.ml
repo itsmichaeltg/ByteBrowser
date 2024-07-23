@@ -4,7 +4,10 @@ module Adjacency_matrix = struct
   type t = { matrix : (string, string list) Hashtbl.t } [@@deriving sexp_of]
 
   let create () = { matrix = Hashtbl.create (module String) }
-  let get_files_in_dir origin : string list = Sys_unix.ls_dir origin
+
+  let get_files_in_dir origin : string list =
+    try Sys_unix.ls_dir origin with _ -> []
+  ;;
 
   let%expect_test "files_in_dir" =
     print_s
@@ -12,7 +15,7 @@ module Adjacency_matrix = struct
         (get_files_in_dir "/home/ubuntu/jsip-final-project/test_dir"
          : string list)];
     [%expect {|
-    (dir1 dir5)|}]
+    (dir0 dir1 dir5)|}]
   ;;
 
   let rec get_adjacency_matrix t ~origin ~max_depth =
@@ -42,8 +45,10 @@ module Adjacency_matrix = struct
       {|
       ((matrix
         ((/home/ubuntu/jsip-final-project/test_dir 
-          (/home/ubuntu/jsip-final-project/test_dir/dir1
+          (/home/ubuntu/jsip-final-project/test_dir/dir0
+           /home/ubuntu/jsip-final-project/test_dir/dir1
            /home/ubuntu/jsip-final-project/test_dir/dir5))
+         (/home/ubuntu/jsip-final-project/test_dir/dir0 ())
          (/home/ubuntu/jsip-final-project/test_dir/dir1
           (/home/ubuntu/jsip-final-project/test_dir/dir1/dir2))
          (/home/ubuntu/jsip-final-project/test_dir/dir1/dir2
@@ -73,13 +78,14 @@ let%expect_test "visualize" =
   [%expect
     "\n\
     \    .\n\
-    \    |__ test_dir\n\
-    \      |__ dir1\n\
-    \        |__ dir2\n\
-    \          |__ dir3\n\
-    \            |__ dir4\n\
+    \    |__ \240\159\147\129\027[36mtest_dir\027[37m\n\
+    \      |__ \240\159\147\129\027[36mdir0\027[37m\n\
+    \      |__ \240\159\147\129\027[36mdir1\027[37m\n\
+    \        |__ \240\159\147\129\027[36mdir2\027[37m\n\
+    \          |__ \240\159\147\129\027[36mdir3\027[37m\n\
+    \            |__ \240\159\147\129\027[36mdir4\027[37m\n\
     \              |__ tmp.txt\n\
-    \      |__ dir5"]
+    \      |__ \240\159\147\129\027[36mdir5\027[37m"]
 ;;
 
 let pwd_visualize_command =
