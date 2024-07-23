@@ -1,0 +1,7 @@
+# pack-refs with: peeled fully-peeled sorted 
+204493199b1f9eddf7ca6004039f2de948741477 refs/remotes/origin/feat/upgrade-to-riot-30-03
+b084ec7401c52167fae5087577133e52e3874899 refs/remotes/origin/main
+1bc14017f6f45c7edc16c17cd1084195ea6cbad7 refs/remotes/origin/v0.0.2
+90c72fe32831bab95790a7fb1ace1ffb5be168f1 refs/tags/0.0.1
+1bc14017f6f45c7edc16c17cd1084195ea6cbad7 refs/tags/0.0.2
+fca6652761605d5f42f5ab575ba674359d3dc51d refs/tags/0.0.3
