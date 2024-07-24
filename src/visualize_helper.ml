@@ -11,7 +11,7 @@ module Styling = struct
 end
 
 let get_depth_space ~depth =
-  List.fold (List.init depth ~f:Fn.id) ~init:"" ~f:(fun acc num ->
+  List.fold (List.init depth ~f:Fn.id) ~init:"\x1b[0m" ~f:(fun acc num ->
     match num = depth - 1 with true -> acc ^ "\x1b[0m|__" | false -> acc ^ "  ")
   ^ " "
 ;;
