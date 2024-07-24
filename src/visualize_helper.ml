@@ -12,7 +12,7 @@ end
 
 let get_depth_space ~depth =
   List.fold (List.init depth ~f:Fn.id) ~init:"" ~f:(fun acc num ->
-    match num = depth - 1 with true -> acc ^ "|__" | false -> acc ^ "  ")
+    match num = depth - 1 with true -> acc ^ "\x1b[0m|__" | false -> acc ^ "  ")
   ^ " "
 ;;
 
@@ -23,7 +23,7 @@ let is_hidden_file name = String.is_prefix name ~prefix:"."
 let get_name path =
   match String.contains path '/' with
   | false -> path
-  | true -> List.last_exn (String.split path ~on:'/')
+  | true -> (List.hd_exn (String.split path ~on:'/')) ^ List.last_exn (String.split path ~on:'/')
 ;;
 
 let%expect_test "get_name" =
@@ -103,7 +103,6 @@ let%expect_test "visualize" =
   [%expect
     {|
     .
-<<<<<<< HEAD
     |__ 📁[;0;36mhome
       |__ 📁[;0;36mhome_dir1
         |__ 📁[;0;36mchild1
@@ -111,14 +110,5 @@ let%expect_test "visualize" =
           |__ [;0mblah
         |__ [;0mchild2
       |__ 📁[;0;36mhome_dir2
-=======
-    |__ 📁[36mhome
-      |__ 📁[36mhome_dir1
-        |__ 📁[36mchild1
-          |__ [0;35m.gitignore
-          |__ [0mblah
-        |__ [0mchild2
-      |__ 📁[36mhome_dir2
->>>>>>> 8c3987ed987b09d5784e716d250d4103a210e951
     |}]
 ;;
