@@ -62,7 +62,6 @@ module State = struct
       | _ -> [ t.current_path ]
     in
     let current_path = List.hd_exn current_path in
-    print_endline "right";
     { t with current_path }
   ;;
 
@@ -72,7 +71,6 @@ module State = struct
       | true -> t.current_path
       | false -> remove_last_path t.current_path
     in
-    print_endline "left";
     { t with current_path }
   ;;
 
