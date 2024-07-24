@@ -1,7 +1,7 @@
 open! Core
 
 module State = struct
-  type t = { choices : Visualize.Adjacency_matrix.t ; current_path : string; origin : string } (*[@@deriving sexp_of]*)
+  type t = { choices : Visualize.Adjacency_matrix.t ; current_path : string} (*[@@deriving sexp_of]*)
   type dir = UP | DOWN | RIGHT | LEFT
   let get_idx_by_dir idx ~dir =
     match dir with
@@ -64,8 +64,7 @@ let get_view (model : State.t) ~origin =
 
 let get_initial_state ~origin ~max_depth : State.t =
   {choices = Visualize.Adjacency_matrix.create () |> Visualize.Adjacency_matrix.get_adjacency_matrix  ~origin ~max_depth
-  ; current_path = origin
-  ; origin = origin}
+  ; current_path = origin}
 
 let init _model = let open Minttea in Command.Noop
 
@@ -87,6 +86,7 @@ let pwd_navigate_command =
       in
       fun () -> navigate ~max_depth ~origin:(Sys_unix.getcwd ())]
 ;;
+
 
 (* let start_navigate_command =
   let open Command.Let_syntax in

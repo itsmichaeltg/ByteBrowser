@@ -101,5 +101,14 @@ let%expect_test "visualize" =
   let res = visualize mat ~current_directory:"home" ~path_to_be_underlined:".gitignore" in
   print_endline res;
   [%expect
-    {||}]
+    {|
+    .
+    |__ 📁[;0;36mhome
+      |__ 📁[;0;36mhome_dir1
+        |__ 📁[;0;36mchild1
+          |__ [;0;4;35m.gitignore
+          |__ [;0mblah
+        |__ [;0mchild2
+      |__ 📁[;0;36mhome_dir2
+    |}]
 ;;
