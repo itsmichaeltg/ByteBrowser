@@ -4,6 +4,7 @@ module Adjacency_matrix = struct
   type t = { matrix : (string, string list) Hashtbl.t } [@@deriving sexp_of]
 
   let create () = { matrix = Hashtbl.create (module String) }
+
   let get_files_in_dir origin : string list =
     try Sys_unix.ls_dir origin with _ -> []
   ;;
@@ -13,22 +14,31 @@ module Adjacency_matrix = struct
       [%sexp
         (get_files_in_dir "/home/ubuntu/jsip-final-project/test_dir"
          : string list)];
-    [%expect {| (dir1) |}]
+    [%expect {| (dir0 dir1 dir5) |}]
+  ;;
+
+  let format_str ~origin i =
+    match String.equal (List.last_exn (String.split origin ~on:'/')) "" with
+    | true -> String.concat [ origin; i ]
+    | false -> String.concat [ origin; "/"; i ]
   ;;
 
   let rec get_adjacency_matrix t ~origin ~max_depth =
     match max_depth with
-    | 0 -> t
+    | 0 ->
+      (match Sys_unix.is_directory origin with
+       | `Yes -> Hashtbl.add_exn t.matrix ~key:origin ~data:[]
+       | _ -> ());
+      t
     | _ ->
       let data =
-        List.map (get_files_in_dir origin) ~f:(fun i ->
-          String.concat [ origin; "/"; i ])
+        List.map (get_files_in_dir origin) ~f:(fun i -> format_str ~origin i)
       in
       Hashtbl.add_exn t.matrix ~key:origin ~data;
       List.fold ~init:t data ~f:(fun _ i ->
         match Sys_unix.is_directory i with
         | `Yes -> get_adjacency_matrix t ~origin:i ~max_depth:(max_depth - 1)
-        | _ -> get_adjacency_matrix t ~origin ~max_depth:0)
+        | _ -> get_adjacency_matrix t ~origin:i ~max_depth:0)
   ;;
 
   let%expect_test "adjacency_matrix" =
@@ -43,7 +53,10 @@ module Adjacency_matrix = struct
       {|
       ((matrix
         ((/home/ubuntu/jsip-final-project/test_dir
-          (/home/ubuntu/jsip-final-project/test_dir/dir1))
+          (/home/ubuntu/jsip-final-project/test_dir/dir0
+           /home/ubuntu/jsip-final-project/test_dir/dir1
+           /home/ubuntu/jsip-final-project/test_dir/dir5))
+         (/home/ubuntu/jsip-final-project/test_dir/dir0 ())
          (/home/ubuntu/jsip-final-project/test_dir/dir1
           (/home/ubuntu/jsip-final-project/test_dir/dir1/dir2))
          (/home/ubuntu/jsip-final-project/test_dir/dir1/dir2
@@ -51,7 +64,8 @@ module Adjacency_matrix = struct
          (/home/ubuntu/jsip-final-project/test_dir/dir1/dir2/dir3
           (/home/ubuntu/jsip-final-project/test_dir/dir1/dir2/dir3/dir4))
          (/home/ubuntu/jsip-final-project/test_dir/dir1/dir2/dir3/dir4
-          (/home/ubuntu/jsip-final-project/test_dir/dir1/dir2/dir3/dir4/tmp.txt)))))
+          (/home/ubuntu/jsip-final-project/test_dir/dir1/dir2/dir3/dir4/tmp.txt))
+         (/home/ubuntu/jsip-final-project/test_dir/dir5 ()))))
       |}]
   ;;
 end
@@ -76,12 +90,14 @@ let%expect_test "visualize" =
   [%expect
     " 
  .
- |__ \240\159\147\129test_dir
-   |__ \240\159\147\129dir1
-     |__ \240\159\147\129dir2
-       |__ \240\159\147\129dir3
-         |__ \240\159\147\129dir4
-           |__ tmp.txt
+ |__ \240\159\147\129\027[36mtest_dir
+   |__ \240\159\147\129\027[36mdir0
+   |__ \240\159\147\129\027[36mdir1
+     |__ \240\159\147\129\027[36mdir2
+       |__ \240\159\147\129\027[36mdir3
+         |__ \240\159\147\129\027[36mdir4
+           |__ \027[0mtmp.txt
+   |__ \240\159\147\129\027[36mdir5
  "]
 ;;
 

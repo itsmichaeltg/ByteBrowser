@@ -68,10 +68,9 @@ module State = struct
 
   let get_updated_model_for_left t =
     let current_path =
-      let new_path = remove_last_path t.current_path in
-      match String.equal new_path t.origin || String.equal new_path "" with
-      | false -> t.current_path
-      | true -> new_path
+      match String.equal t.current_path t.origin with
+      | true -> t.current_path
+      | false -> remove_last_path t.current_path
     in
     print_endline "left";
     { t with current_path }
@@ -84,7 +83,10 @@ end
 let update event (model : State.t) =
   let open Minttea in
   match event with
-  | Event.KeyDown ((Key "q" | Escape), _modifier) -> model, Command.Quit
+  | Event.KeyDown ((Key "q" | Escape), _modifier) ->
+    Event.pp Format.std_formatter event;
+    Format.pp_print_flush Format.std_formatter ();
+    model, Command.Quit
   | Event.KeyDown (Left, _modifier) ->
     State.get_updated_model_for_left model, Command.Noop
   | Event.KeyDown (Right, _modifier) ->
@@ -160,5 +162,5 @@ let start_navigate_command =
 let command =
   Core.Command.group
     ~summary:"file manager commands"
-    [ "pwd", pwd_navigate_command (*;"dir", start_navigate_command*) ]
+    [ "pwd", pwd_navigate_command; "dir", start_navigate_command ]
 ;;
