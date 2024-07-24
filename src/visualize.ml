@@ -4,7 +4,6 @@ module Adjacency_matrix = struct
   type t = { matrix : (string, string list) Hashtbl.t } [@@deriving sexp_of]
 
   let create () = { matrix = Hashtbl.create (module String) }
-
   let get_files_in_dir origin : string list =
     try Sys_unix.ls_dir origin with _ -> []
   ;;
@@ -14,8 +13,7 @@ module Adjacency_matrix = struct
       [%sexp
         (get_files_in_dir "/home/ubuntu/jsip-final-project/test_dir"
          : string list)];
-    [%expect {|
-    (dir0 dir1 dir5)|}]
+    [%expect {| (dir1) |}]
   ;;
 
   let rec get_adjacency_matrix t ~origin ~max_depth =
@@ -44,11 +42,8 @@ module Adjacency_matrix = struct
     [%expect
       {|
       ((matrix
-        ((/home/ubuntu/jsip-final-project/test_dir 
-          (/home/ubuntu/jsip-final-project/test_dir/dir0
-           /home/ubuntu/jsip-final-project/test_dir/dir1
-           /home/ubuntu/jsip-final-project/test_dir/dir5))
-         (/home/ubuntu/jsip-final-project/test_dir/dir0 ())
+        ((/home/ubuntu/jsip-final-project/test_dir
+          (/home/ubuntu/jsip-final-project/test_dir/dir1))
          (/home/ubuntu/jsip-final-project/test_dir/dir1
           (/home/ubuntu/jsip-final-project/test_dir/dir1/dir2))
          (/home/ubuntu/jsip-final-project/test_dir/dir1/dir2
@@ -56,8 +51,8 @@ module Adjacency_matrix = struct
          (/home/ubuntu/jsip-final-project/test_dir/dir1/dir2/dir3
           (/home/ubuntu/jsip-final-project/test_dir/dir1/dir2/dir3/dir4))
          (/home/ubuntu/jsip-final-project/test_dir/dir1/dir2/dir3/dir4
-          (/home/ubuntu/jsip-final-project/test_dir/dir1/dir2/dir3/dir4/tmp.txt))
-         (/home/ubuntu/jsip-final-project/test_dir/dir5 ())))) |}]
+          (/home/ubuntu/jsip-final-project/test_dir/dir1/dir2/dir3/dir4/tmp.txt)))))
+      |}]
   ;;
 end
 
@@ -79,16 +74,15 @@ let visualize ~max_depth ~origin =
 let%expect_test "visualize" =
   visualize ~max_depth:10 ~origin:"/home/ubuntu/jsip-final-project/test_dir";
   [%expect
-    "\n\
-    \    .\n\
-    \    |__ \240\159\147\129\027[36mtest_dir\027[37m\n\
-    \      |__ \240\159\147\129\027[36mdir0\027[37m\n\
-    \      |__ \240\159\147\129\027[36mdir1\027[37m\n\
-    \        |__ \240\159\147\129\027[36mdir2\027[37m\n\
-    \          |__ \240\159\147\129\027[36mdir3\027[37m\n\
-    \            |__ \240\159\147\129\027[36mdir4\027[37m\n\
-    \              |__ tmp.txt\n\
-    \      |__ \240\159\147\129\027[36mdir5\027[37m"]
+    " 
+ .
+ |__ \240\159\147\129\027[36mtest_dir\027[37m
+   |__ \240\159\147\129\027[36mdir1\027[37m
+     |__ \240\159\147\129\027[36mdir2\027[37m
+       |__ \240\159\147\129\027[36mdir3\027[37m
+         |__ \240\159\147\129\027[36mdir4\027[37m
+           |__ tmp.txt
+ "]
 ;;
 
 let pwd_visualize_command =
