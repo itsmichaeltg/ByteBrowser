@@ -57,8 +57,8 @@ let get_formatted_tree_with_new_parent
   ~(so_far : string)
   =
   (match String.equal path_to_be_underlined parent with
-  | true -> "\x1b[4m" ^ (get_new_tree tree ~parent ~path_to_be_underlined ~depth ~so_far) ^ "\x1b[4m"
-  | false -> get_new_tree tree ~parent ~path_to_be_underlined ~depth ~so_far);
+  | true -> "\x1b[4m" ^ (get_new_tree tree ~parent ~depth ~so_far) ^ "\x1b[4m"
+  | false -> get_new_tree tree ~parent ~depth ~so_far);
 ;;
 
 let rec helper
@@ -66,24 +66,26 @@ let rec helper
   (tree : (string, string list) Hashtbl.t)
   ~(depth : int)
   ~(parent : string)
+  ~(path_to_be_underlined : string)
   : string
   =
   match Hashtbl.find tree parent with
-  | None -> get_formatted_tree_with_new_parent tree ~parent ~depth ~so_far
+  | None -> get_formatted_tree_with_new_parent tree ~parent ~depth ~so_far ~path_to_be_underlined
   | Some current_children ->
     let init =
-      get_formatted_tree_with_new_parent tree ~parent ~depth ~so_far
+      get_formatted_tree_with_new_parent tree ~parent ~depth ~so_far ~path_to_be_underlined
     in
     List.fold current_children ~init ~f:(fun acc child ->
-      helper ~so_far:acc tree ~depth:(depth + 1) ~parent:child)
+      helper ~so_far:acc tree ~depth:(depth + 1) ~parent:child ~path_to_be_underlined)
 ;;
 
 let visualize
   (tree : (string, string list) Hashtbl.t)
   ~(current_directory : string)
+  ~(path_to_be_underlined : string)
   : string
   =
-  helper tree ~depth:1 ~so_far:"." ~parent:current_directory
+  helper tree ~depth:1 ~so_far:"." ~parent:current_directory ~path_to_be_underlined
 ;;
 
 let%expect_test "visualize" =
@@ -92,7 +94,7 @@ let%expect_test "visualize" =
   Hashtbl.add_exn mat ~key:"home_dir1" ~data:[ "child1"; "child2" ];
   Hashtbl.add_exn mat ~key:"home_dir2" ~data:[];
   Hashtbl.add_exn mat ~key:"child1" ~data:[ ".gitignore"; "blah" ];
-  let res = visualize mat ~current_directory:"home" in
+  let res = visualize mat ~current_directory:"home" ~path_to_be_underlined:".gitignore" in
   print_endline res;
   [%expect
     {|
