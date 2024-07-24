@@ -87,6 +87,19 @@ let pwd_navigate_command =
       fun () -> navigate ~max_depth ~origin:(Sys_unix.getcwd ())]
 ;;
 
+let%expect_test "navigate_left" =
+  let mat = Hashtbl.create (module String) in
+  Hashtbl.add_exn mat ~key:"home" ~data:[ "home_dir1"; "home_dir2" ];
+  Hashtbl.add_exn mat ~key:"home_dir1" ~data:[ "child1"; "child2" ];
+  Hashtbl.add_exn mat ~key:"home_dir2" ~data:[];
+  Hashtbl.add_exn mat ~key:"child1" ~data:[ ".gitignore"; "blah" ];
+  print_endline (Visualize_helper.visualize mat ~current_directory:"home" ~path_to_be_underlined:".gitignore");
+  let model = {State.choices = {matrix = mat} ; current_path=".gitignore"} in
+  let new_model = State.get_updated_model_for_left model in
+  print_endline (Visualize_helper.visualize new_model.choices.matrix ~current_directory:"home" ~path_to_be_underlined:model.current_path);
+  [%expect
+    {||}]
+;;
 
 (* let start_navigate_command =
   let open Command.Let_syntax in
