@@ -62,7 +62,10 @@ module Adjacency_matrix = struct
 end
 
 let print_dir (tree : Adjacency_matrix.t) ~origin =
-  Visualize_helper.visualize tree.matrix ~current_directory:origin ~path_to_be_underlined:""
+  Visualize_helper.visualize
+    tree.matrix
+    ~current_directory:origin
+    ~path_to_be_underlined:""
 ;;
 
 let visualize ~max_depth ~origin =
