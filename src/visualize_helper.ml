@@ -1,12 +1,18 @@
 open! Core
 
+module Styling = struct
+  type t = string list
+  let apply_style t ~apply_to:string ~ansi = List.fold t ~init:"\x1b" ~f:(fun acc style -> acc ^ style ^ ";")
+end
+
 let get_depth_space ~depth =
   List.fold (List.init depth ~f:Fn.id) ~init:"" ~f:(fun acc num ->
     match num = depth - 1 with true -> acc ^ "|__" | false -> acc ^ "  ")
   ^ " "
 ;;
 
-let is_directory tree ~parent = Hashtbl.mem tree parent
+let is_directory (tree : (string, string list) Hashtbl.t) (value : string) = Hashtbl.mem tree value
+
 let is_hidden_file name = String.is_prefix name ~prefix:"."
 
 let get_name path =
@@ -24,30 +30,6 @@ let%expect_test "get_name" =
   |}]
 ;;
 
-let get_new_tree
-tree
-~(parent : string)
-~(depth : int)
-~(so_far : string) =
-match is_directory tree ~parent with
-| true ->
-  so_far
-  ^ "\n"
-  ^ get_depth_space ~depth
-  ^ "📁"
-  ^ Printf.sprintf "\x1b[36m%s\x1b[37m" (get_name parent)
-| false ->
-  (match is_hidden_file (get_name parent) with
-   | true -> 
-     so_far
-     ^ "\n"
-     ^ get_depth_space ~depth
-     ^ Printf.sprintf "\x1b[35m%s\x1b[37m" (get_name parent)
-   | false ->
-     so_far
-     ^ "\n"
-     ^ get_depth_space ~depth
-     ^ Printf.sprintf "%s" (get_name parent))
 
 let get_formatted_tree_with_new_parent
   tree
@@ -56,9 +38,25 @@ let get_formatted_tree_with_new_parent
   ~(depth : int)
   ~(so_far : string)
   =
-  (match String.equal path_to_be_underlined parent with
-  | true -> "\x1b[4m" ^ (get_new_tree tree ~parent ~depth ~so_far) ^ "\x1b[4m"
-  | false -> get_new_tree tree ~parent ~depth ~so_far);
+  match is_directory tree parent with
+| true ->
+  so_far
+  ^ "\n"
+  ^ get_depth_space ~depth
+  ^ "📁"
+  ^ Printf.sprintf "\x1b[36m%s" (get_name parent)
+| false ->
+  (match is_hidden_file (get_name parent) with
+   | true -> 
+     so_far
+     ^ "\n"
+     ^ get_depth_space ~depth
+     ^ Printf.sprintf "\x1b[0;35m%s" (get_name parent)
+   | false ->
+     so_far
+     ^ "\n"
+     ^ get_depth_space ~depth
+     ^ Printf.sprintf "\x1b[0m%s" (get_name parent))
 ;;
 
 let rec helper
@@ -97,13 +95,5 @@ let%expect_test "visualize" =
   let res = visualize mat ~current_directory:"home" ~path_to_be_underlined:".gitignore" in
   print_endline res;
   [%expect
-    {|
-    .
-    |__ 📁[36mhome[37m
-      |__ 📁[36mhome_dir1[37m
-        |__ 📁[36mchild1[37m
-          |__ [35m.gitignore[37m
-          |__ blah
-        |__ child2
-      |__ 📁[36mhome_dir2[37m |}]
+    {||}]
 ;;
