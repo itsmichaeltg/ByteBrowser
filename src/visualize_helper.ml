@@ -1,8 +1,13 @@
 open! Core
 
 module Styling = struct
-  type t = string list
-  let apply_style t ~apply_to:string ~ansi = List.fold t ~init:"\x1b" ~f:(fun acc style -> acc ^ style ^ ";")
+  type t = { mutable styles : string list}
+  let get_emoji_by_dir ~is_dir = match is_dir with | true -> "📁" | false -> ""
+  let apply_style t ~apply_to ~is_dir =
+    "\x1b["
+    ^ (List.fold t.styles ~init:"" ~f:(fun acc style -> acc ^ ";" ^ style))
+    ^ "m"
+    ^ apply_to
 end
 
 let get_depth_space ~depth =
@@ -30,6 +35,21 @@ let%expect_test "get_name" =
   |}]
 ;;
 
+let get_parent_with_styles
+  tree
+  ~(path_to_be_underlined : string)
+  ~(parent : string) =
+  let (styles : Styling.t) = { styles = ["0"] } in
+  (match String.equal path_to_be_underlined parent with
+  | true -> styles.styles <- List.append styles.styles ["4"]
+  | false -> ());
+  (match is_directory tree parent with
+  | true -> styles.styles <- List.append styles.styles ["36"]
+  | false ->
+    (match is_hidden_file (get_name parent) with
+  | true -> styles.styles <- List.append styles.styles ["35"]
+  | false -> ()));
+  Styling.apply_style styles ~apply_to:parent ~is_dir:(is_directory tree parent)
 
 let get_formatted_tree_with_new_parent
   tree
@@ -38,25 +58,11 @@ let get_formatted_tree_with_new_parent
   ~(depth : int)
   ~(so_far : string)
   =
-  match is_directory tree parent with
-| true ->
   so_far
   ^ "\n"
   ^ get_depth_space ~depth
-  ^ "📁"
-  ^ Printf.sprintf "\x1b[36m%s" (get_name parent)
-| false ->
-  (match is_hidden_file (get_name parent) with
-   | true -> 
-     so_far
-     ^ "\n"
-     ^ get_depth_space ~depth
-     ^ Printf.sprintf "\x1b[0;35m%s" (get_name parent)
-   | false ->
-     so_far
-     ^ "\n"
-     ^ get_depth_space ~depth
-     ^ Printf.sprintf "\x1b[0m%s" (get_name parent))
+  ^ (Styling.get_emoji_by_dir ~is_dir:(is_directory tree parent))
+  ^ Printf.sprintf "%s" (get_name (get_parent_with_styles tree ~path_to_be_underlined ~parent))
 ;;
 
 let rec helper
