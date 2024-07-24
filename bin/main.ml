@@ -1,7 +1,7 @@
-open! Core
+(* open! Core
 
-let () = Command_unix.run File_manager_lib.command
-(* open Minttea
+let () = Command_unix.run File_manager_lib.command *)
+open Minttea
 
 type model =
   { (* the choices that will be used and whether they are selected or
@@ -14,9 +14,9 @@ type model =
 let initial_model =
   { cursor = 0
   ; choices =
-      [ "Buy empanadas 🥟", `unselected
-      ; "Buy carrots 🥕", `unselected
-      ; "Buy cupcakes 🧁", `unselected
+      [ "/home/ubuntu/jsip-final-project/", `unselected
+      ; "/home/ubuntu/", `unselected
+      ; "/home/ubuntu/jsip-final-project/test_dir/", `unselected
       ]
   }
 ;;
@@ -58,7 +58,9 @@ let update event model =
           name, status)
         model.choices
     in
-    { model with choices }, Command.Noop
+    let str, _ = (List.nth model.choices model.cursor) in
+    print_endline ("cd " ^ str);
+    { model with choices }, Command.Quit
   (* for all other events, we do nothing *)
   | _ -> model, Command.Noop
 ;;
@@ -75,9 +77,7 @@ let view model =
   in
   (* and we send the UI for rendering! *)
   Format.sprintf
-    {|
-What should we buy at the market?
-    
+    {|    
 %s
     
 Press q to quit.
@@ -87,4 +87,5 @@ Press q to quit.
 ;;
 
 let app = Minttea.app ~init ~update ~view ()
-let () = Minttea.start app ~initial_model *)
+let () = Minttea.start app ~initial_model
+

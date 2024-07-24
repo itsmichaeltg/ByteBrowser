@@ -103,7 +103,6 @@ let%expect_test "visualize" =
   [%expect
     {|
     .
-<<<<<<< HEAD
     |__ 📁[;0;36mhome
       |__ 📁[;0;36mhome_dir1
         |__ 📁[;0;36mchild1
@@ -111,14 +110,5 @@ let%expect_test "visualize" =
           |__ [;0mblah
         |__ [;0mchild2
       |__ 📁[;0;36mhome_dir2
-=======
-    |__ 📁[36mhome
-      |__ 📁[36mhome_dir1
-        |__ 📁[36mchild1
-          |__ [0;35m.gitignore
-          |__ [0mblah
-        |__ [0mchild2
-      |__ 📁[36mhome_dir2
->>>>>>> 8c3987ed987b09d5784e716d250d4103a210e951
     |}]
 ;;
