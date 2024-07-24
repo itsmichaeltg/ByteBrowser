@@ -59,7 +59,10 @@ let update event model =
         model.choices
     in
     let str, _ = (List.nth model.choices model.cursor) in
-    print_endline ("cd " ^ str);
+    let file = Out_channel.open_text "bin/path.txt" in
+    Out_channel.output_string file str;
+    Out_channel.flush file;
+    Out_channel.close file;
     { model with choices }, Command.Quit
   (* for all other events, we do nothing *)
   | _ -> model, Command.Noop
@@ -88,4 +91,3 @@ Press q to quit.
 
 let app = Minttea.app ~init ~update ~view ()
 let () = Minttea.start app ~initial_model
-
