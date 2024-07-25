@@ -239,7 +239,8 @@ let%expect_test "navigate-down" =
        newer_model.choices.matrix
        ~current_directory:"/home"
        ~path_to_be_underlined:newer_model.current_path);
-  [%expect {|
+  [%expect
+    {|
     .
     [0m[0m|__ 📁[;0;36mhome
     [0m  [0m|__ 📁[;0;4;36mhome_dir1

@@ -110,7 +110,7 @@ let update event (model : State.t) =
     State.get_updated_model_for_down model, Command.Noop
   | Event.KeyDown (Enter, _modifier) ->
     change_dir model.current_path;
-    model, Command.Quit
+    model, Command.Noop
   | _ -> model, Minttea.Command.Noop
 ;;
 
@@ -141,8 +141,8 @@ let init _model =
 ;;
 
 let navigate ~max_depth ~origin =
-  let app = Minttea.app ~init ~update ~view:(get_view ~origin:"/home/ubuntu/jsip-final-project") () in
-  Minttea.start app ~initial_model:(get_initial_state ~origin:"/home/ubuntu/jsip-final-project" ~max_depth:100)
+  let app = Minttea.app ~init ~update ~view:(get_view ~origin) () in
+  Minttea.start app ~initial_model:(get_initial_state ~origin ~max_depth)
 ;;
 
 let pwd_navigate_command =

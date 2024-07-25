@@ -1,22 +1,31 @@
 open! Core
 
 module Styling = struct
-  type t = { mutable styles : string list}
-  let get_emoji_by_dir ~is_dir = match is_dir with | true -> "📁" | false -> ""
+  type t = { mutable styles : string list }
+
+  let get_emoji_by_dir ~is_dir =
+    match is_dir with true -> "📁" | false -> ""
+  ;;
+
   let apply_style t ~apply_to ~is_dir =
     "\x1b["
-    ^ (List.fold t.styles ~init:"" ~f:(fun acc style -> acc ^ ";" ^ style))
+    ^ List.fold t.styles ~init:"" ~f:(fun acc style -> acc ^ ";" ^ style)
     ^ "m"
     ^ apply_to
+  ;;
 end
 
 let get_depth_space ~depth =
   List.fold (List.init depth ~f:Fn.id) ~init:"\x1b[0m" ~f:(fun acc num ->
-    match num = depth - 1 with true -> acc ^ "\x1b[0m|__" | false -> acc ^ "  ")
+    match num = depth - 1 with
+    | true -> acc ^ "\x1b[0m|__"
+    | false -> acc ^ "  ")
   ^ " "
 ;;
 
-let is_directory (tree : (string, string list) Hashtbl.t) (value : string) = Hashtbl.mem tree value
+let is_directory (tree : (string, string list) Hashtbl.t) (value : string) =
+  Hashtbl.mem tree value
+;;
 
 let is_hidden_file name = String.is_prefix name ~prefix:"."
 
@@ -35,22 +44,22 @@ let%expect_test "get_name" =
   |}]
 ;;
 
-let get_styles
-  tree
-  ~(path_to_be_underlined : string)
-  ~(parent : string) =
-  let (styles : Styling.t) = { styles = ["0"] } in
+let get_styles tree ~(path_to_be_underlined : string) ~(parent : string) =
+  let (styles : Styling.t) = { styles = [ "0" ] } in
   (match String.equal path_to_be_underlined parent with
-  | true -> styles.styles <- List.append styles.styles ["4"]
-  | false -> ());
+   | true -> styles.styles <- List.append styles.styles [ "4" ]
+   | false -> ());
   (match is_directory tree parent with
-  | true -> styles.styles <- List.append styles.styles ["36"]
-  | false ->
-    (match is_hidden_file (get_name parent) with
-  | true -> styles.styles <- List.append styles.styles ["35"]
-  | false -> ()));
+   | true -> styles.styles <- List.append styles.styles [ "36" ]
+   | false ->
+     (match is_hidden_file (get_name parent) with
+      | true -> styles.styles <- List.append styles.styles [ "35" ]
+      | false -> ()));
   styles
-  (* Styling.apply_style styles ~apply_to:parent ~is_dir:(is_directory tree parent) *)
+;;
+
+(* Styling.apply_style styles ~apply_to:parent ~is_dir:(is_directory tree
+   parent) *)
 
 let get_formatted_tree_with_new_parent
   tree
@@ -62,8 +71,13 @@ let get_formatted_tree_with_new_parent
   so_far
   ^ "\n"
   ^ get_depth_space ~depth
-  ^ (Styling.get_emoji_by_dir ~is_dir:(is_directory tree parent))
-  ^ Printf.sprintf "%s" (Styling.apply_style (get_styles tree ~path_to_be_underlined ~parent) ~apply_to:(get_name parent) ~is_dir:(is_directory tree parent))
+  ^ Styling.get_emoji_by_dir ~is_dir:(is_directory tree parent)
+  ^ Printf.sprintf
+      "%s"
+      (Styling.apply_style
+         (get_styles tree ~path_to_be_underlined ~parent)
+         ~apply_to:(get_name parent)
+         ~is_dir:(is_directory tree parent))
 ;;
 
 let rec helper
@@ -75,13 +89,29 @@ let rec helper
   : string
   =
   match Hashtbl.find tree parent with
-  | None -> get_formatted_tree_with_new_parent tree ~parent ~depth ~so_far ~path_to_be_underlined
+  | None ->
+    get_formatted_tree_with_new_parent
+      tree
+      ~parent
+      ~depth
+      ~so_far
+      ~path_to_be_underlined
   | Some current_children ->
     let init =
-      get_formatted_tree_with_new_parent tree ~parent ~depth ~so_far ~path_to_be_underlined
+      get_formatted_tree_with_new_parent
+        tree
+        ~parent
+        ~depth
+        ~so_far
+        ~path_to_be_underlined
     in
     List.fold current_children ~init ~f:(fun acc child ->
-      helper ~so_far:acc tree ~depth:(depth + 1) ~parent:child ~path_to_be_underlined)
+      helper
+        ~so_far:acc
+        tree
+        ~depth:(depth + 1)
+        ~parent:child
+        ~path_to_be_underlined)
 ;;
 
 let visualize
@@ -90,7 +120,12 @@ let visualize
   ~(path_to_be_underlined : string)
   : string
   =
-  helper tree ~depth:1 ~so_far:"." ~parent:current_directory ~path_to_be_underlined
+  helper
+    tree
+    ~depth:1
+    ~so_far:"."
+    ~parent:current_directory
+    ~path_to_be_underlined
 ;;
 
 let%expect_test "visualize" =
@@ -99,7 +134,12 @@ let%expect_test "visualize" =
   Hashtbl.add_exn mat ~key:"home_dir1" ~data:[ "child1"; "child2" ];
   Hashtbl.add_exn mat ~key:"home_dir2" ~data:[];
   Hashtbl.add_exn mat ~key:"child1" ~data:[ ".gitignore"; "blah" ];
-  let res = visualize mat ~current_directory:"home" ~path_to_be_underlined:".gitignore" in
+  let res =
+    visualize
+      mat
+      ~current_directory:"home"
+      ~path_to_be_underlined:".gitignore"
+  in
   print_endline res;
   [%expect
     {|
