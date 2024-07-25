@@ -5,17 +5,17 @@ module State = struct
     { choices : Visualize.Adjacency_matrix.t
     ; current_path : string
     ; origin : string
+    ; parent : string
+    ; cursor : int
     }
   [@@deriving sexp_of]
 
   type dir =
     | UP
     | DOWN
-    | RIGHT
-    | LEFT
 
-  let get_idx_by_dir idx ~dir =
-    match dir with UP -> idx - 1 | DOWN -> idx + 1 | _ -> idx
+  let get_idx_by_dir t ~dir =
+    match dir with UP -> (t.cursor - 1) % (Hashtbl.find_exn t.choices.matrix t.parent |> List.length) | DOWN -> (t.cursor + 1) % (Hashtbl.find_exn t.choices.matrix t.parent |> List.length)
   ;;
 
   let is_directory (tree : (string, string list) Hashtbl.t) (value : string) =
@@ -31,29 +31,11 @@ module State = struct
     |> String.concat ~sep:"/"
   ;;
 
-  let get_parent_of_current_path t =
-    let parents = Hashtbl.keys t.choices.matrix in
-    List.fold parents ~init:"" ~f:(fun acc parent ->
-      match Hashtbl.find t.choices.matrix parent with
-      | None -> acc
-      | Some children ->
-        (match List.mem children t.current_path ~equal:String.equal with
-         | true -> parent
-         | false -> acc))
-  ;;
-
   let handle_up_and_down t ~dir =
-    let parent_of_current_path = get_parent_of_current_path t in
-    match Hashtbl.find t.choices.matrix parent_of_current_path with
-    | None -> t
-    | Some children ->
-      List.foldi children ~init:t ~f:(fun idx acc child ->
-        match String.equal child t.current_path with
-        | true ->
-          (match List.nth children (get_idx_by_dir idx ~dir) with
-           | None -> t
-           | Some prev -> { t with current_path = prev })
-        | false -> t)
+    let cursor = get_idx_by_dir t ~dir in
+    let current_path = List.nth_exn (Hashtbl.find_exn t.choices.matrix t.parent) cursor in
+    let tmp_model = {t with cursor} in
+    {tmp_model with current_path}
   ;;
 
   let get_updated_model_for_right t =
@@ -62,16 +44,22 @@ module State = struct
       | _ -> [ t.current_path ]
     in
     let current_path = List.hd_exn current_path in
-    { t with current_path }
+    let parent = if String.equal t.current_path current_path then
+      t.parent
+    else
+      t.current_path in
+    let tmp_model = {t with parent} in
+    { tmp_model with current_path }
   ;;
 
   let get_updated_model_for_left t =
-    let current_path =
+    let current_path, parent =
       match String.equal t.current_path t.origin with
-      | true -> t.current_path
-      | false -> remove_last_path t.current_path
+      | true -> t.current_path, t.parent
+      | false -> remove_last_path t.current_path, t.current_path
     in
-    { t with current_path }
+    let tmp_model = {t with parent} in
+    { tmp_model with current_path }
   ;;
 
   let get_updated_model_for_up t = handle_up_and_down t ~dir:UP
@@ -115,6 +103,8 @@ let get_initial_state ~origin ~max_depth : State.t =
       |> Visualize.Adjacency_matrix.get_adjacency_matrix ~origin ~max_depth
   ; current_path = origin
   ; origin
+  ; parent = origin
+  ; cursor = 0
   }
 ;;
 

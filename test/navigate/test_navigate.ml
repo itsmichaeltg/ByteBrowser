@@ -8,7 +8,7 @@ let%expect_test "navigate-left" =
   Hashtbl.add_exn mat ~key:"/home/home_dir2" ~data:[];
   Hashtbl.add_exn mat ~key:"/home/home_dir1/child1" ~data:[ "/home/home_dir1/child1/.gitignore" ];
   print_endline (Visualize_helper.visualize mat ~current_directory:"/home" ~path_to_be_underlined:"/home/home_dir1/child1/.gitignore");
-  let model = {Navigate.State.choices = {matrix = mat}; current_path = "/home/home_dir1/child1/.gitignore"; origin = "/home"} in
+  let model = {Navigate.State.choices = {matrix = mat}; current_path = "/home/home_dir1/child1/.gitignore"; origin = "/home"; parent = "/home"; cursor = 0} in
   let new_model = Navigate.State.get_updated_model_for_left model in
   print_endline (Visualize_helper.visualize new_model.choices.matrix ~current_directory:"/home" ~path_to_be_underlined:new_model.current_path);
   [%expect
@@ -37,7 +37,7 @@ let%expect_test "navigate-right" =
   Hashtbl.add_exn mat ~key:"/home/home_dir2" ~data:[];
   Hashtbl.add_exn mat ~key:"/home/home_dir1/child1" ~data:[ "/home/home_dir1/child1/.gitignore" ];
   print_endline (Visualize_helper.visualize mat ~current_directory:"/home" ~path_to_be_underlined:"/home/home_dir1");
-  let model = {Navigate.State.choices = {matrix = mat}; current_path = "/home/home_dir1"; origin = "/home"} in
+  let model = {Navigate.State.choices = {matrix = mat}; current_path = "/home/home_dir1"; origin = "/home"; parent = "/home"; cursor = 0} in
   let new_model = Navigate.State.get_updated_model_for_right model in
   print_endline (Visualize_helper.visualize new_model.choices.matrix ~current_directory:"/home" ~path_to_be_underlined:new_model.current_path);
   let newer_model = Navigate.State.get_updated_model_for_right new_model in
@@ -84,7 +84,7 @@ let%expect_test "navigate-up" =
   Hashtbl.add_exn mat ~key:"/home/home_dir2" ~data:[];
   Hashtbl.add_exn mat ~key:"/home/home_dir1/child1" ~data:[ "/home/home_dir1/child1/.gitignore" ];
   print_endline (Visualize_helper.visualize mat ~current_directory:"/home" ~path_to_be_underlined:"/home/home_dir2");
-  let model = {Navigate.State.choices = {matrix = mat}; current_path = "/home/home_dir2"; origin = "/home"} in
+  let model = {Navigate.State.choices = {matrix = mat}; current_path = "/home/home_dir2"; origin = "/home"; parent = "/home"; cursor = 0} in
   let new_model = Navigate.State.get_updated_model_for_up model in
   print_endline (Visualize_helper.visualize new_model.choices.matrix ~current_directory:"/home" ~path_to_be_underlined:new_model.current_path);
   [%expect
