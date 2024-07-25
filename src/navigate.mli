@@ -11,8 +11,6 @@ module State : sig
     type dir =
       | UP
       | DOWN
-      | RIGHT
-      | LEFT
   
     val get_idx_by_dir : int -> dir:dir -> int
   

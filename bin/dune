@@ -1,3 +1,7 @@
 (executable
  (name main)
  (libraries file_manager_lib core core_unix.command_unix))
+
+; (executable
+;  (name navigate)
+;  (libraries file_manager_lib core minttea))
