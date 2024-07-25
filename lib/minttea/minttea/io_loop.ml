@@ -15,31 +15,33 @@ let translate key =
   | "\127" -> Backspace
   | "\n" -> Enter
   | key -> Key key
+;;
 
 let rec loop runner =
   yield ();
   match Stdin.read_utf8 () with
   | `Read key ->
-      let msg =
-        match key with
-        | "\027" -> (
-            match Stdin.read_utf8 () with
-            | `Read "[" -> (
-                match Stdin.read_utf8 () with
-                | `Read key -> KeyDown (translate ("\027[" ^ key), No_modifier)
-                | _ -> KeyDown (translate key, No_modifier))
+    let msg =
+      match key with
+      | "\027" ->
+        (match Stdin.read_utf8 () with
+         | `Read "[" ->
+           (match Stdin.read_utf8 () with
+            | `Read key -> KeyDown (translate ("\027[" ^ key), No_modifier)
             | _ -> KeyDown (translate key, No_modifier))
-        | "\n" -> KeyDown (translate key, No_modifier)
-        | key when key >= "\x01" && key <= "\x1a" ->
-            let key =
-              key.[0] |> Char.code |> ( + ) 96 |> Char.chr |> String.make 1
-            in
-            KeyDown (translate key, Ctrl)
-        | key -> KeyDown (translate key, No_modifier)
-      in
-      send runner (Input msg);
-      loop runner
+         | _ -> KeyDown (translate key, No_modifier))
+      | "\n" -> KeyDown (translate key, No_modifier)
+      | key when key >= "\x01" && key <= "\x1a" ->
+        let key =
+          key.[0] |> Char.code |> ( + ) 96 |> Char.chr |> String.make 1
+        in
+        KeyDown (translate key, Ctrl)
+      | key -> KeyDown (translate key, No_modifier)
+    in
+    send runner (Input msg);
+    loop runner
   | _ -> loop runner
+;;
 
 let run runner =
   process_flag (Trap_exit true);
@@ -48,3 +50,4 @@ let run runner =
   let _worker = spawn_link (fun () -> loop runner) in
   let _ = receive_any () in
   Stdin.shutdown termios
+;;

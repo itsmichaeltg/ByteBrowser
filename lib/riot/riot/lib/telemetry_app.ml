@@ -12,14 +12,16 @@ module Dispatcher = struct
   let rec loop () =
     match receive_any () with
     | Event e ->
-        Telemetry.emit e;
-        loop ()
+      Telemetry.emit e;
+      loop ()
     | _ -> loop ()
+  ;;
 
   let start_link () =
     let pid = spawn_link (fun () -> loop ()) in
     __main_dispatcher__ := pid;
     Ok pid
+  ;;
 
   let emit ev = send !__main_dispatcher__ (Event ev)
 end

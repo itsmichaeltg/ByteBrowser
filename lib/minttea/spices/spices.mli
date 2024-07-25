@@ -10,22 +10,22 @@ val gradient : start:color -> finish:color -> steps:int -> color array
 module Border : sig
   type t
 
-  val make :
-    ?top:string ->
-    ?left:string ->
-    ?bottom:string ->
-    ?right:string ->
-    ?top_left:string ->
-    ?top_right:string ->
-    ?bottom_left:string ->
-    ?bottom_right:string ->
-    ?middle_left:string ->
-    ?middle_right:string ->
-    ?middle:string ->
-    ?middle_top:string ->
-    ?middle_bottom:string ->
-    unit ->
-    t
+  val make
+    :  ?top:string
+    -> ?left:string
+    -> ?bottom:string
+    -> ?right:string
+    -> ?top_left:string
+    -> ?top_right:string
+    -> ?bottom_left:string
+    -> ?bottom_right:string
+    -> ?middle_left:string
+    -> ?middle_right:string
+    -> ?middle:string
+    -> ?middle_top:string
+    -> ?middle_bottom:string
+    -> unit
+    -> t
 
   val normal : t
   val rounded : t

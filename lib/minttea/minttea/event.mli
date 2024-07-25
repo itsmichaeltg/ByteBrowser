@@ -1,4 +1,6 @@
-type modifier = No_modifier | Ctrl
+type modifier =
+  | No_modifier
+  | Ctrl
 
 type key =
   | Up

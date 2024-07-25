@@ -1,35 +1,35 @@
 type t
 
-val make :
-  string list ->
-  ?cursor:string ->
-  ?style_selected:Spices.style ->
-  ?style_unselected:Spices.style ->
-  ?max_height:int ->
-  unit ->
-  t
 (** Create a new list component *)
+val make
+  :  string list
+  -> ?cursor:string
+  -> ?style_selected:Spices.style
+  -> ?style_unselected:Spices.style
+  -> ?max_height:int
+  -> unit
+  -> t
 
-val show_string_contains : t -> string -> t
 (** Only show elements that contain a given substring *)
+val show_string_contains : t -> string -> t
 
-val show_pred : t -> (int -> string -> bool) -> t
 (** Show elements matching a predicate *)
+val show_pred : t -> (int -> string -> bool) -> t
 
-val show_all : t -> t
 (** Clear filtering *)
+val show_all : t -> t
 
-val update : Minttea.Event.t -> t -> t
 (** Update the component based on events *)
+val update : Minttea.Event.t -> t -> t
 
-val view : t -> string
 (** Produce the view as a string *)
+val view : t -> string
 
-val get_selection : t -> string list
 (** Return the selected elements of the list *)
+val get_selection : t -> string list
 
-val append : t -> string list -> t
 (** Append more elements at the end of the list *)
+val append : t -> string list -> t
 
-val filter : t -> (int -> string -> bool) -> t
 (** Permanently remove elements not verifying the predicate *)
+val filter : t -> (int -> string -> bool) -> t

@@ -1,6 +1,8 @@
 open Riot
 
-type modifier = No_modifier | Ctrl
+type modifier =
+  | No_modifier
+  | Ctrl
 
 type key =
   | Up
@@ -24,6 +26,7 @@ let key_to_string key =
   | Backspace -> "<backspace>"
   | Enter -> "<enter>"
   | Key key -> key
+;;
 
 type t =
   | KeyDown of key * modifier
@@ -37,3 +40,4 @@ let pp fmt t =
   | Timer ref -> Format.fprintf fmt "Timer(%a)" Ref.pp ref
   | Frame delta -> Format.fprintf fmt "Frame(%a)" Ptime.pp delta
   | Custom _msg -> Format.fprintf fmt "Custom"
+;;

@@ -1,13 +1,13 @@
-(** {1 Riot}
-
-*)
+(** {1 Riot} *)
 
 module Timeout : sig
-  type t = [ `infinity | `after of int64 ]
+  type t =
+    [ `infinity
+    | `after of int64
+    ]
 end
 
 module Ref : sig
-  type 'a t
   (** A unique reference.
 
       A value of `'a t` won't be created twice (but can be shared/copied),
@@ -16,71 +16,65 @@ module Ref : sig
       Normally, you'd use a `'a Ref.t` to identify outgoing/incoming message
       pairs, but they can also be used for type-equalities. If two refs of type
       `'a Ref.t` and `'b Ref.t` are equal, then you can use `Ref.type_equal`
-      to obtain a type-level witness that proves that `'a` and `'b` are equal.
-  *)
+      to obtain a type-level witness that proves that `'a` and `'b` are equal. *)
+  type 'a t
 
-  val make : unit -> 'a t
   (** `make ()` creates a new unique ref. The type of the ref may be inferred
-      from context or explicitly set.
-  *)
+      from context or explicitly set. *)
+  val make : unit -> 'a t
 
   val pp : Format.formatter -> 'a t -> unit
 
-  val equal : 'a t -> 'b t -> bool
   (** `equal ref1 ref2` returns true if both references are the same,
       regardless of the type they hold.
 
       If the types are different, you may want to use `type_equal` instead to
-      prove type equality.
-  *)
+      prove type equality. *)
+  val equal : 'a t -> 'b t -> bool
 
-  val type_equal : 'a 'b. 'a t -> 'b t -> ('a, 'b) Type.eq option
   (** `type_equal refA refB` proves that `'a` and `'b` are equals if the
-      underlying refs are also equal.
-  *)
+      underlying refs are also equal. *)
+  val type_equal : 'a 'b. 'a t -> 'b t -> ('a, 'b) Type.eq option
 
-  val cast : 'a 'b. 'a t -> 'b t -> 'a -> 'b option
   (** [cast ref_a ref_b a] will return the value [a] with type of [ref_b] if we
-      can prove that the type equality between [ref_a] and [ref_b] holds. 
-   *)
+      can prove that the type equality between [ref_a] and [ref_b] holds. *)
+  val cast : 'a 'b. 'a t -> 'b t -> 'a -> 'b option
 end
 
 module Pid : sig
-  type t
   (** A process identifier. Use values of this type to check if processes are
       still alive, to send them messages, to link to them, to monitor them, and
       to send them exit signals. *)
+  type t
 
-  val zero : t
   (** [zero] is the empty pid. It represents the first process created by the
       runtime. This is typically the `main` function passed to `Riot.run` *)
+  val zero : t
 
-  val equal : t -> t -> bool
   (** `equal pid1 pid2` returns true if both pids are the same. *)
+  val equal : t -> t -> bool
 
   val pp : Format.formatter -> t -> unit
 end
 
 module Message : sig
-  type t = ..
   (** [t] is the type of all messages in a Riot program.
 
       Since this type is extensible, you can make sure different parts of your
-      program can see the constructors that are relevant for them.
-    *)
+      program can see the constructors that are relevant for them. *)
+  type t = ..
 
   type 'msg selector = t -> [ `select of 'msg | `skip ]
 end
 
 module Process : sig
-  type t
   (** [t] is the type of all processes in the Riot runtime.
 
       A process is a lightweight unit of work that has a lifecycle and a mailbox.
 
       You rarely work directly with this type, and usually handle {!type:Pid.t}
-      values instead.
-   *)
+      values instead. *)
+  type t
 
   val pp : Format.formatter -> t -> unit
 
@@ -91,81 +85,79 @@ module Process : sig
       executes timely as long as it executes at some point in the future.
 
       * High priority processes are scheduled and executed before everything
-        else. Use this with care or your other priorities may have to wait a
-        long time before they run.
+      else. Use this with care or your other priorities may have to wait a
+      long time before they run.
 
       * Normal priority processes are executed when there are no priority
-        processes ready to be executed.
+      processes ready to be executed.
 
       * Low priority processes are only executed when there are no High and no
-        Normal priority processes left.
-
-   *)
-  type priority = High | Normal | Low
+      Normal priority processes left. *)
+  type priority =
+    | High
+    | Normal
+    | Low
 
   (** A process flag is a configuration for the behavior of a process. *)
   type process_flag =
     | Trap_exit of bool
-        (** [Trap_exit true] makes sure this process does not exit when it
-            receives an Exit message (see {!module:Process.Messages}) from a
-            linked process that has died. *)
+    (** [Trap_exit true] makes sure this process does not exit when it
+        receives an Exit message (see {!module:Process.Messages}) from a
+        linked process that has died. *)
     | Priority of priority
-        (** Processes with a [High] priority will be scheduled before processes
-           with a [Normal] priority which will be scheduled before processes
-           with a [Low] priority. *)
+    (** Processes with a [High] priority will be scheduled before processes
+        with a [Normal] priority which will be scheduled before processes
+        with a [Low] priority. *)
 
   (* An [exit_reason] describes why a process finished. *)
   type exit_reason =
-    | Normal  (** The process ended normally. *)
-    | Exit_signal  (** The process received an exit signal *)
-    | Bad_link  (** The process tried to establish a bad link *)
+    | Normal (** The process ended normally. *)
+    | Exit_signal (** The process received an exit signal *)
+    | Bad_link (** The process tried to establish a bad link *)
     | Link_down of Pid.t
-        (** Use to indicate that this process was terminated due to a linked process being termianted *)
+    (** Use to indicate that this process was terminated due to a linked process being termianted *)
     | Exception of exn
-        (** The process terminated due to an unhandled exception *)
+    (** The process terminated due to an unhandled exception *)
 
   module Messages : sig
     type monitor =
       | Process_down of Pid.t
-          (** This monitor message reports that a monitored process has terminated. *)
+      (** This monitor message reports that a monitored process has terminated. *)
 
     type Message.t +=
-      | Monitor of monitor  (** Monitor related messages *)
+      | Monitor of monitor (** Monitor related messages *)
       | Exit of Pid.t * exit_reason
-            (** Exit signal. If you want this message make sure to set the
-                [Trap_exit] flag to true with the `process_flag` function. *)
+          (** Exit signal. If you want this message make sure to set the
+              [Trap_exit] flag to true with the `process_flag` function. *)
   end
 
-  val where_is : string -> Pid.t option
   (** [where_is name] returns the {Pid.t} that is registered to [name] or
       [None] if no process was registered for that name.
   *)
+  val where_is : string -> Pid.t option
 
-  val sid : t -> Riot_runtime.Core.Scheduler_uid.t
   (** [sid t] returns the scheduler id for the scheduler in charge of the
       process. *)
+  val sid : t -> Riot_runtime.Core.Scheduler_uid.t
 
-  val await_name : string -> Pid.t
   (** [await_name name] waits until [name] is registered to a pid.
 
-      NOTE: this function will block the process indefinitely.
-  *)
+      NOTE: this function will block the process indefinitely. *)
+  val await_name : string -> Pid.t
 
-  val monitor : Pid.t -> unit
   (** [monitor pid] makes [self ()] a monitor of [pid].
 
-    When [pid] terminates, [self ()] will receive a
-    [Processes.Messages.Monitor(Process_down(pid))] message.
-*)
+      When [pid] terminates, [self ()] will receive a
+      [Processes.Messages.Monitor(Process_down(pid))] message. *)
+  val monitor : Pid.t -> unit
 
   val demonitor : Pid.t -> unit
   (* [demonitor pid] removes the monitor from ourselves to [pid].
 
      This means that when [pid] dies, we will not receive a message.
 
-     If we call [demonitor pid] {i after} [pid] died and the message was queued,
-     we will receive the monitoring message.
-  *)
+     If we call [demonitor pid] {i after} [pid] died and the message was
+     queued, we will receive the monitoring message. *)
 
   val flag : process_flag -> unit
   val is_alive : Pid.t -> bool
@@ -175,98 +167,90 @@ end
     share the same lifecycle. For example, the `Riot.Logger` is an Application.
 
     Applications are also useful to orchestrate the order of startup, since
-    `Riot.start ~apps` will start them one by one.
-*)
+    `Riot.start ~apps` will start them one by one. *)
 module Application : sig
   module type Intf = sig
-    val start :
-      unit ->
-      ( Pid.t,
-        ([> `Application_error of string | `Supervisor_error ] as 'err) )
-      result
+    val start
+      :  unit
+      -> ( Pid.t
+           , ([> `Application_error of string | `Supervisor_error ] as 'err)
+           )
+           result
   end
 end
 
-val random : unit -> Random.State.t
 (** Returns the current random state from a scheduler. *)
+val random : unit -> Random.State.t
 
-val yield : unit -> unit
 (** Suspends execution of the current process and returns control to the scheduler *)
+val yield : unit -> unit
 
-val sleep : float -> unit
 (** [sleep t] Suspends execution of the current process for at least `t` seconds.
-    `t` is a float so it supports subsecond values: `0.001` is 1 millisecond.
-  *)
+    `t` is a float so it supports subsecond values: `0.001` is 1 millisecond. *)
+val sleep : float -> unit
 
-val self : unit -> Pid.t
 (** Returns the process identifier (pid) for the current process *)
+val self : unit -> Pid.t
 
 val process_flag : Process.process_flag -> unit
 
-val exit : Pid.t -> Process.exit_reason -> unit
 (** Sends an exit signal to the process [pid], to exit with reason [exit_reason] *)
+val exit : Pid.t -> Process.exit_reason -> unit
 
-val send : Pid.t -> Message.t -> unit
 (** Sends a message to process with this pid. *)
+val send : Pid.t -> Message.t -> unit
 
 exception Invalid_destination of string
 
-val send_by_name : name:string -> Message.t -> unit
 (** Sends a message to a process registered with [name]. If [name] is not a
     valid destination for a message, this function raises an
     [Invalid_destination name] exception. *)
+val send_by_name : name:string -> Message.t -> unit
 
-val spawn : (unit -> unit) -> Pid.t
 (** Spawns a new process. *)
+val spawn : (unit -> unit) -> Pid.t
 
-val spawn_pinned : (unit -> unit) -> Pid.t
 (** Spawns a new process using the current scheduler. *)
+val spawn_pinned : (unit -> unit) -> Pid.t
 
-val spawn_link : (unit -> unit) -> Pid.t
 (** Spawns a new process and links it to the current process before returning. *)
+val spawn_link : (unit -> unit) -> Pid.t
 
 exception Name_already_registered of string * Pid.t
 
-val register : string -> Pid.t -> unit
 (** [register name pid] registers a process by a given name. The name will be
     uniquely associated to this process and attempting to register the same
     name twice will result in an exception [Name_already_registered] being
     raised. *)
+val register : string -> Pid.t -> unit
 
-val unregister : string -> unit
 (** [unregister name] frees a name and allows it to be re-registered. If the
     name was not registered before, this operation does nothing. *)
+val unregister : string -> unit
 
 exception Link_no_process of Pid.t
 
-val link : Pid.t -> unit
 (** Links the current process and the process [pid] together. *)
+val link : Pid.t -> unit
 
-val monitor : Pid.t -> unit
 (** [monitor pid] makes [self ()] a monitor of [pid].
 
     When [pid] terminates, [self ()] will receive a
-    [Processes.Messages.Monitor(Process_down(pid))] message.
-*)
+    [Processes.Messages.Monitor(Process_down(pid))] message. *)
+val monitor : Pid.t -> unit
 
-val processes : unit -> (Pid.t * Process.t) Seq.t
 (** `processes ()` will list all the processes currently alive. *)
+val processes : unit -> (Pid.t * Process.t) Seq.t
 
-val is_process_alive : Pid.t -> bool
 (** Returns true if the process [pid] is still alive. *)
+val is_process_alive : Pid.t -> bool
 
-val wait_pids : Pid.t list -> unit
 (** Await all processes in the list to termimante. *)
+val wait_pids : Pid.t list -> unit
 
 exception Receive_timeout
 exception Syscall_timeout
 
-val receive :
-  selector:(Message.t -> [ `select of 'msg | `skip ]) ->
-  ?after:int64 ->
-  ?ref:unit Ref.t ->
-  unit ->
-  'msg
 (** [receive ()] will return the first message in the process mailbox.
 
     This function will suspend a process that has an empty mailbox, and the
@@ -292,65 +276,68 @@ val receive :
 
     This is useful to skip the queue, but not remove any of the messages before
     it. Those messages will be delivered in-order in future calls to `receive
-    ()`.
-*)
+    ()`. *)
+val receive
+  :  selector:(Message.t -> [ `select of 'msg | `skip ])
+  -> ?after:int64
+  -> ?ref:unit Ref.t
+  -> unit
+  -> 'msg
 
-val receive_any : ?after:int64 -> ?ref:unit Ref.t -> unit -> Message.t
 (** [receive_any ()] behaves like [receive] but does not require a [selector] and instead will return any message in the mailbox. *)
+val receive_any : ?after:int64 -> ?ref:unit Ref.t -> unit -> Message.t
 
-val shutdown : ?status:int -> unit -> unit
 (** Gracefully shuts down the runtime. Any non-yielding process will block this. *)
+val shutdown : ?status:int -> unit -> unit
 
-val run : ?rnd:Random.State.t -> ?workers:int -> (unit -> unit) -> unit
 (** Start the Riot runtime using function [main] to boot the system *)
+val run : ?rnd:Random.State.t -> ?workers:int -> (unit -> unit) -> unit
 
 val on_error : [ `Msg of string ] -> int
 
-val run_with_status :
-  ?rnd:Random.State.t ->
-  ?workers:int ->
-  on_error:('error -> int) ->
-  (unit -> (int, 'error) result) ->
-  unit
 (** [run_with_status ~on_error main] starts the Riot runtime using function
     [main] to boot the system and handling errors with [on_error].
 
     [main] should return a result of either an exit code or an error.
-    [on_error] should handle an error code appropriately, then return a status code.
-*)
+    [on_error] should handle an error code appropriately, then return a status code. *)
+val run_with_status
+  :  ?rnd:Random.State.t
+  -> ?workers:int
+  -> on_error:('error -> int)
+  -> (unit -> (int, 'error) result)
+  -> unit
 
-val start :
-  ?rnd:Random.State.t ->
-  ?workers:int ->
-  apps:(module Application.Intf) list ->
-  unit ->
-  unit
 (** Start the Riot runtime with a series of applications.
 
     Each application will be started in the same order as specified, and
     if any application fails to start up, the system will be shutdown.
 
     Once the applications are started, they will all be monitored until they
-    are all terminated. Only then will the runtime shutdown.
-*)
+    are all terminated. Only then will the runtime shutdown. *)
+val start
+  :  ?rnd:Random.State.t
+  -> ?workers:int
+  -> apps:(module Application.Intf) list
+  -> unit
+  -> unit
 
 (* Generic Servers *)
 
 module Gen_server : sig
-  type 'res req = ..
   (** [req] is the type of all generic server requests and responses.
 
       When defining a new generic server you want to extend this with the your
       custom request types, including the response type in its type variable.
-      Like this: 
+      Like this:
 
       {@ocaml[
-      open Riot
-      type _ Gen_server.req +=
-        | Is_connected : bool Gen_server.req
-        | Profile : profile_req -> profile_res Gen_server.req
-      ]}
-    *)
+        open Riot
+
+        type _ Gen_server.req +=
+          | Is_connected : bool Gen_server.req
+          | Profile : profile_req -> profile_res Gen_server.req
+      ]} *)
+  type 'res req = ..
 
   type cast_req = ..
   type cont_req = ..
@@ -358,10 +345,10 @@ module Gen_server : sig
   (** [state init_result] is used to initialize a new generic server. *)
   type 'state init_result =
     | Ok of 'state
-        (** use this value to enter the main loop with state ['state] *)
+    (** use this value to enter the main loop with state ['state] *)
     | Error
-        (** use this value to crash the process and notify a supervisor of it *)
-    | Ignore  (** use this value to exit the process normally *)
+    (** use this value to crash the process and notify a supervisor of it *)
+    | Ignore (** use this value to exit the process normally *)
 
   type ('res, 'state) call_result =
     | Reply of ('res * 'state)
@@ -373,25 +360,26 @@ module Gen_server : sig
       can use this type when defining new gen servers like this:
 
       {@ocaml[
-      type args = int
-      module Server : Gen_server.Impl with type args = args = struct
-        type nonrec args = args
-        type state = { status : int }
+        type args = int
 
-        let init _args = Gen_server.Ok { status = 1 }
+        module Server : Gen_server.Impl with type args = args = struct
+          type nonrec args = args
+          type state = { status : int }
 
-        (* ... *)
-      end
-      ]}
-  *)
+          let init _args = Gen_server.Ok { status = 1 }
+
+          (* ... *)
+        end
+      ]} *)
   module type Impl = sig
     type args
     type state
 
     val init : args -> state init_result
 
-    val handle_call :
-      'res. 'res req -> Pid.t -> state -> ('res, state) call_result
+    val handle_call
+      : 'res.
+      'res req -> Pid.t -> state -> ('res, state) call_result
 
     val handle_cast : cast_req -> state -> state cast_result
     val handle_continue : cont_req -> state -> state
@@ -401,26 +389,25 @@ module Gen_server : sig
   type ('args, 'state) impl =
     (module Impl with type args = 'args and type state = 'state)
 
-  val call : Pid.t -> 'res req -> 'res
   (** [call pid req] will send a type-safe request [req] to the generic server behind [pid]
       that is guaranteed to return a respone with type `'res`
 
       This function will block the current process until a response arrives.
 
-      TODO(leostera): add ?timeout param
-    *)
+      TODO(leostera): add ?timeout param *)
+  val call : Pid.t -> 'res req -> 'res
 
-  val cast : Pid.t -> cast_req -> unit
   (** [cast pid req] will send a type-safe request [req] to the generic server behind [pid]
-      and does not wait for a response.
-    *)
+      and does not wait for a response. *)
+  val cast : Pid.t -> cast_req -> unit
 
-  val start_link :
-    ('args, 'state) impl -> 'args -> (Pid.t, [> `Exn of exn ]) result
   (** [start_link (module S) args] will spawn and link a new process that will
       act as a generic server over the server implementation of [S],
-      initialized with [args] arguments.
-  *)
+      initialized with [args] arguments. *)
+  val start_link
+    :  ('args, 'state) impl
+    -> 'args
+    -> (Pid.t, [> `Exn of exn ]) result
 end
 
 (* Supervisor *)
@@ -428,48 +415,55 @@ end
 module Supervisor : sig
   type strategy =
     | One_for_one
-        (** If one child process terminates and is to be restarted, only that
-            child process is affected. This is the default restart strategy.*)
+    (** If one child process terminates and is to be restarted, only that
+        child process is affected. This is the default restart strategy.*)
     | One_for_all
-        (** If one child process terminates and is to be restarted, all other
-            child processes are terminated and then all child processes are
-            restarted. *)
+    (** If one child process terminates and is to be restarted, all other
+        child processes are terminated and then all child processes are
+        restarted. *)
     | Rest_for_one
-        (**  If one child process terminates and is to be restarted, the 'rest'
-             of the child processes (that is, the child processes after the
-             terminated child process in the start order) are terminated. Then
-             the terminated child process and all child processes after it are
-             restarted. *)
+    (**  If one child process terminates and is to be restarted, the 'rest'
+         of the child processes (that is, the child processes after the
+         terminated child process in the start order) are terminated. Then
+         the terminated child process and all child processes after it are
+         restarted. *)
     | Simple_one_for_one
-        (** A simplified one_for_one supervisor, where all child processes are
-            dynamically added instances of the same process type, that is,
-            running the same code. *)
+    (** A simplified one_for_one supervisor, where all child processes are
+        dynamically added instances of the same process type, that is,
+        running the same code. *)
 
   type child_spec
   (* The type of a child specification *)
 
-  val child_spec :
-    ('state -> (Pid.t, [> `Exit of exn ]) result) -> 'state -> child_spec
   (** Create a new child specification to be used with [start_link] *)
+  val child_spec
+    :  ('state -> (Pid.t, [> `Exit of exn ]) result)
+    -> 'state
+    -> child_spec
 
   val start_child : child_spec -> Pid.t
 
-  val start_link :
-    ?strategy:strategy ->
-    ?restart_limit:int ->
-    ?restart_period:int ->
-    child_specs:child_spec list ->
-    unit ->
-    (Pid.t, [> `Supervisor_error ]) result
   (** Describe and start a supervisor *)
+  val start_link
+    :  ?strategy:strategy
+    -> ?restart_limit:int
+    -> ?restart_period:int
+    -> child_specs:child_spec list
+    -> unit
+    -> (Pid.t, [> `Supervisor_error ]) result
 end
 
 module Dynamic_supervisor : sig
-  val child_spec :
-    ?max_children:int -> name:string -> unit -> Supervisor.child_spec
+  val child_spec
+    :  ?max_children:int
+    -> name:string
+    -> unit
+    -> Supervisor.child_spec
 
-  val start_child :
-    Pid.t -> Supervisor.child_spec -> (Pid.t, [> `Max_children ]) result
+  val start_child
+    :  Pid.t
+    -> Supervisor.child_spec
+    -> (Pid.t, [> `Max_children ]) result
 end
 
 (* Telemetry *)
@@ -486,7 +480,12 @@ end
 (* Logger *)
 
 module Logger : sig
-  type level = Debug | Error | Info | Trace | Warn
+  type level =
+    | Debug
+    | Error
+    | Info
+    | Trace
+    | Warn
 
   type ('a, 'b) logger_format =
     (('a, Format.formatter, unit, 'b) format4 -> 'a) -> 'b
@@ -502,7 +501,12 @@ module Logger : sig
 
   include Application.Intf
 
-  type opts = { print_source : bool; print_time : bool; color_output : bool }
+  type opts =
+    { print_source : bool
+    ; print_time : bool
+    ; color_output : bool
+    }
+
   type namespace = string list
 
   module type Namespace = sig
@@ -534,14 +538,20 @@ module IO : sig
     | `Closed
     | `Process_down
     | `Timeout
-    | `Would_block ]
+    | `Would_block
+    ]
 
   type ('ok, 'err) io_result = ('ok, ([> io_error ] as 'err)) Stdlib.result
 
   val pp_err : Format.formatter -> [< io_error ] -> unit
 
   module Iovec : sig
-    type iov = { ba : bytes; off : int; len : int }
+    type iov =
+      { ba : bytes
+      ; off : int
+      ; len : int
+      }
+
     type t = iov array
 
     val with_capacity : int -> t
@@ -562,8 +572,10 @@ module IO : sig
 
     val write : t -> buf:string -> (int, [> `Closed ]) io_result
 
-    val write_owned_vectored :
-      t -> bufs:Iovec.t -> (int, [> `Closed ]) io_result
+    val write_owned_vectored
+      :  t
+      -> bufs:Iovec.t
+      -> (int, [> `Closed ]) io_result
 
     val flush : t -> (unit, [> `Closed ]) io_result
   end
@@ -590,18 +602,30 @@ module IO : sig
     val empty : unit t
   end
 
-  val read :
-    'a Reader.t -> ?timeout:int64 -> bytes -> (int, [> `Closed ]) io_result
+  val read
+    :  'a Reader.t
+    -> ?timeout:int64
+    -> bytes
+    -> (int, [> `Closed ]) io_result
 
   val read_vectored : 'a Reader.t -> Iovec.t -> (int, [> `Closed ]) io_result
-  val read_to_end : 'a Reader.t -> buf:Buffer.t -> (int, [> `Closed ]) io_result
+
+  val read_to_end
+    :  'a Reader.t
+    -> buf:Buffer.t
+    -> (int, [> `Closed ]) io_result
+
   val write_all : 'a Writer.t -> buf:string -> (unit, [> `Closed ]) io_result
 
-  val write_owned_vectored :
-    'a Writer.t -> bufs:Iovec.t -> (int, [> `Closed ]) io_result
+  val write_owned_vectored
+    :  'a Writer.t
+    -> bufs:Iovec.t
+    -> (int, [> `Closed ]) io_result
 
-  val write_all_vectored :
-    'a Writer.t -> bufs:Iovec.t -> (unit, [> `Closed ]) io_result
+  val write_all_vectored
+    :  'a Writer.t
+    -> bufs:Iovec.t
+    -> (unit, [> `Closed ]) io_result
 
   val flush : 'a Writer.t -> (unit, [> `Closed ]) io_result
 
@@ -692,30 +716,50 @@ module Net : sig
   module Tcp_stream : sig
     type t = Socket.stream_socket
 
-    val connect :
-      ?timeout:int64 -> Addr.stream_addr -> (t, [> `Noop ]) IO.io_result
+    val connect
+      :  ?timeout:int64
+      -> Addr.stream_addr
+      -> (t, [> `Noop ]) IO.io_result
 
     val close : t -> unit
     val pp : Format.formatter -> t -> unit
 
-    val read :
-      t -> ?pos:int -> ?len:int -> bytes -> (int, [> `Noop ]) IO.io_result
+    val read
+      :  t
+      -> ?pos:int
+      -> ?len:int
+      -> bytes
+      -> (int, [> `Noop ]) IO.io_result
 
     val read_vectored : t -> IO.Iovec.t -> (int, [> `Noop ]) IO.io_result
 
-    val sendfile :
-      t -> file:Fd.t -> off:int -> len:int -> (int, [> `Noop ]) IO.io_result
+    val sendfile
+      :  t
+      -> file:Fd.t
+      -> off:int
+      -> len:int
+      -> (int, [> `Noop ]) IO.io_result
 
-    val write :
-      t -> ?pos:int -> ?len:int -> bytes -> (int, [> `Noop ]) IO.io_result
+    val write
+      :  t
+      -> ?pos:int
+      -> ?len:int
+      -> bytes
+      -> (int, [> `Noop ]) IO.io_result
 
     val write_vectored : t -> IO.Iovec.t -> (int, [> `Noop ]) IO.io_result
 
-    val receive :
-      ?timeout:int64 -> bufs:IO.Iovec.t -> t -> (int, [> `Noop ]) IO.io_result
+    val receive
+      :  ?timeout:int64
+      -> bufs:IO.Iovec.t
+      -> t
+      -> (int, [> `Noop ]) IO.io_result
 
-    val send :
-      ?timeout:int64 -> bufs:IO.Iovec.t -> t -> (int, [> `Noop ]) IO.io_result
+    val send
+      :  ?timeout:int64
+      -> bufs:IO.Iovec.t
+      -> t
+      -> (int, [> `Noop ]) IO.io_result
 
     val to_reader : ?timeout:int64 -> t -> t IO.Reader.t
     val to_writer : ?timeout:int64 -> t -> t IO.Writer.t
@@ -724,22 +768,25 @@ module Net : sig
   module Tcp_listener : sig
     type t = Socket.listen_socket
 
-    type listen_opts = {
-      reuse_addr : bool;
-      reuse_port : bool;
-      backlog : int;
-      addr : Addr.tcp_addr;
-    }
+    type listen_opts =
+      { reuse_addr : bool
+      ; reuse_port : bool
+      ; backlog : int
+      ; addr : Addr.tcp_addr
+      }
 
     val default_listen_opts : listen_opts
 
-    val accept :
-      ?timeout:int64 ->
-      t ->
-      (Tcp_stream.t * Addr.stream_addr, [> `Noop ]) IO.io_result
+    val accept
+      :  ?timeout:int64
+      -> t
+      -> (Tcp_stream.t * Addr.stream_addr, [> `Noop ]) IO.io_result
 
-    val bind :
-      ?opts:listen_opts -> port:int -> unit -> (t, [> `Noop ]) IO.io_result
+    val bind
+      :  ?opts:listen_opts
+      -> port:int
+      -> unit
+      -> (t, [> `Noop ]) IO.io_result
 
     val close : t -> unit
     val pp : Format.formatter -> t -> unit
@@ -752,51 +799,60 @@ module SSL : sig
   exception Tls_alert of Tls.Packet.alert_type
   exception Tls_failure of Tls.Engine.failure
 
-  val of_server_socket :
-    ?read_timeout:int64 ->
-    ?send_timeout:int64 ->
-    ?config:Tls.Config.server ->
-    Net.Socket.stream_socket ->
-    Net.Socket.stream_socket t
+  val of_server_socket
+    :  ?read_timeout:int64
+    -> ?send_timeout:int64
+    -> ?config:Tls.Config.server
+    -> Net.Socket.stream_socket
+    -> Net.Socket.stream_socket t
 
-  val of_client_socket :
-    ?read_timeout:int64 ->
-    ?send_timeout:int64 ->
-    ?host:[ `host ] Domain_name.t ->
-    config:Tls.Config.client ->
-    Net.Socket.stream_socket ->
-    Net.Socket.stream_socket t
+  val of_client_socket
+    :  ?read_timeout:int64
+    -> ?send_timeout:int64
+    -> ?host:[ `host ] Domain_name.t
+    -> config:Tls.Config.client
+    -> Net.Socket.stream_socket
+    -> Net.Socket.stream_socket t
 
   val to_reader : 'src t -> 'src t IO.Reader.t
   val to_writer : 'dst t -> 'dst t IO.Writer.t
 
-  val negotiated_protocol :
-    'src t ->
-    (string option, [> `Inactive_tls_engine | `No_session_data ]) result
+  val negotiated_protocol
+    :  'src t
+    -> (string option, [> `Inactive_tls_engine | `No_session_data ]) result
 end
 
 module Timer : sig
   type timer
 
-  val send_after :
-    Pid.t -> Message.t -> after:int64 -> (timer, [> `Timer_error ]) result
+  val send_after
+    :  Pid.t
+    -> Message.t
+    -> after:int64
+    -> (timer, [> `Timer_error ]) result
 
-  val send_interval :
-    Pid.t -> Message.t -> every:int64 -> (timer, [> `Timer_error ]) result
+  val send_interval
+    :  Pid.t
+    -> Message.t
+    -> every:int64
+    -> (timer, [> `Timer_error ]) result
 
   val cancel : timer -> unit
 end
 
 module Bytestring : sig
-  type t
   (** an immutable efficient binary string *)
+  type t
 
-  type view = { offset : int; length : int; data : string }
   (** A valid sub-range with an associated string.
 
       When used inside representations, it should always be a, non-empty, and a
-      strict sub-range of the associated string.
-   *)
+      strict sub-range of the associated string. *)
+  type view =
+    { offset : int
+    ; length : int
+    ; data : string
+    }
 
   val empty : t
   val is_empty : t -> bool
@@ -857,8 +913,10 @@ module Bytestring : sig
 
   val to_transient : t -> Transient.t
 
-  val with_bytes :
-    ?capacity:int -> (bytes -> (int, 'error) result) -> (t, 'error) result
+  val with_bytes
+    :  ?capacity:int
+    -> (bytes -> (int, 'error) result)
+    -> (t, 'error) result
 end
 
 module Queue : sig
@@ -893,8 +951,11 @@ module Hashmap : sig
   val replace : ('k, 'v) t -> 'k -> 'v -> unit
   val iter : ('k, 'v) t -> ('k * 'v -> unit) -> unit
 
-  val pp :
-    (Format.formatter -> 'k -> unit) -> Format.formatter -> ('k, 'v) t -> unit
+  val pp
+    :  (Format.formatter -> 'k -> unit)
+    -> Format.formatter
+    -> ('k, 'v) t
+    -> unit
 
   module type Base = sig
     type key
@@ -922,8 +983,11 @@ module Hashmap : sig
     val replace : 'v t -> key -> 'v -> unit
     val iter : 'v t -> (key * 'v -> unit) -> unit
 
-    val pp :
-      (Format.formatter -> key -> unit) -> Format.formatter -> 'v t -> unit
+    val pp
+      :  (Format.formatter -> key -> unit)
+      -> Format.formatter
+      -> 'v t
+      -> unit
   end
 
   module Make (B : Base) : Intf with type key = B.key
@@ -935,10 +999,16 @@ module Stream : sig
   val next : 'v t -> ('v * 'v t) option
   val unfold : ('src -> ('v * 'src) option) -> 'src -> 'v t
 
-  type 'acc control_flow = [ `continue of 'acc | `halt of 'acc ]
+  type 'acc control_flow =
+    [ `continue of 'acc
+    | `halt of 'acc
+    ]
 
-  val reduce_while :
-    'acc -> ('item -> 'acc -> 'acc control_flow) -> 'item t -> 'acc
+  val reduce_while
+    :  'acc
+    -> ('item -> 'acc -> 'acc control_flow)
+    -> 'item t
+    -> 'acc
 end
 
 module Task : sig
@@ -946,8 +1016,10 @@ module Task : sig
 
   val async : (unit -> 'a) -> 'a t
 
-  val await :
-    ?timeout:int64 -> 'a t -> ('a, [> `Process_down | `Timeout ]) result
+  val await
+    :  ?timeout:int64
+    -> 'a t
+    -> ('a, [> `Process_down | `Timeout ]) result
 end
 
 module Store : sig
@@ -966,7 +1038,8 @@ module Store : sig
     val child_spec : Supervisor.child_spec
   end
 
-  module Make (B : Base) : Intf with type key = B.key and type value = B.value
+  module Make (B : Base) :
+    Intf with type key = B.key and type value = B.value
 end
 
 module Crypto : sig

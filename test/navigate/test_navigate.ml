@@ -27,6 +27,7 @@ let%expect_test "navigate-left" =
     ; origin = "/home"
     ; parent = "/home"
     ; cursor = 0
+    ; path_to_preview = ""
     }
   in
   let new_model = Navigate.State.get_updated_model_for_left model in
@@ -80,6 +81,7 @@ let%expect_test "navigate-right" =
     ; origin = "/home"
     ; parent = "/home"
     ; cursor = 0
+    ; path_to_preview = ""
     }
   in
   let new_model = Navigate.State.get_updated_model_for_right model in
@@ -159,6 +161,7 @@ let%expect_test "navigate-up" =
     ; origin = "/home"
     ; parent = "/home"
     ; cursor = 1
+    ; path_to_preview = ""
     }
   in
   let new_model = Navigate.State.get_updated_model_for_up model in
@@ -225,6 +228,7 @@ let%expect_test "navigate-down" =
     ; origin = "/home"
     ; parent = "/home"
     ; cursor = 0
+    ; path_to_preview = ""
     }
   in
   let new_model = Navigate.State.get_updated_model_for_down model in
@@ -239,7 +243,8 @@ let%expect_test "navigate-down" =
        newer_model.choices.matrix
        ~current_directory:"/home"
        ~path_to_be_underlined:newer_model.current_path);
-  [%expect {|
+  [%expect
+    {|
     .
     [0m[0m|__ 📁[;0;36mhome
     [0m  [0m|__ 📁[;0;4;36mhome_dir1

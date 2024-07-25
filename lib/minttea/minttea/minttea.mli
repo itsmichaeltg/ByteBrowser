@@ -1,7 +1,9 @@
 open Riot
 
 module Event : sig
-  type modifier = No_modifier | Ctrl
+  type modifier =
+    | No_modifier
+    | Ctrl
 
   type key =
     | Up
@@ -39,12 +41,12 @@ module App : sig
   type 'model t
 end
 
-val app :
-  init:('model -> Command.t) ->
-  update:(Event.t -> 'model -> 'model * Command.t) ->
-  view:('model -> string) ->
-  unit ->
-  'model App.t
+val app
+  :  init:('model -> Command.t)
+  -> update:(Event.t -> 'model -> 'model * Command.t)
+  -> view:('model -> string)
+  -> unit
+  -> 'model App.t
 
 val run : ?fps:int -> initial_model:'model -> 'model App.t -> unit
 val start : 'model App.t -> initial_model:'model -> unit

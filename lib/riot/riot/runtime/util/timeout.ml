@@ -1,1 +1,4 @@
-type t = [ `infinity | `after of int64 ]
+type t =
+  [ `infinity
+  | `after of int64
+  ]

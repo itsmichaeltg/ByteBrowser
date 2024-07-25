@@ -1,4 +1,9 @@
-type level = Debug | Error | Info | Trace | Warn
+type level =
+  | Debug
+  | Error
+  | Info
+  | Trace
+  | Warn
 
 val set_log_level : level option -> unit
 

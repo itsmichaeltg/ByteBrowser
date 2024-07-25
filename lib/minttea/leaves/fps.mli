@@ -1,4 +1,3 @@
-type t
 (** An {Fps.t} is a little utility you can use to let the frame-rate guide some
     behavior.
 
@@ -10,17 +9,17 @@ type t
     the current time. This lets the internal clock update itself and signal
     whether a frame or more has passed, or if there is no need to act yet.
 *)
+type t
 
-val of_int : int -> t
 (** [of_int n] creates an {Fps.t} that will sync to [n] frames per second. *)
+val of_int : int -> t
 
-val of_float : float -> t
 (** [of_float f] creates an {Fps.t} that will sync to [f] frames per second.
 
     Float values will be rounded down.
 *)
+val of_float : float -> t
 
-val tick : ?now:Ptime.t -> t -> [ `frame | `skip ]
 (** [tick t] updates the internal Fps clock in [t] and returns whether we are now in
     a new frame ([`frame]) or if we should skip the current action ([`skip]).
 
@@ -28,9 +27,10 @@ val tick : ?now:Ptime.t -> t -> [ `frame | `skip ]
     do some work:
 
     {@ocaml[
-      if Fps.tick ?now m.fps = `frame then
+      if Fps.tick ?now m.fps = `frame
+      then (
         let current_frame = advance_frame m in
-        { m with current_frame }
+        { m with current_frame })
       else m
-    ]}
-*)
+    ]} *)
+val tick : ?now:Ptime.t -> t -> [ `frame | `skip ]

@@ -1,7 +1,11 @@
 open Gluon
 open Global
 
-type 'kind file = { fd : Fd.t; path : string }
+type 'kind file =
+  { fd : Fd.t
+  ; path : string
+  }
+
 type read_file = [ `r ] file
 type write_file = [ `w ] file
 type rw_file = [ `w | `r ] file
@@ -12,6 +16,7 @@ let base_permissions = 0o640
 let do_open path flags =
   let raw_fd = Unix.openfile path flags base_permissions in
   { fd = Fd.make raw_fd; path }
+;;
 
 let open_read path = do_open path Unix.[ O_RDONLY ]
 let open_write path = do_open path Unix.[ O_WRONLY; O_CREAT ]
@@ -24,6 +29,7 @@ let exists path =
   match Unix.stat path with
   | exception Unix.Unix_error (Unix.ENOENT, _, _) -> false
   | (exception _) | _ -> true
+;;
 
 module Read = struct
   type t = read_file
@@ -32,17 +38,19 @@ module Read = struct
     match File.read t.fd buf ~pos:0 ~len:(Rio.Bytes.length buf) with
     | Ok n -> Ok n
     | Error `Would_block ->
-        syscall ?timeout "File.read" Interest.readable (File.to_source t.fd)
-        @@ fun _ -> read t ?timeout buf
+      syscall ?timeout "File.read" Interest.readable (File.to_source t.fd)
+      @@ fun _ -> read t ?timeout buf
     | Error err -> Error err
+  ;;
 
   let rec read_vectored t bufs =
     match File.read_vectored t.fd bufs with
     | Ok n -> Ok n
     | Error `Would_block ->
-        syscall "File.read_vectored" Interest.readable (File.to_source t.fd)
-        @@ fun _ -> read_vectored t bufs
+      syscall "File.read_vectored" Interest.readable (File.to_source t.fd)
+      @@ fun _ -> read_vectored t bufs
     | Error err -> Error err
+  ;;
 end
 
 let to_reader t = Rio.Reader.of_read_src (module Read) t
@@ -56,13 +64,15 @@ module Write = struct
     match File.write_vectored t.fd bufs with
     | Ok n -> Ok n
     | Error `Would_block ->
-        syscall "File.write_vectored" Interest.writable (File.to_source t.fd)
-        @@ fun _ -> write_owned_vectored t ~bufs
+      syscall "File.write_vectored" Interest.writable (File.to_source t.fd)
+      @@ fun _ -> write_owned_vectored t ~bufs
     | Error err -> Error err
+  ;;
 
   let write t ~buf =
     let bufs = Rio.Iovec.from_string buf in
     write_owned_vectored t ~bufs
+  ;;
 
   let flush _t = Ok ()
 end

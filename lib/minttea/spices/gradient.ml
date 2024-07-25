@@ -7,6 +7,7 @@ let to_rgb c =
   | Tty.Color.RGB (r, g, b) -> `rgb (r, g, b)
   | ANSI i | ANSI256 i -> Colors.ANSI.to_rgb (`ansi i)
   | No_color -> raise (Invalid_gradient_color c)
+;;
 
 let make ~start ~finish ~steps : color array =
   let colors = Array.make steps start in
@@ -20,3 +21,4 @@ let make ~start ~finish ~steps : color array =
     colors.(i) <- Tty.Color.of_rgb (r, g, b)
   done;
   colors
+;;

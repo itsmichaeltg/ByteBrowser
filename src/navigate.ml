@@ -9,6 +9,7 @@ module State = struct
     ; origin : string
     ; parent : string
     ; cursor : int
+    ; path_to_preview : string
     }
   [@@deriving sexp_of]
 
@@ -34,6 +35,12 @@ module State = struct
 
   let is_directory (tree : (string, string list) Hashtbl.t) (value : string) =
     Hashtbl.mem tree value
+  ;;
+
+  let get_updated_model_for_preview t =
+    match t.path_to_preview with
+    | "" -> { t with path_to_preview = t.current_path }
+    | _ -> { t with path_to_preview = "" }
   ;;
 
   let remove_last_path current_path =
@@ -111,17 +118,25 @@ let update event (model : State.t) =
   | Event.KeyDown (Enter, _modifier) ->
     change_dir model.current_path;
     model, Command.Quit
+  | Event.KeyDown (Key "p", _modifier) ->
+    State.get_updated_model_for_preview model, Command.Noop
   | _ -> model, Minttea.Command.Noop
 ;;
 
 let get_view (model : State.t) ~origin =
-  let options =
-    Visualize_helper.visualize
-      model.choices.matrix
-      ~current_directory:origin
-      ~path_to_be_underlined:model.current_path
-  in
-  "\x1b[0mPress ^C to quit\n" ^ Format.sprintf {|%s|} options
+  match String.length model.path_to_preview > 0 with
+  | true ->
+    (match State.is_directory model.choices.matrix model.path_to_preview with
+    | true -> ""
+    | false -> Preview.preview model.path_to_preview ~num_lines:5)
+  | false ->
+    let options =
+      Visualize_helper.visualize
+        model.choices.matrix
+        ~current_directory:origin
+        ~path_to_be_underlined:model.current_path
+    in
+    "\x1b[0mPress ^C to quit\n" ^ Format.sprintf {|%s|} options
 ;;
 
 let get_initial_state ~origin ~max_depth : State.t =
@@ -132,6 +147,7 @@ let get_initial_state ~origin ~max_depth : State.t =
   ; origin
   ; parent = State.remove_last_path origin
   ; cursor = 0
+  ; path_to_preview = ""
   }
 ;;
 
@@ -141,8 +157,19 @@ let init _model =
 ;;
 
 let navigate ~max_depth ~origin =
-  let app = Minttea.app ~init ~update ~view:(get_view ~origin:"/home/ubuntu/jsip-final-project") () in
-  Minttea.start app ~initial_model:(get_initial_state ~origin:"/home/ubuntu/jsip-final-project" ~max_depth:100)
+  let app =
+    Minttea.app
+      ~init
+      ~update
+      ~view:(get_view ~origin)
+      ()
+  in
+  Minttea.start
+    app
+    ~initial_model:
+      (get_initial_state
+         ~origin
+         ~max_depth:100)
 ;;
 
 let pwd_navigate_command =

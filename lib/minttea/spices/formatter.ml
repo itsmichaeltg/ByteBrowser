@@ -25,13 +25,22 @@ let to_string fmt =
   | Cross_out -> Escape_seq.cross_out_seq
   | Overline -> Escape_seq.overline_seq
   | Foreground color ->
-      Escape_seq.foreground_seq ^ ";" ^ Color.to_escape_seq ~mode:`fg color
+    Escape_seq.foreground_seq ^ ";" ^ Color.to_escape_seq ~mode:`fg color
   | Background color ->
-      Escape_seq.background_seq ^ ";" ^ Color.to_escape_seq ~mode:`bg color
+    Escape_seq.background_seq ^ ";" ^ Color.to_escape_seq ~mode:`bg color
+;;
 
 let format fmt seqs line =
   let seqs = List.map to_string seqs |> String.concat ";" in
-  if seqs = "" then Format.fprintf fmt "%s" line
+  if seqs = ""
+  then Format.fprintf fmt "%s" line
   else
-    Format.fprintf fmt "%s%sm%s%s%sm" Escape_seq.csi seqs line Escape_seq.csi
+    Format.fprintf
+      fmt
+      "%s%sm%s%s%sm"
+      Escape_seq.csi
+      seqs
+      line
+      Escape_seq.csi
       Escape_seq.reset_seq
+;;
