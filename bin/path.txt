@@ -1,1 +1,1 @@
-/home/ubuntu/jsip-final-project/test_dir/
+/home/ubuntu/

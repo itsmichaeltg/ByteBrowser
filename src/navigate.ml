@@ -1,5 +1,7 @@
 open! Core
 
+let write_path = "/home/ubuntu/jsip-final-project/bin/path.txt"
+
 module State = struct
   type t =
     { choices : Visualize.Adjacency_matrix.t
@@ -75,6 +77,14 @@ module State = struct
   let get_updated_model_for_down t = handle_up_and_down t ~dir:DOWN
 end
 
+let change_dir data = Out_channel.write_all write_path ~data
+
+let%expect_test "write_to_path.txt" =
+  change_dir "Hello World!";
+  print_endline (In_channel.read_all write_path);
+  [%expect {|Hello World!|}]
+;;
+
 let update event (model : State.t) =
   let open Minttea in
   match event with
@@ -91,7 +101,7 @@ let update event (model : State.t) =
   | Event.KeyDown (Down, _modifier) ->
     State.get_updated_model_for_down model, Command.Noop
   | Event.KeyDown (Enter, _modifier) ->
-    Sys_unix.chdir model.current_path;
+    change_dir model.current_path;
     model, Command.Quit
   | _ -> model, Command.Noop
 ;;
