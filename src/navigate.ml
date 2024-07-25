@@ -19,11 +19,17 @@ module State = struct
   let get_idx_by_dir t ~dir =
     match dir with
     | UP ->
-      (t.cursor - 1)
-      % (Hashtbl.find_exn t.choices.matrix t.parent |> List.length)
+      (try
+         (t.cursor - 1)
+         % (Hashtbl.find_exn t.choices.matrix t.parent |> List.length)
+       with
+       | _ -> 0)
     | DOWN ->
-      (t.cursor + 1)
-      % (Hashtbl.find_exn t.choices.matrix t.parent |> List.length)
+      (try
+         (t.cursor + 1)
+         % (Hashtbl.find_exn t.choices.matrix t.parent |> List.length)
+       with
+       | _ -> 0)
   ;;
 
   let is_directory (tree : (string, string list) Hashtbl.t) (value : string) =
@@ -42,7 +48,10 @@ module State = struct
   let handle_up_and_down t ~dir =
     let cursor = get_idx_by_dir t ~dir in
     let current_path =
-      List.nth_exn (Hashtbl.find_exn t.choices.matrix t.parent) cursor
+      try
+        List.nth_exn (Hashtbl.find_exn t.choices.matrix t.parent) cursor
+      with
+      | _ -> t.current_path
     in
     let tmp_model = { t with cursor } in
     { tmp_model with current_path }
@@ -53,21 +62,24 @@ module State = struct
       try Hashtbl.find_exn t.choices.matrix t.current_path with
       | _ -> [ t.current_path ]
     in
-    let current_path = List.hd_exn current_path in
-    let parent =
-      if String.equal t.current_path current_path
-      then t.parent
-      else t.current_path
-    in
-    let tmp_model = { t with parent } in
-    { tmp_model with current_path }
+    if current_path |> List.is_empty
+    then t
+    else (
+      let current_path = List.hd_exn current_path in
+      let parent =
+        if String.equal t.current_path current_path
+        then t.parent
+        else t.current_path
+      in
+      let tmp_model = { t with parent } in
+      { tmp_model with current_path })
   ;;
 
   let get_updated_model_for_left t =
     let current_path, parent =
       match String.equal t.current_path t.origin with
       | true -> t.current_path, t.parent
-      | false -> remove_last_path t.current_path, t.current_path
+      | false -> remove_last_path t.current_path, remove_last_path t.parent
     in
     let tmp_model = { t with parent } in
     { tmp_model with current_path }
@@ -88,10 +100,6 @@ let%expect_test "write_to_path.txt" =
 let update event (model : State.t) =
   let open Minttea in
   match event with
-  | Event.KeyDown ((Key "q" | Escape), _modifier) ->
-    Event.pp Format.std_formatter event;
-    Format.pp_print_flush Format.std_formatter ();
-    model, Command.Quit
   | Event.KeyDown (Left, _modifier) ->
     State.get_updated_model_for_left model, Command.Noop
   | Event.KeyDown (Right, _modifier) ->
@@ -113,7 +121,7 @@ let get_view (model : State.t) ~origin =
       ~current_directory:origin
       ~path_to_be_underlined:model.current_path
   in
-  Format.sprintf {|Press q or Esc to quit.\n%s|} options
+  "\x1b[0mPress ^C to quit\n" ^ Format.sprintf {|%s|} options
 ;;
 
 let get_initial_state ~origin ~max_depth : State.t =
@@ -122,7 +130,7 @@ let get_initial_state ~origin ~max_depth : State.t =
       |> Visualize.Adjacency_matrix.get_adjacency_matrix ~origin ~max_depth
   ; current_path = origin
   ; origin
-  ; parent = origin
+  ; parent = State.remove_last_path origin
   ; cursor = 0
   }
 ;;
