@@ -23,7 +23,7 @@ let is_hidden_file name = String.is_prefix name ~prefix:"."
 let get_name path =
   match String.contains path '/' with
   | false -> path
-  | true -> (List.hd_exn (String.split path ~on:'/')) ^ List.last_exn (String.split path ~on:'/')
+  | true -> List.last_exn (String.split path ~on:'/')
 ;;
 
 let%expect_test "get_name" =
@@ -35,7 +35,7 @@ let%expect_test "get_name" =
   |}]
 ;;
 
-let get_parent_with_styles
+let get_styles
   tree
   ~(path_to_be_underlined : string)
   ~(parent : string) =
@@ -49,7 +49,8 @@ let get_parent_with_styles
     (match is_hidden_file (get_name parent) with
   | true -> styles.styles <- List.append styles.styles ["35"]
   | false -> ()));
-  Styling.apply_style styles ~apply_to:parent ~is_dir:(is_directory tree parent)
+  styles
+  (* Styling.apply_style styles ~apply_to:parent ~is_dir:(is_directory tree parent) *)
 
 let get_formatted_tree_with_new_parent
   tree
@@ -62,7 +63,7 @@ let get_formatted_tree_with_new_parent
   ^ "\n"
   ^ get_depth_space ~depth
   ^ (Styling.get_emoji_by_dir ~is_dir:(is_directory tree parent))
-  ^ Printf.sprintf "%s" (get_name (get_parent_with_styles tree ~path_to_be_underlined ~parent))
+  ^ Printf.sprintf "%s" (Styling.apply_style (get_styles tree ~path_to_be_underlined ~parent) ~apply_to:(get_name parent) ~is_dir:(is_directory tree parent))
 ;;
 
 let rec helper
