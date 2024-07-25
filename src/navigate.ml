@@ -1,10 +1,14 @@
 open! Core
 
+let write_path = "/home/ubuntu/jsip-final-project/bin/path.txt"
+
 module State = struct
   type t =
     { choices : Visualize.Adjacency_matrix.t
     ; current_path : string
     ; origin : string
+    ; parent : string
+    ; cursor : int
     }
   [@@deriving sexp_of]
 
@@ -12,8 +16,20 @@ module State = struct
     | UP
     | DOWN
 
-  let get_idx_by_dir idx ~dir =
-    match dir with UP -> idx - 1 | DOWN -> idx + 1
+  let get_idx_by_dir t ~dir =
+    match dir with
+    | UP ->
+      (try
+         (t.cursor - 1)
+         % (Hashtbl.find_exn t.choices.matrix t.parent |> List.length)
+       with
+       | _ -> 0)
+    | DOWN ->
+      (try
+         (t.cursor + 1)
+         % (Hashtbl.find_exn t.choices.matrix t.parent |> List.length)
+       with
+       | _ -> 0)
   ;;
 
   let is_directory (tree : (string, string list) Hashtbl.t) (value : string) =
@@ -29,29 +45,16 @@ module State = struct
     |> String.concat ~sep:"/"
   ;;
 
-  let get_parent_of_current_path t =
-    let parents = Hashtbl.keys t.choices.matrix in
-    List.fold parents ~init:"" ~f:(fun acc parent ->
-      match Hashtbl.find t.choices.matrix parent with
-      | None -> acc
-      | Some children ->
-        (match List.mem children t.current_path ~equal:String.equal with
-         | true -> parent
-         | false -> acc))
-  ;;
-
   let handle_up_and_down t ~dir =
-    let parent_of_current_path = get_parent_of_current_path t in
-    match Hashtbl.find t.choices.matrix parent_of_current_path with
-    | None -> t
-    | Some children ->
-      List.foldi children ~init:t ~f:(fun idx acc child ->
-        match String.equal child t.current_path with
-        | true ->
-          (match List.nth children (get_idx_by_dir idx ~dir) with
-           | None -> t
-           | Some new_path -> { t with current_path = new_path })
-        | false -> t)
+    let cursor = get_idx_by_dir t ~dir in
+    let current_path =
+      try
+        List.nth_exn (Hashtbl.find_exn t.choices.matrix t.parent) cursor
+      with
+      | _ -> t.current_path
+    in
+    let tmp_model = { t with cursor } in
+    { tmp_model with current_path }
   ;;
 
   let get_updated_model_for_right t =
@@ -59,27 +62,44 @@ module State = struct
       try Hashtbl.find_exn t.choices.matrix t.current_path with
       | _ -> [ t.current_path ]
     in
-    let current_path = List.hd_exn current_path in
-    { t with current_path }
+    if current_path |> List.is_empty
+    then t
+    else (
+      let current_path = List.hd_exn current_path in
+      let parent =
+        if String.equal t.current_path current_path
+        then t.parent
+        else t.current_path
+      in
+      let tmp_model = { t with parent } in
+      { tmp_model with current_path })
   ;;
 
   let get_updated_model_for_left t =
-    let current_path =
+    let current_path, parent =
       match String.equal t.current_path t.origin with
-      | true -> t.current_path
-      | false -> remove_last_path t.current_path
+      | true -> t.current_path, t.parent
+      | false -> remove_last_path t.current_path, remove_last_path t.parent
     in
-    { t with current_path }
+    let tmp_model = { t with parent } in
+    { tmp_model with current_path }
   ;;
 
   let get_updated_model_for_up t = handle_up_and_down t ~dir:UP
   let get_updated_model_for_down t = handle_up_and_down t ~dir:DOWN
 end
 
+let change_dir data = Out_channel.write_all write_path ~data
+
+let%expect_test "write_to_path.txt" =
+  change_dir "Hello World!";
+  print_endline (In_channel.read_all write_path);
+  [%expect {|Hello World!|}]
+;;
+
 let update event (model : State.t) =
   let open Minttea in
   match event with
-  | Event.KeyDown ((Key "q" | Escape), _modifier) -> model, Command.Quit
   | Event.KeyDown (Left, _modifier) ->
     State.get_updated_model_for_left model, Command.Noop
   | Event.KeyDown (Right, _modifier) ->
@@ -89,7 +109,7 @@ let update event (model : State.t) =
   | Event.KeyDown (Down, _modifier) ->
     State.get_updated_model_for_down model, Command.Noop
   | Event.KeyDown (Enter, _modifier) ->
-    Sys_unix.chdir model.current_path;
+    change_dir model.current_path;
     model, Command.Quit
   | _ -> model, Minttea.Command.Noop
 ;;
@@ -101,7 +121,7 @@ let get_view (model : State.t) ~origin =
       ~current_directory:origin
       ~path_to_be_underlined:model.current_path
   in
-  Format.sprintf {|Press q or Esc to quit.%s|} options
+  "\x1b[0mPress ^C to quit\n" ^ Format.sprintf {|%s|} options
 ;;
 
 let get_initial_state ~origin ~max_depth : State.t =
@@ -110,6 +130,8 @@ let get_initial_state ~origin ~max_depth : State.t =
       |> Visualize.Adjacency_matrix.get_adjacency_matrix ~origin ~max_depth
   ; current_path = origin
   ; origin
+  ; parent = State.remove_last_path origin
+  ; cursor = 0
   }
 ;;
 

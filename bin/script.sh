@@ -1,7 +1,5 @@
 #!/bin/bash
 /home/ubuntu/jsip-final-project/_build/default/bin/main.exe
-new_dir=$(cat ./bin/path.txt)
-echo "Bash Out:"
-echo $new_dir
-cd /home/ubuntu/
+new_dir=$(cat /home/ubuntu/jsip-final-project/bin/path.txt)
+cd $new_dir
 $SHELL
