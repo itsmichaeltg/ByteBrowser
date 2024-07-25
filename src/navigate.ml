@@ -15,7 +15,13 @@ module State = struct
     | DOWN
 
   let get_idx_by_dir t ~dir =
-    match dir with UP -> (t.cursor - 1) % (Hashtbl.find_exn t.choices.matrix t.parent |> List.length) | DOWN -> (t.cursor + 1) % (Hashtbl.find_exn t.choices.matrix t.parent |> List.length)
+    match dir with
+    | UP ->
+      (t.cursor - 1)
+      % (Hashtbl.find_exn t.choices.matrix t.parent |> List.length)
+    | DOWN ->
+      (t.cursor + 1)
+      % (Hashtbl.find_exn t.choices.matrix t.parent |> List.length)
   ;;
 
   let is_directory (tree : (string, string list) Hashtbl.t) (value : string) =
@@ -33,9 +39,11 @@ module State = struct
 
   let handle_up_and_down t ~dir =
     let cursor = get_idx_by_dir t ~dir in
-    let current_path = List.nth_exn (Hashtbl.find_exn t.choices.matrix t.parent) cursor in
-    let tmp_model = {t with cursor} in
-    {tmp_model with current_path}
+    let current_path =
+      List.nth_exn (Hashtbl.find_exn t.choices.matrix t.parent) cursor
+    in
+    let tmp_model = { t with cursor } in
+    { tmp_model with current_path }
   ;;
 
   let get_updated_model_for_right t =
@@ -44,11 +52,12 @@ module State = struct
       | _ -> [ t.current_path ]
     in
     let current_path = List.hd_exn current_path in
-    let parent = if String.equal t.current_path current_path then
-      t.parent
-    else
-      t.current_path in
-    let tmp_model = {t with parent} in
+    let parent =
+      if String.equal t.current_path current_path
+      then t.parent
+      else t.current_path
+    in
+    let tmp_model = { t with parent } in
     { tmp_model with current_path }
   ;;
 
@@ -58,7 +67,7 @@ module State = struct
       | true -> t.current_path, t.parent
       | false -> remove_last_path t.current_path, t.current_path
     in
-    let tmp_model = {t with parent} in
+    let tmp_model = { t with parent } in
     { tmp_model with current_path }
   ;;
 
