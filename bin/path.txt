@@ -1,0 +1,4 @@
+<<<<<<< HEAD
+=======
+/home/ubuntu/wiki-game
+>>>>>>> 26882e4c8efafb3dc435eeb0fcea56e04f3b5348
