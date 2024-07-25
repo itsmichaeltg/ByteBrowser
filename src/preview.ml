@@ -1,5 +1,7 @@
 open! Core
 
 let preview file ~num_lines =
-  let lines_to_show = List.slice (In_channel.read_lines file) 0 num_lines in
+  let lst = In_channel.read_lines file in
+  let lines_to_show = List.slice lst 0 (min num_lines (List.length lst)) in
   String.concat lines_to_show ~sep:"\n"
+;;
