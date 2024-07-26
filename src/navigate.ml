@@ -2,6 +2,17 @@ open! Core
 
 let write_path = "/home/ubuntu/jsip-final-project/bin/path.txt"
 
+let cursor_func =
+  Leaves.Cursor.make
+    ~style:
+      Spices.(
+        default
+        |> bg (Spices.color "#77e5b7")
+        |> fg (Spices.color "#FFFFFF")
+        |> bold true)
+    ()
+;;
+
 module State = struct
   type t =
     { choices : Visualize.Adjacency_matrix.t
@@ -44,9 +55,28 @@ module State = struct
     | _ -> { t with path_to_preview = "" }
   ;;
 
-  let get_updates_model_for_rename t =
+  let get_updated_model_for_rename t =
     let quitting = true in
-    { t with quitting }
+    let text =
+      Leaves.Text_input.make "" ~placeholder:"" ~cursor:cursor_func ()
+    in
+    { t with quitting; text }
+  ;;
+
+  let get_updated_model_for_remove t =
+    let siblings =
+      (match Hashtbl.find t.choices.matrix t.parent with
+       | Some lst -> lst
+       | None -> [])
+      |> List.filter ~f:(fun elem -> String.equal t.current_path elem |> not)
+    in
+    let _ =
+      match siblings with
+      | [] -> ()
+      | _ -> Hashtbl.set t.choices.matrix ~key:t.parent ~data:siblings
+    in
+    let _ = Format.sprintf {|rm -rf %s|} t.current_path |> Sys_unix.command in
+    t
   ;;
 
   let remove_last_path current_path =
@@ -121,16 +151,26 @@ let%expect_test "write_to_path.txt" =
   [%expect {|Hello World!|}]
 ;;
 
-let rename ~old_path new_name =
-  Format.sprintf
-    {|mv %s %s|}
-    old_path
-    (String.concat [ State.remove_last_path old_path; "/"; new_name ])
-;;
-
-let%expect_test "rename" =
-  rename ~old_path:"/home/ubuntu/jsip" "jsip-final-project" |> print_endline;
-  [%expect {| mv /home/ubuntu/jsip /home/ubuntu/jsip-final-project |}]
+let rename ~(model : State.t) new_name =
+  let new_path =
+    String.concat
+      [ State.remove_last_path model.current_path; "/"; new_name ]
+  in
+  let siblings =
+    (match Hashtbl.find model.choices.matrix model.parent with
+     | Some lst -> lst
+     | None -> [])
+    |> List.map ~f:(fun elem ->
+      match String.equal model.current_path elem with
+      | true -> new_path
+      | false -> elem)
+  in
+  let _ =
+    match siblings with
+    | [] -> ()
+    | _ -> Hashtbl.set model.choices.matrix ~key:model.parent ~data:siblings
+  in
+  Format.sprintf {|mv %s %s|} model.current_path new_path
 ;;
 
 let valid s =
@@ -158,24 +198,22 @@ let update event (model : State.t) =
       model, Command.Noop
     | Event.KeyDown (Key "p", _modifier) ->
       State.get_updated_model_for_preview model, Command.Noop
+    | Event.KeyDown (Key "d", Ctrl) ->
+      State.get_updated_model_for_remove model, Minttea.Command.Noop
     | Event.KeyDown (Key "r", _modifier) ->
-      State.get_updates_model_for_rename model, Command.Noop
+      State.get_updated_model_for_rename model, Command.Noop
     | _ -> model, Minttea.Command.Noop)
   else (
     match event with
     | Event.KeyDown (Escape, _modifier) ->
-      State.get_updates_model_for_rename model, Command.Noop
+      State.get_updated_model_for_rename model, Command.Noop
     | Event.KeyDown (Enter, _modifier) ->
       let _ =
         Leaves.Text_input.current_text model.text
-        |> rename ~old_path:model.current_path
+        |> rename ~model
         |> Sys_unix.command
       in
-      print_endline
-        (Format.sprintf
-           "Renamed to %s"
-           (Leaves.Text_input.current_text model.text));
-      State.get_updates_model_for_rename model, Command.Noop
+      State.get_updated_model_for_rename model, Command.Noop
     | Event.KeyDown (Key s, _modifier) when valid s ->
       let text = Leaves.Text_input.update model.text event in
       { model with text }, Command.Noop
@@ -206,17 +244,6 @@ let get_view (model : State.t) ~origin =
     if model.quitting
     then Format.sprintf "\n%s\n" @@ Leaves.Text_input.view model.text
     else ""
-;;
-
-let cursor_func =
-  Leaves.Cursor.make
-    ~style:
-      Spices.(
-        default
-        |> bg (Spices.color "#77e5b7")
-        |> fg (Spices.color "#FFFFFF")
-        |> bold true)
-    ()
 ;;
 
 let get_initial_state ~origin ~max_depth : State.t =
