@@ -75,7 +75,9 @@ module State = struct
       | [] -> ()
       | _ -> Hashtbl.set t.choices.matrix ~key:t.parent ~data:siblings
     in
-    let _ = Format.sprintf {|rm -rf %s|} t.current_path |> Sys_unix.command in
+    let _ =
+      Format.sprintf {|rm -rf %s|} t.current_path |> Sys_unix.command
+    in
     t
   ;;
 
@@ -200,7 +202,7 @@ let update event (model : State.t) =
       State.get_updated_model_for_preview model, Command.Noop
     | Event.KeyDown (Key "d", Ctrl) ->
       State.get_updated_model_for_remove model, Minttea.Command.Noop
-    | Event.KeyDown (Key "r", _modifier) ->
+    | Event.KeyDown (Key "r", Ctrl) ->
       State.get_updated_model_for_rename model, Command.Noop
     | _ -> model, Minttea.Command.Noop)
   else (
