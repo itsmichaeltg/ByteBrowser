@@ -42,13 +42,23 @@ module Adjacency_matrix = struct
       t
     | _ ->
       let children = get_files_in_dir origin in
-      let limited_children = List.slice children 0 (Int.min num_to_show (List.length children)) in
-      let data = List.map limited_children ~f:(fun i -> format_str ~origin i) in
+      let limited_children =
+        List.slice children 0 (Int.min num_to_show (List.length children))
+      in
+      let data =
+        List.map limited_children ~f:(fun i -> format_str ~origin i)
+      in
       Hashtbl.add_exn t.matrix ~key:origin ~data;
       List.fold ~init:t data ~f:(fun _ i ->
         match Sys_unix.is_directory i with
-        | `Yes -> get_limited_adjacency_matrix t ~origin:i ~max_depth:(max_depth - 1) ~num_to_show
-        | _ -> get_limited_adjacency_matrix t ~origin:i ~max_depth:0 ~num_to_show)
+        | `Yes ->
+          get_limited_adjacency_matrix
+            t
+            ~origin:i
+            ~max_depth:(max_depth - 1)
+            ~num_to_show
+        | _ ->
+          get_limited_adjacency_matrix t ~origin:i ~max_depth:0 ~num_to_show)
   ;;
 end
 

@@ -8,6 +8,7 @@ module State : sig
     ; parent : string
     ; cursor : int
     ; path_to_preview : string
+    ; show_reduced_tree : bool
     }
   [@@deriving sexp_of]
 
@@ -22,6 +23,8 @@ module State : sig
   val get_updated_model_for_left : t -> t
   val get_updated_model_for_up : t -> t
   val get_updated_model_for_down : t -> t
+  val get_updated_model_for_reduced_tree : t -> t
+  val get_updated_model_for_preview : t -> t
 end
 
 val command : Command.t

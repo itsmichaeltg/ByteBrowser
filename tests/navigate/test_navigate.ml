@@ -28,6 +28,7 @@ let%expect_test "navigate-left" =
     ; parent = "/home"
     ; cursor = 0
     ; path_to_preview = ""
+    ; show_reduced_tree = false
     }
   in
   let new_model = Navigate.State.get_updated_model_for_left model in
@@ -82,6 +83,7 @@ let%expect_test "navigate-right" =
     ; parent = "/home"
     ; cursor = 0
     ; path_to_preview = ""
+    ; show_reduced_tree = false
     }
   in
   let new_model = Navigate.State.get_updated_model_for_right model in
@@ -162,6 +164,7 @@ let%expect_test "navigate-up" =
     ; parent = "/home"
     ; cursor = 1
     ; path_to_preview = ""
+    ; show_reduced_tree = false
     }
   in
   let new_model = Navigate.State.get_updated_model_for_up model in
@@ -229,6 +232,7 @@ let%expect_test "navigate-down" =
     ; parent = "/home"
     ; cursor = 0
     ; path_to_preview = ""
+    ; show_reduced_tree = false
     }
   in
   let new_model = Navigate.State.get_updated_model_for_down model in

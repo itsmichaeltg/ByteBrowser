@@ -10,6 +10,7 @@ module State = struct
     ; parent : string
     ; cursor : int
     ; path_to_preview : string
+    ; show_reduced_tree : bool
     }
   [@@deriving sexp_of]
 
@@ -91,9 +92,9 @@ module State = struct
     let tmp_model = { t with parent } in
     { tmp_model with current_path }
   ;;
-
   let get_updated_model_for_up t = handle_up_and_down t ~dir:UP
   let get_updated_model_for_down t = handle_up_and_down t ~dir:DOWN
+  let get_updated_model_for_reduced_tree t = { t with show_reduced_tree = not t.show_reduced_tree }
 end
 
 let change_dir data = Out_channel.write_all write_path ~data
@@ -120,23 +121,44 @@ let update event (model : State.t) =
     model, Command.Quit
   | Event.KeyDown (Key "p", _modifier) ->
     State.get_updated_model_for_preview model, Command.Noop
+  | Event.KeyDown (Key "r", _modifier) ->
+    State.get_updated_model_for_reduced_tree model, Command.Noop
   | _ -> model, Minttea.Command.Noop
 ;;
 
-let get_view (model : State.t) ~origin =
+let visualize_tree (model : State.t) ~origin ~max_depth =
+  match model.show_reduced_tree with
+  | false ->
+    let tree =
+    Visualize_helper.visualize
+      model.choices.matrix
+      ~current_directory:origin
+      ~path_to_be_underlined:model.current_path
+  in
+  "\x1b[0mPress ^C to quit\n" ^ Format.sprintf {|%s|} tree
+  | true -> 
+  let choices =
+      Visualize.Adjacency_matrix.create ()
+      |> Visualize.Adjacency_matrix.get_limited_adjacency_matrix
+           ~origin
+           ~max_depth
+           ~num_to_show:10
+  in
+   let tree = Visualize_helper.visualize
+      choices.matrix
+      ~current_directory:origin
+      ~path_to_be_underlined:model.current_path
+  in
+  "\x1b[0mPress ^C to quit\n" ^ Format.sprintf {|%s|} tree
+;;
+
+let get_view (model : State.t) ~origin ~max_depth =
   match String.length model.path_to_preview > 0 with
   | true ->
     (match State.is_directory model.choices.matrix model.path_to_preview with
-    | true -> ""
-    | false -> Preview.preview model.path_to_preview ~num_lines:5)
-  | false ->
-    let options =
-      Visualize_helper.visualize
-        model.choices.matrix
-        ~current_directory:origin
-        ~path_to_be_underlined:model.current_path
-    in
-    "\x1b[0mPress ^C to quit\n" ^ Format.sprintf {|%s|} options
+     | true -> ""
+     | false -> Preview.preview model.path_to_preview ~num_lines:10)
+  | false -> visualize_tree model ~origin ~max_depth
 ;;
 
 let get_initial_state ~origin ~max_depth : State.t =
@@ -148,6 +170,7 @@ let get_initial_state ~origin ~max_depth : State.t =
   ; parent = State.remove_last_path origin
   ; cursor = 0
   ; path_to_preview = ""
+  ; show_reduced_tree = false
   }
 ;;
 
@@ -158,18 +181,9 @@ let init _model =
 
 let navigate ~max_depth ~origin =
   let app =
-    Minttea.app
-      ~init
-      ~update
-      ~view:(get_view ~origin)
-      ()
+    Minttea.app ~init ~update ~view:(get_view ~origin ~max_depth) ()
   in
-  Minttea.start
-    app
-    ~initial_model:
-      (get_initial_state
-         ~origin
-         ~max_depth:100)
+  Minttea.start app ~initial_model:(get_initial_state ~origin ~max_depth)
 ;;
 
 let pwd_navigate_command =

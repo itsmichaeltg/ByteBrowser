@@ -1,5 +1,5 @@
 open! Core
 
-(* not implemented yet :( *)
+(* not implemented yet *)
 
 let statistics file = ""
