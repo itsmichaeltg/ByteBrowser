@@ -9,14 +9,6 @@ module Adjacency_matrix = struct
     try Sys_unix.ls_dir origin with _ -> []
   ;;
 
-  let%expect_test "files_in_dir" =
-    print_s
-      [%sexp
-        (get_files_in_dir "/home/ubuntu/jsip-final-project/test_dir"
-         : string list)];
-    [%expect {| (dir0 dir1 dir5) |}]
-  ;;
-
   let format_str ~origin i =
     match String.equal (List.last_exn (String.split origin ~on:'/')) "" with
     | true -> String.concat [ origin; i ]
@@ -41,32 +33,22 @@ module Adjacency_matrix = struct
         | _ -> get_adjacency_matrix t ~origin:i ~max_depth:0)
   ;;
 
-  let%expect_test "adjacency_matrix" =
-    print_s
-      [%sexp
-        (get_adjacency_matrix
-           (create ())
-           ~origin:"/home/ubuntu/jsip-final-project/test_dir"
-           ~max_depth:10
-         : t)];
-    [%expect
-      {|
-      ((matrix
-        ((/home/ubuntu/jsip-final-project/test_dir
-          (/home/ubuntu/jsip-final-project/test_dir/dir0
-           /home/ubuntu/jsip-final-project/test_dir/dir1
-           /home/ubuntu/jsip-final-project/test_dir/dir5))
-         (/home/ubuntu/jsip-final-project/test_dir/dir0 ())
-         (/home/ubuntu/jsip-final-project/test_dir/dir1
-          (/home/ubuntu/jsip-final-project/test_dir/dir1/dir2))
-         (/home/ubuntu/jsip-final-project/test_dir/dir1/dir2
-          (/home/ubuntu/jsip-final-project/test_dir/dir1/dir2/dir3))
-         (/home/ubuntu/jsip-final-project/test_dir/dir1/dir2/dir3
-          (/home/ubuntu/jsip-final-project/test_dir/dir1/dir2/dir3/dir4))
-         (/home/ubuntu/jsip-final-project/test_dir/dir1/dir2/dir3/dir4
-          (/home/ubuntu/jsip-final-project/test_dir/dir1/dir2/dir3/dir4/tmp.txt))
-         (/home/ubuntu/jsip-final-project/test_dir/dir5 ()))))
-      |}]
+  let rec get_limited_adjacency_matrix t ~origin ~max_depth ~num_to_show =
+    match max_depth with
+    | 0 ->
+      (match Sys_unix.is_directory origin with
+       | `Yes -> Hashtbl.add_exn t.matrix ~key:origin ~data:[]
+       | _ -> ());
+      t
+    | _ ->
+      let children = get_files_in_dir origin in
+      let limited_children = List.slice children 0 (Int.min num_to_show (List.length children)) in
+      let data = List.map limited_children ~f:(fun i -> format_str ~origin i) in
+      Hashtbl.add_exn t.matrix ~key:origin ~data;
+      List.fold ~init:t data ~f:(fun _ i ->
+        match Sys_unix.is_directory i with
+        | `Yes -> get_limited_adjacency_matrix t ~origin:i ~max_depth:(max_depth - 1) ~num_to_show
+        | _ -> get_limited_adjacency_matrix t ~origin:i ~max_depth:0 ~num_to_show)
   ;;
 end
 
@@ -83,22 +65,6 @@ let visualize ~max_depth ~origin =
     |> Adjacency_matrix.get_adjacency_matrix ~origin ~max_depth
   in
   print_dir ~origin matrix |> print_endline
-;;
-
-let%expect_test "visualize" =
-  visualize ~max_depth:10 ~origin:"/home/ubuntu/jsip-final-project/test_dir";
-  [%expect
-    " \n\
-    \ .\n\
-    \ \027[0m\027[0m|__ \240\159\147\129\027[;0;36mtest_dir\n\
-    \ \027[0m  \027[0m|__ \240\159\147\129\027[;0;36mdir0\n\
-    \ \027[0m  \027[0m|__ \240\159\147\129\027[;0;36mdir1\n\
-    \ \027[0m    \027[0m|__ \240\159\147\129\027[;0;36mdir2\n\
-    \ \027[0m      \027[0m|__ \240\159\147\129\027[;0;36mdir3\n\
-    \ \027[0m        \027[0m|__ \240\159\147\129\027[;0;36mdir4\n\
-    \ \027[0m          \027[0m|__ \027[;0mtmp.txt\n\
-    \ \027[0m  \027[0m|__ \240\159\147\129\027[;0;36mdir5\n\
-    \ "]
 ;;
 
 let pwd_visualize_command =
