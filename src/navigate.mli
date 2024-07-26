@@ -8,8 +8,9 @@ module State : sig
     ; parent : string
     ; cursor : int
     ; path_to_preview : string
+    ; text : Leaves.Text_input.t
+    ; quitting : bool
     }
-  [@@deriving sexp_of]
 
   type dir =
     | UP

@@ -10,8 +10,9 @@ module State = struct
     ; parent : string
     ; cursor : int
     ; path_to_preview : string
+    ; text : Leaves.Text_input.t
+    ; quitting : bool
     }
-  [@@deriving sexp_of]
 
   type dir =
     | UP
@@ -41,6 +42,11 @@ module State = struct
     match t.path_to_preview with
     | "" -> { t with path_to_preview = t.current_path }
     | _ -> { t with path_to_preview = "" }
+  ;;
+
+  let get_updates_model_for_rename t =
+    let quitting = true in
+    { t with quitting }
   ;;
 
   let remove_last_path current_path =
@@ -78,18 +84,29 @@ module State = struct
         then t.parent
         else t.current_path
       in
-      let tmp_model = { t with parent } in
-      { tmp_model with current_path })
+      { t with current_path; cursor = 0; parent })
+  ;;
+
+  let get_idx t ~parent ~current_path =
+    match Hashtbl.find t.choices.matrix parent with
+    | Some lst ->
+      List.foldi ~init:None lst ~f:(fun idx acc elem ->
+        if String.equal elem current_path then Some idx else acc)
+    | None -> None
   ;;
 
   let get_updated_model_for_left t =
-    let current_path, parent =
-      match String.equal t.current_path t.origin with
-      | true -> t.current_path, t.parent
-      | false -> remove_last_path t.current_path, remove_last_path t.parent
-    in
-    let tmp_model = { t with parent } in
-    { tmp_model with current_path }
+    match String.equal t.current_path t.origin with
+    | true -> t
+    | false ->
+      let current_path, parent =
+        remove_last_path t.current_path, remove_last_path t.parent
+      in
+      (match get_idx t ~parent ~current_path with
+       | Some idx ->
+         print_s [%message (idx : int)];
+         { t with parent; cursor = idx; current_path }
+       | None -> { t with parent; current_path })
   ;;
 
   let get_updated_model_for_up t = handle_up_and_down t ~dir:UP
@@ -104,31 +121,78 @@ let%expect_test "write_to_path.txt" =
   [%expect {|Hello World!|}]
 ;;
 
+let rename ~old_path new_name =
+  Format.sprintf
+    {|mv %s %s|}
+    old_path
+    (String.concat [ State.remove_last_path old_path; "/"; new_name ])
+;;
+
+let%expect_test "rename" =
+  rename ~old_path:"/home/ubuntu/jsip" "jsip-final-project" |> print_endline;
+  [%expect {| mv /home/ubuntu/jsip /home/ubuntu/jsip-final-project |}]
+;;
+
+let valid s =
+  String.fold ~init:true s ~f:(fun acc ch ->
+    match Char.is_alphanum ch with
+    | true -> acc
+    | false -> (match ch with '.' | '_' | '-' -> true | _ -> false))
+;;
+
 let update event (model : State.t) =
   let open Minttea in
-  match event with
-  | Event.KeyDown (Left, _modifier) ->
-    State.get_updated_model_for_left model, Command.Noop
-  | Event.KeyDown (Right, _modifier) ->
-    State.get_updated_model_for_right model, Command.Noop
-  | Event.KeyDown (Up, _modifier) ->
-    State.get_updated_model_for_up model, Command.Noop
-  | Event.KeyDown (Down, _modifier) ->
-    State.get_updated_model_for_down model, Command.Noop
-  | Event.KeyDown (Enter, _modifier) ->
-    change_dir model.current_path;
-    model, Command.Quit
-  | Event.KeyDown (Key "p", _modifier) ->
-    State.get_updated_model_for_preview model, Command.Noop
-  | _ -> model, Minttea.Command.Noop
+  if model.quitting |> not
+  then (
+    match event with
+    | Event.KeyDown (Left, _modifier) ->
+      State.get_updated_model_for_left model, Command.Noop
+    | Event.KeyDown (Right, _modifier) ->
+      State.get_updated_model_for_right model, Command.Noop
+    | Event.KeyDown (Up, _modifier) ->
+      State.get_updated_model_for_up model, Command.Noop
+    | Event.KeyDown (Down, _modifier) ->
+      State.get_updated_model_for_down model, Command.Noop
+    | Event.KeyDown (Enter, _modifier) ->
+      change_dir model.current_path;
+      model, Command.Noop
+    | Event.KeyDown (Key "p", _modifier) ->
+      State.get_updated_model_for_preview model, Command.Noop
+    | Event.KeyDown (Key "r", _modifier) ->
+      State.get_updates_model_for_rename model, Command.Noop
+    | _ -> model, Minttea.Command.Noop)
+  else (
+    match event with
+    | Event.KeyDown (Escape, _modifier) ->
+      State.get_updates_model_for_rename model, Command.Noop
+    | Event.KeyDown (Enter, _modifier) ->
+      let _ =
+        Leaves.Text_input.current_text model.text
+        |> rename ~old_path:model.current_path
+        |> Sys_unix.command
+      in
+      print_endline
+        (Format.sprintf
+           "Renamed to %s"
+           (Leaves.Text_input.current_text model.text));
+      State.get_updates_model_for_rename model, Command.Noop
+    | Event.KeyDown (Key s, _modifier) when valid s ->
+      let text = Leaves.Text_input.update model.text event in
+      { model with text }, Command.Noop
+    | Event.KeyDown (Backspace, _modifier)
+    | Event.KeyDown (Left, _modifier)
+    | Event.KeyDown (Right, _modifier) ->
+      let text = Leaves.Text_input.update model.text event in
+      { model with text }, Command.Noop
+    | _ -> model, Command.Noop)
 ;;
 
 let get_view (model : State.t) ~origin =
   match String.length model.path_to_preview > 0 with
   | true ->
     (match State.is_directory model.choices.matrix model.path_to_preview with
-    | true -> ""
-    | false -> Preview.preview model.path_to_preview ~num_lines:5)
+     | true -> ""
+     | false -> Preview.preview model.path_to_preview ~num_lines:5)
   | false ->
     let options =
       Visualize_helper.visualize
@@ -136,7 +200,23 @@ let get_view (model : State.t) ~origin =
         ~current_directory:origin
         ~path_to_be_underlined:model.current_path
     in
-    "\x1b[0mPress ^C to quit\n" ^ Format.sprintf {|%s|} options
+    "\x1b[0mPress ^C to quit\n"
+    ^ Format.sprintf {|%s|} options
+    ^
+    if model.quitting
+    then Format.sprintf "\n%s\n" @@ Leaves.Text_input.view model.text
+    else ""
+;;
+
+let cursor_func =
+  Leaves.Cursor.make
+    ~style:
+      Spices.(
+        default
+        |> bg (Spices.color "#77e5b7")
+        |> fg (Spices.color "#FFFFFF")
+        |> bold true)
+    ()
 ;;
 
 let get_initial_state ~origin ~max_depth : State.t =
@@ -148,6 +228,8 @@ let get_initial_state ~origin ~max_depth : State.t =
   ; parent = State.remove_last_path origin
   ; cursor = 0
   ; path_to_preview = ""
+  ; text = Leaves.Text_input.make "" ~placeholder:"" ~cursor:cursor_func ()
+  ; quitting = false
   }
 ;;
 
@@ -157,19 +239,8 @@ let init _model =
 ;;
 
 let navigate ~max_depth ~origin =
-  let app =
-    Minttea.app
-      ~init
-      ~update
-      ~view:(get_view ~origin)
-      ()
-  in
-  Minttea.start
-    app
-    ~initial_model:
-      (get_initial_state
-         ~origin
-         ~max_depth:100)
+  let app = Minttea.app ~init ~update ~view:(get_view ~origin) () in
+  Minttea.start app ~initial_model:(get_initial_state ~origin ~max_depth)
 ;;
 
 let pwd_navigate_command =
