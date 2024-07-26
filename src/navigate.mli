@@ -9,8 +9,9 @@ module State : sig
     ; cursor : int
     ; path_to_preview : string
     ; show_reduced_tree : bool
+    ; text : Leaves.Text_input.t
+    ; quitting : bool
     }
-  [@@deriving sexp_of]
 
   type dir =
     | UP

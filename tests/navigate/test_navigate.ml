@@ -1,6 +1,17 @@
 open! Core
 open! File_manager_lib
 
+let cursor_func =
+  Leaves.Cursor.make
+    ~style:
+      Spices.(
+        default
+        |> bg (Spices.color "#77e5b7")
+        |> fg (Spices.color "#FFFFFF")
+        |> bold true)
+    ()
+;;
+
 let%expect_test "navigate-left" =
   let mat = Hashtbl.create (module String) in
   Hashtbl.add_exn
@@ -28,7 +39,17 @@ let%expect_test "navigate-left" =
     ; parent = "/home"
     ; cursor = 0
     ; path_to_preview = ""
+<<<<<<< HEAD:tests/navigate/test_navigate.ml
     ; show_reduced_tree = false
+=======
+    ; text =
+      Leaves.Text_input.make
+        ""
+        ~placeholder:"Type something"
+        ~cursor:cursor_func
+        ()
+  ; quitting = false
+>>>>>>> ab040c2b217d714f6d23f29b8d38cbadc780a45e:test/navigate/test_navigate.ml
     }
   in
   let new_model = Navigate.State.get_updated_model_for_left model in
@@ -83,7 +104,17 @@ let%expect_test "navigate-right" =
     ; parent = "/home"
     ; cursor = 0
     ; path_to_preview = ""
+<<<<<<< HEAD:tests/navigate/test_navigate.ml
     ; show_reduced_tree = false
+=======
+    ; text =
+        Leaves.Text_input.make
+          ""
+          ~placeholder:"Type something"
+          ~cursor:cursor_func
+          ()
+    ; quitting = false
+>>>>>>> ab040c2b217d714f6d23f29b8d38cbadc780a45e:test/navigate/test_navigate.ml
     }
   in
   let new_model = Navigate.State.get_updated_model_for_right model in
@@ -164,7 +195,17 @@ let%expect_test "navigate-up" =
     ; parent = "/home"
     ; cursor = 1
     ; path_to_preview = ""
+<<<<<<< HEAD:tests/navigate/test_navigate.ml
     ; show_reduced_tree = false
+=======
+    ; text =
+        Leaves.Text_input.make
+          ""
+          ~placeholder:"Type something"
+          ~cursor:cursor_func
+          ()
+    ; quitting = false
+>>>>>>> ab040c2b217d714f6d23f29b8d38cbadc780a45e:test/navigate/test_navigate.ml
     }
   in
   let new_model = Navigate.State.get_updated_model_for_up model in
@@ -232,7 +273,17 @@ let%expect_test "navigate-down" =
     ; parent = "/home"
     ; cursor = 0
     ; path_to_preview = ""
+<<<<<<< HEAD:tests/navigate/test_navigate.ml
     ; show_reduced_tree = false
+=======
+    ; text =
+        Leaves.Text_input.make
+          ""
+          ~placeholder:"Type something"
+          ~cursor:cursor_func
+          ()
+    ; quitting = false
+>>>>>>> ab040c2b217d714f6d23f29b8d38cbadc780a45e:test/navigate/test_navigate.ml
     }
   in
   let new_model = Navigate.State.get_updated_model_for_down model in

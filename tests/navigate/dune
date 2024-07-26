@@ -1,6 +1,6 @@
 (library
  (name test_navigate)
- (libraries core file_manager_lib)
+ (libraries core file_manager_lib leaves)
  (inline_tests)
  (preprocess
   (pps ppx_jane)))
