@@ -1,1 +1,1 @@
-/home/ubuntu/jsip-final-project/.vscode
+/home/ubuntu/jsip-final-project/.git/COMMIT_EDITMSG
