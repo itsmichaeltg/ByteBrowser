@@ -179,10 +179,17 @@ module State = struct
 
   let get_updated_model_for_up t = handle_up_and_down t ~dir:UP
   let get_updated_model_for_down t = handle_up_and_down t ~dir:DOWN
+
   let get_updated_model_for_reduced_tree t =
     match t.show_reduced_tree with
     | true -> { t with show_reduced_tree = false; choices = t.full_choices }
-    | false -> { t with show_reduced_tree = true; choices = t.reduced_choices; current_path = t.origin }
+    | false ->
+      { t with
+        show_reduced_tree = true
+      ; choices = t.reduced_choices
+      ; current_path = t.origin
+      }
+  ;;
 end
 
 let rename ~(model : State.t) new_name =
@@ -204,7 +211,10 @@ let rename ~(model : State.t) new_name =
     | [] -> ()
     | _ -> Hashtbl.set model.choices.matrix ~key:model.parent ~data:siblings
   in
-  Format.sprintf {|mv %s %s|} model.current_path new_path
+  ( Format.sprintf {|mv %s %s|} model.current_path new_path
+  , { model with
+      current_path = String.concat [ model.parent; "/"; new_name ]
+    } )
 ;;
 
 let valid s =
@@ -263,12 +273,12 @@ let update event (model : State.t) =
     | Event.KeyDown (Escape, _modifier) ->
       State.get_updated_model_for_rename model, Command.Noop
     | Event.KeyDown (Enter, _modifier) ->
-      let _ =
-        Leaves.Text_input.current_text model.text
-        |> rename ~model
-        |> Sys_unix.command
+      let com, model =
+        Leaves.Text_input.current_text model.text |> rename ~model
       in
-      State.get_updated_model_for_rename model, Command.Noop
+      let _ = Sys_unix.command com in
+      let model = { model with quitting = false } in
+      model, Command.Noop
     | Event.KeyDown (Key s, _modifier) when valid s ->
       let text = Leaves.Text_input.update model.text event in
       { model with text }, Command.Noop
@@ -281,13 +291,15 @@ let update event (model : State.t) =
 ;;
 
 let visualize_tree (model : State.t) ~origin ~max_depth =
-    let tree =
+  let tree =
     Visualize_helper.visualize
       model.choices.matrix
       ~current_directory:origin
       ~path_to_be_underlined:model.current_path
   in
-  "\x1b[0mPress ^C to quit\n" ^ Format.sprintf {|%s|} tree  ^
+  "\x1b[0mPress ^C to quit\n"
+  ^ Format.sprintf {|%s|} tree
+  ^
   if model.quitting
   then Format.sprintf "\n%s\n" @@ Leaves.Text_input.view model.text
   else ""
@@ -297,16 +309,23 @@ let get_view (model : State.t) ~origin ~max_depth =
   match String.length model.path_to_preview > 0 with
   | true ->
     (match State.is_directory model.choices.matrix model.path_to_preview with
-    | true -> ""
-    | false -> Preview.preview model.path_to_preview ~num_lines:5)
+     | true -> ""
+     | false -> Preview.preview model.path_to_preview ~num_lines:5)
   | false -> visualize_tree model ~origin ~max_depth
 ;;
 
 let get_initial_state ~origin ~max_depth : State.t =
-  let full_tree = Visualize.Adjacency_matrix.create ()
-  |> Visualize.Adjacency_matrix.get_adjacency_matrix ~origin ~max_depth in
-  let limited_tree = Visualize.Adjacency_matrix.create ()
-  |> Visualize.Adjacency_matrix.get_limited_adjacency_matrix ~origin ~max_depth ~num_to_show:5 in
+  let full_tree =
+    Visualize.Adjacency_matrix.create ()
+    |> Visualize.Adjacency_matrix.get_adjacency_matrix ~origin ~max_depth
+  in
+  let limited_tree =
+    Visualize.Adjacency_matrix.create ()
+    |> Visualize.Adjacency_matrix.get_limited_adjacency_matrix
+         ~origin
+         ~max_depth
+         ~num_to_show:5
+  in
   { choices = full_tree
   ; current_path = origin
   ; origin
