@@ -344,7 +344,12 @@ let navigate ~max_depth ~origin =
   let app =
     Minttea.app ~init ~update ~view:(get_view ~origin ~max_depth) ()
   in
-  Minttea.start app ~initial_model:(get_initial_state ~origin ~max_depth)
+  Minttea.start
+    app
+    ~initial_model:
+      (get_initial_state
+         ~origin
+         ~max_depth)
 ;;
 
 let pwd_navigate_command =
