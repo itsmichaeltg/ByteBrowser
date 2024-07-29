@@ -41,12 +41,14 @@ let%expect_test "navigate-left" =
     ; path_to_preview = ""
     ; show_reduced_tree = false
     ; text =
-      Leaves.Text_input.make
-        ""
-        ~placeholder:"Type something"
-        ~cursor:cursor_func
-        ()
-  ; quitting = false
+        Leaves.Text_input.make
+          ""
+          ~placeholder:"Type something"
+          ~cursor:cursor_func
+          ()
+    ; quitting = false
+    ; moving = false
+    ; move_from = ""
     }
   in
   let new_model = Navigate.State.get_updated_model_for_left model in
@@ -109,6 +111,8 @@ let%expect_test "navigate-right" =
           ~cursor:cursor_func
           ()
     ; quitting = false
+    ; moving = false
+    ; move_from = ""
     }
   in
   let new_model = Navigate.State.get_updated_model_for_right model in
@@ -197,6 +201,8 @@ let%expect_test "navigate-up" =
           ~cursor:cursor_func
           ()
     ; quitting = false
+    ; moving = false
+    ; move_from = ""
     }
   in
   let new_model = Navigate.State.get_updated_model_for_up model in
@@ -272,6 +278,8 @@ let%expect_test "navigate-down" =
           ~cursor:cursor_func
           ()
     ; quitting = false
+    ; moving = false
+    ; move_from = ""
     }
   in
   let new_model = Navigate.State.get_updated_model_for_down model in

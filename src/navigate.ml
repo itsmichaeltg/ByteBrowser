@@ -21,9 +21,11 @@ module State = struct
     ; parent : string
     ; cursor : int
     ; path_to_preview : string
-    ; text: Leaves.Text_input.t
-    ; quitting: bool
+    ; text : Leaves.Text_input.t
+    ; quitting : bool
     ; show_reduced_tree : bool
+    ; move_from : string
+    ; moving : bool
     }
 
   type dir =
@@ -50,6 +52,15 @@ module State = struct
     Hashtbl.mem tree value
   ;;
 
+  let remove_last_path current_path =
+    let str_lst = String.split current_path ~on:'/' in
+    List.foldi str_lst ~init:[] ~f:(fun idx new_lst elem ->
+      match idx = List.length str_lst - 1 with
+      | true -> new_lst
+      | false -> new_lst @ [ elem ])
+    |> String.concat ~sep:"/"
+  ;;
+
   let get_updated_model_for_preview t =
     match t.path_to_preview with
     | "" -> { t with path_to_preview = t.current_path }
@@ -64,31 +75,46 @@ module State = struct
     { t with quitting; text }
   ;;
 
-  let get_updated_model_for_remove t =
+  let remove_helper t ~parent ~child =
     let siblings =
-      (match Hashtbl.find t.choices.matrix t.parent with
+      (match Hashtbl.find t.choices.matrix parent with
        | Some lst -> lst
        | None -> [])
-      |> List.filter ~f:(fun elem -> String.equal t.current_path elem |> not)
+      |> List.filter ~f:(fun elem -> String.equal child elem |> not)
     in
-    let _ =
-      match siblings with
-      | [] -> ()
-      | _ -> Hashtbl.set t.choices.matrix ~key:t.parent ~data:siblings
-    in
+    match siblings with
+    | [] -> ()
+    | _ -> Hashtbl.set t.choices.matrix ~key:parent ~data:siblings
+  ;;
+
+  let get_updated_model_for_move t =
+    if is_directory t.choices.matrix t.current_path
+    then (
+      remove_helper
+        t
+        ~parent:(remove_last_path t.move_from)
+        ~child:t.move_from;
+      Hashtbl.set
+        t.choices.matrix
+        ~key:t.current_path
+        ~data:
+          (Hashtbl.find_exn t.choices.matrix t.current_path @ [ t.move_from ]);
+      let _ =
+        Format.sprintf {|mv %s %s|} t.move_from t.current_path
+        |> Sys_unix.command
+      in
+      let move_from = "" in
+      let moving = false in
+      { t with move_from; moving })
+    else t
+  ;;
+
+  let get_updated_model_for_remove t =
+    remove_helper t ~parent:t.parent ~child:t.current_path;
     let _ =
       Format.sprintf {|rm -rf %s|} t.current_path |> Sys_unix.command
     in
     t
-  ;;
-
-  let remove_last_path current_path =
-    let str_lst = String.split current_path ~on:'/' in
-    List.foldi str_lst ~init:[] ~f:(fun idx new_lst elem ->
-      match idx = List.length str_lst - 1 with
-      | true -> new_lst
-      | false -> new_lst @ [ elem ])
-    |> String.concat ~sep:"/"
   ;;
 
   let handle_up_and_down t ~dir =
@@ -140,7 +166,10 @@ module State = struct
 
   let get_updated_model_for_up t = handle_up_and_down t ~dir:UP
   let get_updated_model_for_down t = handle_up_and_down t ~dir:DOWN
-  let get_updated_model_for_reduced_tree t = { t with show_reduced_tree = not t.show_reduced_tree }
+
+  let get_updated_model_for_reduced_tree t =
+    { t with show_reduced_tree = not t.show_reduced_tree }
+  ;;
 end
 
 let change_dir data = Out_channel.write_all write_path ~data
@@ -180,31 +209,49 @@ let valid s =
     | false -> (match ch with '.' | '_' | '-' -> true | _ -> false))
 ;;
 
+let move_arround event (model : State.t) =
+  let open Minttea in
+  match event with
+  | Event.KeyDown (Left, _modifier) ->
+    State.get_updated_model_for_left model, Command.Noop
+  | Event.KeyDown (Right, _modifier) ->
+    State.get_updated_model_for_right model, Command.Noop
+  | Event.KeyDown (Up, _modifier) ->
+    State.get_updated_model_for_up model, Command.Noop
+  | Event.KeyDown (Down, _modifier) ->
+    State.get_updated_model_for_down model, Command.Noop
+  | Event.KeyDown (Enter, _modifier) ->
+    State.get_updated_model_for_move model, Command.Noop
+  | _ -> model, Command.Noop
+;;
+
 let update event (model : State.t) =
   let open Minttea in
-  if model.quitting |> not
+  if model.moving
+  then move_arround event model
+  else if model.quitting |> not
   then (
     match event with
-    | Event.KeyDown (Left, _modifier) ->
-      State.get_updated_model_for_left model, Command.Noop
-    | Event.KeyDown (Right, _modifier) ->
-      State.get_updated_model_for_right model, Command.Noop
+    | Event.KeyDown (Left, _modifier)
+    | Event.KeyDown (Down, _modifier)
+    | Event.KeyDown (Right, _modifier)
     | Event.KeyDown (Up, _modifier) ->
-      State.get_updated_model_for_up model, Command.Noop
-    | Event.KeyDown (Down, _modifier) ->
-      State.get_updated_model_for_down model, Command.Noop
+      move_arround event model
     | Event.KeyDown (Enter, _modifier) ->
       change_dir model.current_path;
       model, Command.Noop
     | Event.KeyDown (Key "p", _modifier) ->
       State.get_updated_model_for_preview model, Command.Noop
-  
-  | Event.KeyDown (Key "v", _modifier) ->
-    State.get_updated_model_for_reduced_tree model, Command.Noop
+    | Event.KeyDown (Key "v", _modifier) ->
+      State.get_updated_model_for_reduced_tree model, Command.Noop
     | Event.KeyDown (Key "d", Ctrl) ->
       State.get_updated_model_for_remove model, Minttea.Command.Noop
     | Event.KeyDown (Key "r", Ctrl) ->
-State.get_updated_model_for_rename model, Command.Noop
+      State.get_updated_model_for_rename model, Command.Noop
+    | Event.KeyDown (Key "m", Ctrl) ->
+      print_endline (Format.sprintf "moivng %s" model.current_path);
+      ( { model with moving = true; move_from = model.current_path }
+      , Command.Noop )
     | _ -> model, Minttea.Command.Noop)
   else (
     match event with
@@ -232,34 +279,35 @@ let visualize_tree (model : State.t) ~origin ~max_depth =
   match model.show_reduced_tree with
   | false ->
     let tree =
-    Visualize_helper.visualize
-      model.choices.matrix
-      ~current_directory:origin
-      ~path_to_be_underlined:model.current_path
-  in
-  "\x1b[0mPress ^C to quit\n" ^ Format.sprintf {|%s|} tree
-  | true -> 
-  let choices =
+      Visualize_helper.visualize
+        model.choices.matrix
+        ~current_directory:origin
+        ~path_to_be_underlined:model.current_path
+    in
+    "\x1b[0mPress ^C to quit\n" ^ Format.sprintf {|%s|} tree
+  | true ->
+    let choices =
       Visualize.Adjacency_matrix.create ()
       |> Visualize.Adjacency_matrix.get_limited_adjacency_matrix
            ~origin
            ~max_depth
            ~num_to_show:10
-  in
-   let tree = Visualize_helper.visualize
-      choices.matrix
-      ~current_directory:origin
-      ~path_to_be_underlined:model.current_path
-  in
-  "\x1b[0mPress ^C to quit\n" ^ Format.sprintf {|%s|} tree
+    in
+    let tree =
+      Visualize_helper.visualize
+        choices.matrix
+        ~current_directory:origin
+        ~path_to_be_underlined:model.current_path
+    in
+    "\x1b[0mPress ^C to quit\n" ^ Format.sprintf {|%s|} tree
 ;;
 
 let get_view (model : State.t) ~origin ~max_depth =
   match String.length model.path_to_preview > 0 with
   | true ->
     (match State.is_directory model.choices.matrix model.path_to_preview with
-    | true -> ""
-    | false -> Preview.preview model.path_to_preview ~num_lines:5)
+     | true -> ""
+     | false -> Preview.preview model.path_to_preview ~num_lines:5)
   | false ->
     let options =
       Visualize_helper.visualize
@@ -279,9 +327,11 @@ let get_initial_state ~origin ~max_depth : State.t =
   ; parent = State.remove_last_path origin
   ; cursor = 0
   ; path_to_preview = ""
-  ; text = Leaves.Text_input.make "" ~placeholder: "" ~cursor:cursor_func ()
+  ; text = Leaves.Text_input.make "" ~placeholder:"" ~cursor:cursor_func ()
   ; quitting = false
   ; show_reduced_tree = false
+  ; moving = false
+  ; move_from = ""
   }
 ;;
 
@@ -292,18 +342,9 @@ let init _model =
 
 let navigate ~max_depth ~origin =
   let app =
-    Minttea.app
-      ~init
-      ~update
-      ~view:(get_view ~origin ~max_depth)
-      ()
+    Minttea.app ~init ~update ~view:(get_view ~origin ~max_depth) ()
   in
-  Minttea.start
-    app
-    ~initial_model:
-      (get_initial_state
-         ~origin
-         ~max_depth:100)
+  Minttea.start app ~initial_model:(get_initial_state ~origin ~max_depth)
 ;;
 
 let pwd_navigate_command =
@@ -315,7 +356,7 @@ let pwd_navigate_command =
         flag
           "max-depth"
           (optional_with_default 3 int)
-          ~doc:"INT maximum length of path to search for (default 10)"
+          ~doc:"INT maximum length of path to search for (default 3)"
       in
       fun () -> navigate ~max_depth ~origin:(Sys_unix.getcwd ())]
 ;;

@@ -11,6 +11,8 @@ module State : sig
     ; text : Leaves.Text_input.t
     ; quitting : bool
     ; show_reduced_tree : bool
+    ; move_from : string
+    ; moving : bool
     }
 
   type dir =
