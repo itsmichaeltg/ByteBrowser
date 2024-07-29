@@ -221,13 +221,13 @@ let valid s =
 let move_arround event (model : State.t) =
   let open Minttea in
   match event with
-  | Event.KeyDown (Left, _modifier) ->
+  | Event.KeyDown ((Left | Key "h"), _modifier) ->
     State.get_updated_model_for_left model, Command.Noop
-  | Event.KeyDown (Right, _modifier) ->
+  | Event.KeyDown ((Right | Key "l"), _modifier) ->
     State.get_updated_model_for_right model, Command.Noop
-  | Event.KeyDown (Up, _modifier) ->
+  | Event.KeyDown ((Up | Key "k"), _modifier) ->
     State.get_updated_model_for_up model, Command.Noop
-  | Event.KeyDown (Down, _modifier) ->
+  | Event.KeyDown ((Down | Key "j"), _modifier) ->
     State.get_updated_model_for_down model, Command.Noop
   | Event.KeyDown (Enter, _modifier) ->
     State.get_updated_model_for_move model, Command.Noop
@@ -255,7 +255,7 @@ let update event (model : State.t) =
       State.get_updated_model_for_reduced_tree model, Command.Noop
     | Event.KeyDown (Key "d", Ctrl) ->
       State.get_updated_model_for_remove model, Minttea.Command.Noop
-    | Event.KeyDown (Key "r", Ctrl) ->
+    | Event.KeyDown (Key "r", _modifier) ->
       State.get_updated_model_for_rename model, Command.Noop
     | Event.KeyDown (Key "m", _modifier) ->
       print_endline (Format.sprintf "moivng %s" model.current_path);
