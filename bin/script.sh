@@ -8,7 +8,3 @@ if [ "$2" = "dir" ]; then
     fi
 fi
 eval $command
-new_dir=$(cat $tmp_path)
-echo > $tmp_path
-cd $new_dir
-$SHELL

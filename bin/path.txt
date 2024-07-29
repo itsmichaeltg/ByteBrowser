@@ -1,1 +1,1 @@
-/home/ubuntu/wiki-game
+/home/ubuntu/jsip-final-project/demos/demo1.exe
