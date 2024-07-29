@@ -90,6 +90,9 @@ module State = struct
   let get_updated_model_for_move t =
     if is_directory t.choices.matrix t.current_path
     then (
+      print_s
+        [%message
+          ((remove_last_path t.move_from, t.move_from) : string * string)];
       remove_helper
         t
         ~parent:(remove_last_path t.move_from)
@@ -98,7 +101,13 @@ module State = struct
         t.choices.matrix
         ~key:t.current_path
         ~data:
-          (Hashtbl.find_exn t.choices.matrix t.current_path @ [ t.move_from ]);
+          (Hashtbl.find_exn t.choices.matrix t.current_path
+           @ [ String.concat
+                 [ t.current_path
+                 ; "/"
+                 ; Visualize_helper.get_name t.move_from
+                 ]
+             ]);
       let _ =
         Format.sprintf {|mv %s %s|} t.move_from t.current_path
         |> Sys_unix.command
@@ -248,7 +257,7 @@ let update event (model : State.t) =
       State.get_updated_model_for_remove model, Minttea.Command.Noop
     | Event.KeyDown (Key "r", Ctrl) ->
       State.get_updated_model_for_rename model, Command.Noop
-    | Event.KeyDown (Key "m", Ctrl) ->
+    | Event.KeyDown (Key "m", _modifier) ->
       print_endline (Format.sprintf "moivng %s" model.current_path);
       ( { model with moving = true; move_from = model.current_path }
       , Command.Noop )
@@ -344,12 +353,7 @@ let navigate ~max_depth ~origin =
   let app =
     Minttea.app ~init ~update ~view:(get_view ~origin ~max_depth) ()
   in
-  Minttea.start
-    app
-    ~initial_model:
-      (get_initial_state
-         ~origin
-         ~max_depth)
+  Minttea.start app ~initial_model:(get_initial_state ~origin ~max_depth)
 ;;
 
 let pwd_navigate_command =
