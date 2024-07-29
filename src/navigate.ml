@@ -296,7 +296,7 @@ let visualize_tree (model : State.t) ~origin ~max_depth =
       ~current_directory:origin
       ~path_to_be_underlined:model.current_path
   in
-  "\x1b[0mPress ^C to quit\n"
+  "\n\n\x1b[0mPress ^C to quit\n"
   ^ Format.sprintf {|%s|} tree
   ^
   if model.quitting
@@ -309,7 +309,7 @@ let get_view (model : State.t) ~origin ~max_depth =
   | true ->
     (match State.is_directory model.choices.matrix model.path_to_preview with
      | true -> ""
-     | false -> Preview.preview model.path_to_preview ~num_lines:5)
+     | false -> Preview.preview model.path_to_preview ~num_lines:Int.max_value)
   | false -> visualize_tree model ~origin ~max_depth
 ;;
 
