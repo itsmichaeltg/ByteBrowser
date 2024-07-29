@@ -7,4 +7,7 @@ if [ "$2" = "dir" ]; then
         command="${command} -max-depth ${6}"
     fi
 fi
+if [[ "$4" =~ ^[0-9]+$ ]]; then
+    command="${command} -max-depth ${4}"
+fi
 eval $command
