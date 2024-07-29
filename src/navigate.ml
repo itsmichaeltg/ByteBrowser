@@ -303,7 +303,7 @@ let navigate ~max_depth ~origin =
     ~initial_model:
       (get_initial_state
          ~origin
-         ~max_depth:100)
+         ~max_depth)
 ;;
 
 let pwd_navigate_command =
