@@ -11,6 +11,8 @@ module State : sig
     ; text : Leaves.Text_input.t
     ; quitting : bool
     ; show_reduced_tree : bool
+    ; reduced_choices : Visualize.Adjacency_matrix.t
+    ; full_choices : Visualize.Adjacency_matrix.t
     }
 
   type dir =
