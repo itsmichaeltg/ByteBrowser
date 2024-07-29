@@ -21,6 +21,9 @@ module State = struct
     ; parent : string
     ; cursor : int
     ; path_to_preview : string
+    ; text: Leaves.Text_input.t
+    ; quitting: bool
+    ; show_reduced_tree : bool
     }
 
   type dir =
@@ -196,12 +199,12 @@ let update event (model : State.t) =
     | Event.KeyDown (Key "p", _modifier) ->
       State.get_updated_model_for_preview model, Command.Noop
   
-  | Event.KeyDown (Key "r", _modifier) ->
+  | Event.KeyDown (Key "v", _modifier) ->
     State.get_updated_model_for_reduced_tree model, Command.Noop
     | Event.KeyDown (Key "d", Ctrl) ->
       State.get_updated_model_for_remove model, Minttea.Command.Noop
     | Event.KeyDown (Key "r", Ctrl) ->
-      State.get_updated_model_for_rename model, Command.Noop
+State.get_updated_model_for_rename model, Command.Noop
     | _ -> model, Minttea.Command.Noop)
   else (
     match event with
@@ -276,6 +279,9 @@ let get_initial_state ~origin ~max_depth : State.t =
   ; parent = State.remove_last_path origin
   ; cursor = 0
   ; path_to_preview = ""
+  ; text = Leaves.Text_input.make "" ~placeholder: "" ~cursor:cursor_func ()
+  ; quitting = false
+  ; show_reduced_tree = false
   }
 ;;
 
@@ -289,7 +295,7 @@ let navigate ~max_depth ~origin =
     Minttea.app
       ~init
       ~update
-      ~view:(get_view ~origin)
+      ~view:(get_view ~origin ~max_depth)
       ()
   in
   Minttea.start

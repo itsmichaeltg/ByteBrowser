@@ -8,9 +8,9 @@ module State : sig
     ; parent : string
     ; cursor : int
     ; path_to_preview : string
-    ; show_reduced_tree : bool
     ; text : Leaves.Text_input.t
     ; quitting : bool
+    ; show_reduced_tree : bool
     }
 
   type dir =
