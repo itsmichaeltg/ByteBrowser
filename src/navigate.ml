@@ -310,8 +310,12 @@ let get_initial_state ~origin ~max_depth : State.t =
   |> Visualize.Adjacency_matrix.get_adjacency_matrix ~origin ~max_depth in
   let limited_tree = Visualize.Adjacency_matrix.create ()
   |> Visualize.Adjacency_matrix.get_limited_adjacency_matrix ~origin ~max_depth ~num_to_show:5 in
+  let initial_path =
+    (match List.hd (Visualize.Adjacency_matrix.get_files_in_dir origin) with
+    | None -> origin
+    | Some first_child -> first_child) in
   { choices = full_tree
-  ; current_path = origin
+  ; current_path = initial_path
   ; origin
   ; parent = State.remove_last_path origin
   ; cursor = 0

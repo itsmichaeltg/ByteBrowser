@@ -58,9 +58,6 @@ let get_styles tree ~(path_to_be_underlined : string) ~(parent : string) =
   styles
 ;;
 
-(* Styling.apply_style styles ~apply_to:parent ~is_dir:(is_directory tree
-   parent) *)
-
 let get_formatted_tree_with_new_parent
   tree
   ~(path_to_be_underlined : string)
@@ -126,30 +123,4 @@ let visualize
     ~so_far:"."
     ~parent:current_directory
     ~path_to_be_underlined
-;;
-
-let%expect_test "visualize" =
-  let mat = Hashtbl.create (module String) in
-  Hashtbl.add_exn mat ~key:"home" ~data:[ "home_dir1"; "home_dir2" ];
-  Hashtbl.add_exn mat ~key:"home_dir1" ~data:[ "child1"; "child2" ];
-  Hashtbl.add_exn mat ~key:"home_dir2" ~data:[];
-  Hashtbl.add_exn mat ~key:"child1" ~data:[ ".gitignore"; "blah" ];
-  let res =
-    visualize
-      mat
-      ~current_directory:"home"
-      ~path_to_be_underlined:".gitignore"
-  in
-  print_endline res;
-  [%expect
-    {|
-    .
-    [0m[0m|__ 📁[;0;36mhome
-    [0m  [0m|__ 📁[;0;36mhome_dir1
-    [0m    [0m|__ 📁[;0;36mchild1
-    [0m      [0m|__ [;0;4;35m.gitignore
-    [0m      [0m|__ [;0mblah
-    [0m    [0m|__ [;0mchild2
-    [0m  [0m|__ 📁[;0;36mhome_dir2
-    |}]
 ;;
