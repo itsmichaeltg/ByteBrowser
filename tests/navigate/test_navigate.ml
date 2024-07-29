@@ -47,6 +47,8 @@ let%expect_test "navigate-left" =
           ~cursor:cursor_func
           ()
     ; quitting = false
+    ; reduced_choices = { matrix = mat }
+    ; full_choices = { matrix = mat }
     ; moving = false
     ; move_from = ""
     }
@@ -111,6 +113,8 @@ let%expect_test "navigate-right" =
           ~cursor:cursor_func
           ()
     ; quitting = false
+    ; reduced_choices = { matrix = mat }
+    ; full_choices = { matrix = mat }
     ; moving = false
     ; move_from = ""
     }
@@ -201,6 +205,8 @@ let%expect_test "navigate-up" =
           ~cursor:cursor_func
           ()
     ; quitting = false
+    ; reduced_choices = { matrix = mat }
+    ; full_choices = { matrix = mat }
     ; moving = false
     ; move_from = ""
     }
@@ -278,6 +284,8 @@ let%expect_test "navigate-down" =
           ~cursor:cursor_func
           ()
     ; quitting = false
+    ; reduced_choices = { matrix = mat }
+    ; full_choices = { matrix = mat }
     ; moving = false
     ; move_from = ""
     }

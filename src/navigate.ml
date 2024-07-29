@@ -24,6 +24,8 @@ module State = struct
     ; text : Leaves.Text_input.t
     ; quitting : bool
     ; show_reduced_tree : bool
+    ; reduced_choices : Visualize.Adjacency_matrix.t
+    ; full_choices : Visualize.Adjacency_matrix.t
     ; move_from : string
     ; moving : bool
     }
@@ -177,10 +179,10 @@ module State = struct
 
   let get_updated_model_for_up t = handle_up_and_down t ~dir:UP
   let get_updated_model_for_down t = handle_up_and_down t ~dir:DOWN
-
   let get_updated_model_for_reduced_tree t =
-    { t with show_reduced_tree = not t.show_reduced_tree }
-  ;;
+    match t.show_reduced_tree with
+    | true -> { t with show_reduced_tree = false; choices = t.full_choices }
+    | false -> { t with show_reduced_tree = true; choices = t.reduced_choices; current_path = t.origin }
 end
 
 let rename ~(model : State.t) new_name =
@@ -279,57 +281,33 @@ let update event (model : State.t) =
 ;;
 
 let visualize_tree (model : State.t) ~origin ~max_depth =
-  match model.show_reduced_tree with
-  | false ->
     let tree =
-      Visualize_helper.visualize
-        model.choices.matrix
-        ~current_directory:origin
-        ~path_to_be_underlined:model.current_path
-    in
-    "\x1b[0mPress ^C to quit\n" ^ Format.sprintf {|%s|} tree
-  | true ->
-    let choices =
-      Visualize.Adjacency_matrix.create ()
-      |> Visualize.Adjacency_matrix.get_limited_adjacency_matrix
-           ~origin
-           ~max_depth
-           ~num_to_show:10
-    in
-    let tree =
-      Visualize_helper.visualize
-        choices.matrix
-        ~current_directory:origin
-        ~path_to_be_underlined:model.current_path
-    in
-    "\x1b[0mPress ^C to quit\n" ^ Format.sprintf {|%s|} tree
+    Visualize_helper.visualize
+      model.choices.matrix
+      ~current_directory:origin
+      ~path_to_be_underlined:model.current_path
+  in
+  "\x1b[0mPress ^C to quit\n" ^ Format.sprintf {|%s|} tree  ^
+  if model.quitting
+  then Format.sprintf "\n%s\n" @@ Leaves.Text_input.view model.text
+  else ""
 ;;
 
 let get_view (model : State.t) ~origin ~max_depth =
   match String.length model.path_to_preview > 0 with
   | true ->
     (match State.is_directory model.choices.matrix model.path_to_preview with
-     | true -> ""
-     | false -> Preview.preview model.path_to_preview ~num_lines:5)
-  | false ->
-    let options =
-      Visualize_helper.visualize
-        model.choices.matrix
-        ~current_directory:origin
-        ~path_to_be_underlined:model.current_path
-    in
-    "\x1b[0mPress ^C to quit\n"
-    ^ Format.sprintf {|%s|} options
-    ^
-    if model.quitting
-    then Format.sprintf "\n%s\n" @@ Leaves.Text_input.view model.text
-    else ""
+    | true -> ""
+    | false -> Preview.preview model.path_to_preview ~num_lines:5)
+  | false -> visualize_tree model ~origin ~max_depth
 ;;
 
 let get_initial_state ~origin ~max_depth : State.t =
-  { choices =
-      Visualize.Adjacency_matrix.create ()
-      |> Visualize.Adjacency_matrix.get_adjacency_matrix ~origin ~max_depth
+  let full_tree = Visualize.Adjacency_matrix.create ()
+  |> Visualize.Adjacency_matrix.get_adjacency_matrix ~origin ~max_depth in
+  let limited_tree = Visualize.Adjacency_matrix.create ()
+  |> Visualize.Adjacency_matrix.get_limited_adjacency_matrix ~origin ~max_depth ~num_to_show:5 in
+  { choices = full_tree
   ; current_path = origin
   ; origin
   ; parent = State.remove_last_path origin
@@ -338,6 +316,8 @@ let get_initial_state ~origin ~max_depth : State.t =
   ; text = Leaves.Text_input.make "" ~placeholder:"" ~cursor:cursor_func ()
   ; quitting = false
   ; show_reduced_tree = false
+  ; reduced_choices = limited_tree
+  ; full_choices = full_tree
   ; moving = false
   ; move_from = ""
   }
