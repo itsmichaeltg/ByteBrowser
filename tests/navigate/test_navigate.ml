@@ -49,6 +49,8 @@ let%expect_test "navigate-left" =
     ; quitting = false
     ; reduced_choices = { matrix = mat }
     ; full_choices = { matrix = mat }
+    ; moving = false
+    ; move_from = ""
     }
   in
   let new_model = Navigate.State.get_updated_model_for_left model in
@@ -113,6 +115,8 @@ let%expect_test "navigate-right" =
     ; quitting = false
     ; reduced_choices = { matrix = mat }
     ; full_choices = { matrix = mat }
+    ; moving = false
+    ; move_from = ""
     }
   in
   let new_model = Navigate.State.get_updated_model_for_right model in
@@ -203,6 +207,8 @@ let%expect_test "navigate-up" =
     ; quitting = false
     ; reduced_choices = { matrix = mat }
     ; full_choices = { matrix = mat }
+    ; moving = false
+    ; move_from = ""
     }
   in
   let new_model = Navigate.State.get_updated_model_for_up model in
@@ -280,6 +286,8 @@ let%expect_test "navigate-down" =
     ; quitting = false
     ; reduced_choices = { matrix = mat }
     ; full_choices = { matrix = mat }
+    ; moving = false
+    ; move_from = ""
     }
   in
   let new_model = Navigate.State.get_updated_model_for_down model in

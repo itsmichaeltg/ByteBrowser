@@ -13,6 +13,8 @@ module State : sig
     ; show_reduced_tree : bool
     ; reduced_choices : Visualize.Adjacency_matrix.t
     ; full_choices : Visualize.Adjacency_matrix.t
+    ; move_from : string
+    ; moving : bool
     }
 
   type dir =
