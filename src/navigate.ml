@@ -252,7 +252,7 @@ let update event (model : State.t) =
     | Event.KeyDown (Up, _modifier) ->
       move_arround event model
     | Event.KeyDown (Enter, _modifier) ->
-      print_endline (Format.sprintf "Successfully in %s" model.current_path);
+      print_endline (Format.sprintf "cd %s" model.current_path);
       State.get_updated_model_for_change_dir model, Command.Noop
     | Event.KeyDown (Key "p", _modifier) ->
       State.get_updated_model_for_preview model, Command.Noop

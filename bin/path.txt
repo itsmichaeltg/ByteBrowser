@@ -1,1 +1,1 @@
-/home/ubuntu/jsip-final-project/demos/demo1.exe
+/home/ubuntu/jsip-final-project/.vscode
