@@ -1,5 +1,7 @@
 open! Core
 
+(* TODO: add a way to highlight two places *)
+
 module Styling = struct
   type t = { mutable styles : string list }
 

@@ -186,8 +186,7 @@ module State = struct
     | false ->
       { t with
         show_reduced_tree = true
-      ; choices = t.reduced_choices
-      ; current_path = t.origin
+      ; choices = t.reduced_choices (* ; current_path = t.origin *)
       }
   ;;
 end
@@ -326,15 +325,23 @@ let get_initial_state ~origin ~max_depth : State.t =
          ~max_depth
          ~num_to_show:5
   in
+  let children =
+    match Hashtbl.find full_tree.matrix origin with
+    | None -> []
+    | Some children -> children
+  in
   let initial_path =
-    match List.hd (Visualize.Adjacency_matrix.get_files_in_dir origin) with
+    match List.hd children with
     | None -> origin
     | Some first_child -> first_child
   in
   { choices = full_tree
   ; current_path = initial_path
   ; origin
-  ; parent = State.remove_last_path origin
+  ; parent =
+      (match String.equal initial_path origin with
+       | true -> State.remove_last_path origin
+       | false -> origin)
   ; cursor = 0
   ; path_to_preview = ""
   ; text = Leaves.Text_input.make "" ~placeholder:"" ~cursor:cursor_func ()
