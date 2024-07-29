@@ -87,12 +87,14 @@ module State = struct
     | _ -> Hashtbl.set t.choices.matrix ~key:parent ~data:siblings
   ;;
 
+  let get_updated_model_for_change_dir t =
+    Out_channel.write_all write_path ~data:t.current_path;
+    t
+  ;;
+
   let get_updated_model_for_move t =
     if is_directory t.choices.matrix t.current_path
     then (
-      print_s
-        [%message
-          ((remove_last_path t.move_from, t.move_from) : string * string)];
       remove_helper
         t
         ~parent:(remove_last_path t.move_from)
@@ -181,14 +183,6 @@ module State = struct
   ;;
 end
 
-let change_dir data = Out_channel.write_all write_path ~data
-
-let%expect_test "write_to_path.txt" =
-  change_dir "Hello World!";
-  print_endline (In_channel.read_all write_path);
-  [%expect {|Hello World!|}]
-;;
-
 let rename ~(model : State.t) new_name =
   let new_path =
     String.concat
@@ -247,8 +241,8 @@ let update event (model : State.t) =
     | Event.KeyDown (Up, _modifier) ->
       move_arround event model
     | Event.KeyDown (Enter, _modifier) ->
-      change_dir model.current_path;
-      model, Command.Noop
+      print_endline (Format.sprintf "Successfully in %s" model.current_path);
+      State.get_updated_model_for_change_dir model, Command.Noop
     | Event.KeyDown (Key "p", _modifier) ->
       State.get_updated_model_for_preview model, Command.Noop
     | Event.KeyDown (Key "v", _modifier) ->
@@ -324,7 +318,12 @@ let get_view (model : State.t) ~origin ~max_depth =
         ~current_directory:origin
         ~path_to_be_underlined:model.current_path
     in
-    "\x1b[0mPress ^C to quit\n" ^ Format.sprintf {|%s|} options
+    "\x1b[0mPress ^C to quit\n"
+    ^ Format.sprintf {|%s|} options
+    ^
+    if model.quitting
+    then Format.sprintf "\n%s\n" @@ Leaves.Text_input.view model.text
+    else ""
 ;;
 
 let get_initial_state ~origin ~max_depth : State.t =
