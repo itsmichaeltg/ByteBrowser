@@ -315,14 +315,22 @@ let get_view (model : State.t) ~origin ~max_depth =
 ;;
 
 let get_initial_state ~origin ~max_depth : State.t =
-  let full_tree = Visualize.Adjacency_matrix.create ()
-  |> Visualize.Adjacency_matrix.get_adjacency_matrix ~origin ~max_depth in
-  let limited_tree = Visualize.Adjacency_matrix.create ()
-  |> Visualize.Adjacency_matrix.get_limited_adjacency_matrix ~origin ~max_depth ~num_to_show:5 in
+  let full_tree =
+    Visualize.Adjacency_matrix.create ()
+    |> Visualize.Adjacency_matrix.get_adjacency_matrix ~origin ~max_depth
+  in
+  let limited_tree =
+    Visualize.Adjacency_matrix.create ()
+    |> Visualize.Adjacency_matrix.get_limited_adjacency_matrix
+         ~origin
+         ~max_depth
+         ~num_to_show:5
+  in
   let initial_path =
-    (match List.hd (Visualize.Adjacency_matrix.get_files_in_dir origin) with
+    match List.hd (Visualize.Adjacency_matrix.get_files_in_dir origin) with
     | None -> origin
-    | Some first_child -> first_child) in
+    | Some first_child -> first_child
+  in
   { choices = full_tree
   ; current_path = initial_path
   ; origin
