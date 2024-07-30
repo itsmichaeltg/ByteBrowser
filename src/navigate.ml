@@ -185,37 +185,21 @@ let navigate ~max_depth ~origin =
   Minttea.start app ~initial_model:(get_initial_state ~origin ~max_depth)
 ;;
 
-let pwd_navigate_command =
-  let open Core.Command.Let_syntax in
-  Core.Command.basic
-    ~summary:"starts at the current working directory"
-    [%map_open
-      let max_depth =
-        flag
-          "max-depth"
-          (optional_with_default 3 int)
-          ~doc:"INT maximum length of path to search for (default 3)"
-      in
-      fun () -> navigate ~max_depth ~origin:(Sys_unix.getcwd ())]
-;;
-
-let start_navigate_command =
+let command =
   let open Command.Let_syntax in
   Command.basic
-    ~summary:"starts at a given path"
+    ~summary:"file manager commands"
     [%map_open
-      let origin = flag "start" (required string) ~doc:" the starting path"
+      let origin =
+        flag
+          "start"
+          (optional_with_default (Sys_unix.getcwd ()) string)
+          ~doc:" the starting path"
       and max_depth =
         flag
           "max-depth"
-          (optional_with_default 3 int)
-          ~doc:"INT maximum length of path to search for (default 10)"
+          (optional_with_default 2 int)
+          ~doc:"INT maximum length of path to search for (default 2)"
       in
       fun () -> navigate ~max_depth ~origin]
-;;
-
-let command =
-  Core.Command.group
-    ~summary:"file manager commands"
-    [ "pwd", pwd_navigate_command; "dir", start_navigate_command ]
 ;;
