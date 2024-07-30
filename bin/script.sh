@@ -11,3 +11,6 @@ if [[ "$4" =~ ^[0-9]+$ ]]; then
     command="${command} -max-depth ${4}"
 fi
 eval $command
+reset
+new_dir=$(cat "${tmp_path}")
+echo "cd ${new_dir}"

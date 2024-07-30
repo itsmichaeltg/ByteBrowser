@@ -70,7 +70,11 @@ let update event (model : State.t) =
   let open Minttea in
   if State.get_is_moving model
   then move_arround event model
+<<<<<<< HEAD
   else if not (State.get_is_writing model)
+=======
+  else if model.writing |> not
+>>>>>>> 3d7e36f6d9003da881099e2bbaf80386c3671ca9
   then (
     match event with
     | Event.KeyDown (Left, _modifier)
@@ -79,8 +83,12 @@ let update event (model : State.t) =
     | Event.KeyDown (Up, _modifier) ->
       move_arround event model
     | Event.KeyDown (Enter, _modifier) ->
+<<<<<<< HEAD
       print_endline (Format.sprintf "cd %s" (State.get_current_path model));
       State.get_updated_model_for_change_dir model, Command.Noop
+=======
+      State.get_updated_model_for_change_dir model, exit 0
+>>>>>>> 3d7e36f6d9003da881099e2bbaf80386c3671ca9
     | Event.KeyDown (Key "p", _modifier) ->
       State.get_updated_model_for_preview model, Command.Noop
     (* | Event.KeyDown (Key "v", _modifier) ->
@@ -104,7 +112,12 @@ let update event (model : State.t) =
         |> rename ~model
       in
       let _ = Sys_unix.command com in
+<<<<<<< HEAD
       State.get_model_after_writing model, Command.Noop
+=======
+      let model = { model with writing = false } in
+      model, Command.Noop
+>>>>>>> 3d7e36f6d9003da881099e2bbaf80386c3671ca9
     | Event.KeyDown (Key s, _modifier) when valid s ->
       let text = Leaves.Text_input.update (State.get_text model) event in
       State.get_model_with_new_text model text, Command.Noop
@@ -126,18 +139,30 @@ let visualize_tree (model : State.t) ~origin ~max_depth =
   "\n\n\x1b[0mPress ^C to quit\n"
   ^ Format.sprintf {|%s|} tree
   ^
+<<<<<<< HEAD
   if State.get_is_writing model
   then
     Format.sprintf "\n%s\n" @@ Leaves.Text_input.view (State.get_text model)
+=======
+  if model.writing
+  then Format.sprintf "\n%s\n" @@ Leaves.Text_input.view model.text
+>>>>>>> 3d7e36f6d9003da881099e2bbaf80386c3671ca9
   else ""
 ;;
 
 let get_view (model : State.t) ~origin ~max_depth =
   match State.should_preview model with
   | true ->
+<<<<<<< HEAD
     Preview.preview
       (State.get_path_to_preview model)
       ~num_lines:Int.max_value
+=======
+    (match State.is_directory model.choices.matrix model.path_to_preview with
+     | true -> ""
+     | false ->
+       Preview.preview model.path_to_preview ~num_lines:Int.max_value)
+>>>>>>> 3d7e36f6d9003da881099e2bbaf80386c3671ca9
   | false -> visualize_tree model ~origin ~max_depth
 ;;
 
@@ -164,6 +189,7 @@ let get_initial_state ~origin ~max_depth : State.t =
       (match String.equal initial_path origin with
        | true -> State.remove_last_path origin
        | false -> origin)
+<<<<<<< HEAD
     ~cursor:0
     ~path_to_preview:""
     ~text:(Leaves.Text_input.make
@@ -175,6 +201,18 @@ let get_initial_state ~origin ~max_depth : State.t =
     ~show_reduced_tree:false
     ~is_moving:false
     ~move_from:""
+=======
+  ; cursor = 0
+  ; path_to_preview = ""
+  ; text = Leaves.Text_input.make "" ~placeholder:"" ~cursor:cursor_func ()
+  ; writing = false
+  ; show_reduced_tree = false
+  ; reduced_choices = limited_tree
+  ; full_choices = full_tree
+  ; moving = false
+  ; move_from = ""
+  }
+>>>>>>> 3d7e36f6d9003da881099e2bbaf80386c3671ca9
 ;;
 
 let init _model =
