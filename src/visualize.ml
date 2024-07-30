@@ -10,6 +10,8 @@ module Adjacency_matrix = struct
     Hashtbl.mem t.matrix value
   ;;
 
+  let get_children t path = Hashtbl.find t path
+
   let get_files_in_dir origin : string list =
     try Sys_unix.ls_dir origin with _ -> []
   ;;

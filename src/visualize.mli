@@ -7,6 +7,7 @@ module Adjacency_matrix : sig
   val get_adjacency_matrix : t -> origin:string -> max_depth:int -> t
   val get_files_in_dir : string -> string list
   val is_directory : t -> string -> bool
+  val get_children : t -> string -> string list option
 
   val get_limited_adjacency_matrix
     :  t
