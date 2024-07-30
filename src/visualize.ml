@@ -1,9 +1,14 @@
 open! Core
 
 module Adjacency_matrix = struct
-  type t = { matrix : (string, string list) Hashtbl.t } [@@deriving sexp_of]
+  type tree = (string, string list) Hashtbl.t [@@deriving sexp_of]
+  type t = { matrix : tree } [@@deriving sexp_of]
 
   let create () = { matrix = Hashtbl.create (module String) }
+
+  let is_directory t (value : string) =
+    Hashtbl.mem t.matrix value
+  ;;
 
   let get_files_in_dir origin : string list =
     try Sys_unix.ls_dir origin with _ -> []

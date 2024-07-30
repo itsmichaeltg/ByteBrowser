@@ -12,7 +12,7 @@ let cursor_func =
     ()
 ;;
 
-let%expect_test "navigate-left" =
+let get_tree () =
   let mat = Hashtbl.create (module String) in
   Hashtbl.add_exn
     mat
@@ -27,38 +27,42 @@ let%expect_test "navigate-left" =
     mat
     ~key:"/home/home_dir1/child1"
     ~data:[ "/home/home_dir1/child1/.gitignore" ];
+  mat
+
+let get_init_model ~choices ~current_path ~cursor =
+  State.init
+  ~choices
+  ~current_path
+  ~origin:"/home"
+  ~parent:"/home"
+  ~cursor
+  ~path_to_preview:""
+  ~text:(Leaves.Text_input.make
+  ""
+  ~placeholder:"Type something"
+  ~cursor:cursor_func
+  ())
+  ~is_writing:false
+  ~show_reduced_tree:false
+  ~is_moving:false
+  ~move_from:""
+
+
+let%expect_test "navigate-left" =
+  let mat = get_tree () in
   print_endline
     (Visualize_helper.visualize
        mat
        ~current_directory:"/home"
        ~path_to_be_underlined:"/home/home_dir1/child1/.gitignore");
-  let model =
-    { Navigate.State.choices = { matrix = mat }
-    ; current_path = "/home/home_dir1/child1/.gitignore"
-    ; origin = "/home"
-    ; parent = "/home"
-    ; cursor = 0
-    ; path_to_preview = ""
-    ; show_reduced_tree = false
-    ; text =
-        Leaves.Text_input.make
-          ""
-          ~placeholder:"Type something"
-          ~cursor:cursor_func
-          ()
-    ; quitting = false
-    ; reduced_choices = { matrix = mat }
-    ; full_choices = { matrix = mat }
-    ; moving = false
-    ; move_from = ""
-    }
+  let model = get_init_model ~choices:{matrix = mat} ~current_path:"/home/home_dir1/child1/.gitignore" ~cursor:0
   in
-  let new_model = Navigate.State.get_updated_model_for_left model in
+  let new_model = State.get_updated_model_for_left model in
   print_endline
     (Visualize_helper.visualize
-       new_model.choices.matrix
+       (State.get_tree new_model)
        ~current_directory:"/home"
-       ~path_to_be_underlined:new_model.current_path);
+       ~path_to_be_underlined:(State.get_current_path new_model));
   [%expect
     {|
     .
@@ -79,64 +83,32 @@ let%expect_test "navigate-left" =
 ;;
 
 let%expect_test "navigate-right" =
-  let mat = Hashtbl.create (module String) in
-  Hashtbl.add_exn
-    mat
-    ~key:"/home"
-    ~data:[ "/home/home_dir1"; "/home/home_dir2" ];
-  Hashtbl.add_exn
-    mat
-    ~key:"/home/home_dir1"
-    ~data:[ "/home/home_dir1/child1"; "/home/home_dir1/child2" ];
-  Hashtbl.add_exn mat ~key:"/home/home_dir2" ~data:[];
-  Hashtbl.add_exn
-    mat
-    ~key:"/home/home_dir1/child1"
-    ~data:[ "/home/home_dir1/child1/.gitignore" ];
+  let mat = get_tree () in
   print_endline
     (Visualize_helper.visualize
        mat
        ~current_directory:"/home"
        ~path_to_be_underlined:"/home/home_dir1");
-  let model =
-    { Navigate.State.choices = { matrix = mat }
-    ; current_path = "/home/home_dir1"
-    ; origin = "/home"
-    ; parent = "/home"
-    ; cursor = 0
-    ; path_to_preview = ""
-    ; show_reduced_tree = false
-    ; text =
-        Leaves.Text_input.make
-          ""
-          ~placeholder:"Type something"
-          ~cursor:cursor_func
-          ()
-    ; quitting = false
-    ; reduced_choices = { matrix = mat }
-    ; full_choices = { matrix = mat }
-    ; moving = false
-    ; move_from = ""
-    }
+  let model = get_init_model ~choices:{matrix = mat} ~current_path:"/home/home_dir1" ~cursor:0
   in
-  let new_model = Navigate.State.get_updated_model_for_right model in
+  let new_model = State.get_updated_model_for_right model in
   print_endline
     (Visualize_helper.visualize
-       new_model.choices.matrix
+       (State.get_tree new_model)
        ~current_directory:"/home"
-       ~path_to_be_underlined:new_model.current_path);
-  let newer_model = Navigate.State.get_updated_model_for_right new_model in
+       ~path_to_be_underlined:(State.get_current_path new_model));
+  let newer_model = State.get_updated_model_for_right new_model in
   print_endline
     (Visualize_helper.visualize
-       newer_model.choices.matrix
+    (State.get_tree newer_model)
        ~current_directory:"/home"
-       ~path_to_be_underlined:newer_model.current_path);
-  let newest_model = Navigate.State.get_updated_model_for_right new_model in
+       ~path_to_be_underlined:(State.get_current_path newer_model));
+  let newest_model = State.get_updated_model_for_right new_model in
   print_endline
     (Visualize_helper.visualize
-       newest_model.choices.matrix
+    (State.get_tree newest_model)
        ~current_directory:"/home"
-       ~path_to_be_underlined:newest_model.current_path);
+       ~path_to_be_underlined:(State.get_current_path newest_model));
   [%expect
     {|
     .
@@ -171,58 +143,26 @@ let%expect_test "navigate-right" =
 ;;
 
 let%expect_test "navigate-up" =
-  let mat = Hashtbl.create (module String) in
-  Hashtbl.add_exn
-    mat
-    ~key:"/home"
-    ~data:[ "/home/home_dir1"; "/home/home_dir2" ];
-  Hashtbl.add_exn
-    mat
-    ~key:"/home/home_dir1"
-    ~data:[ "/home/home_dir1/child1"; "/home/home_dir1/child2" ];
-  Hashtbl.add_exn mat ~key:"/home/home_dir2" ~data:[];
-  Hashtbl.add_exn
-    mat
-    ~key:"/home/home_dir1/child1"
-    ~data:[ "/home/home_dir1/child1/.gitignore" ];
+  let mat = get_tree () in
   print_endline
     (Visualize_helper.visualize
        mat
        ~current_directory:"/home"
        ~path_to_be_underlined:"/home/home_dir2");
-  let model =
-    { Navigate.State.choices = { matrix = mat }
-    ; current_path = "/home/home_dir2"
-    ; origin = "/home"
-    ; parent = "/home"
-    ; cursor = 1
-    ; path_to_preview = ""
-    ; show_reduced_tree = false
-    ; text =
-        Leaves.Text_input.make
-          ""
-          ~placeholder:"Type something"
-          ~cursor:cursor_func
-          ()
-    ; quitting = false
-    ; reduced_choices = { matrix = mat }
-    ; full_choices = { matrix = mat }
-    ; moving = false
-    ; move_from = ""
-    }
+  let model = get_init_model ~choices:{matrix = mat} ~current_path:"/home/home_dir2" ~cursor:1
   in
-  let new_model = Navigate.State.get_updated_model_for_up model in
+  let new_model = State.get_updated_model_for_up model in
   print_endline
     (Visualize_helper.visualize
-       new_model.choices.matrix
+       (State.get_tree new_model)
        ~current_directory:"/home"
-       ~path_to_be_underlined:new_model.current_path);
-  let newer_model = Navigate.State.get_updated_model_for_up new_model in
+       ~path_to_be_underlined:(State.get_current_path new_model));
+  let newer_model = State.get_updated_model_for_up new_model in
   print_endline
     (Visualize_helper.visualize
-       newer_model.choices.matrix
+      (State.get_tree newer_model)
        ~current_directory:"/home"
-       ~path_to_be_underlined:newer_model.current_path);
+       ~path_to_be_underlined:(State.get_current_path newer_model));
   [%expect
     {|
     .
@@ -250,58 +190,26 @@ let%expect_test "navigate-up" =
 ;;
 
 let%expect_test "navigate-down" =
-  let mat = Hashtbl.create (module String) in
-  Hashtbl.add_exn
-    mat
-    ~key:"/home"
-    ~data:[ "/home/home_dir1"; "/home/home_dir2" ];
-  Hashtbl.add_exn
-    mat
-    ~key:"/home/home_dir1"
-    ~data:[ "/home/home_dir1/child1"; "/home/home_dir1/child2" ];
-  Hashtbl.add_exn mat ~key:"/home/home_dir2" ~data:[];
-  Hashtbl.add_exn
-    mat
-    ~key:"/home/home_dir1/child1"
-    ~data:[ "/home/home_dir1/child1/.gitignore" ];
+  let mat = get_tree () in
   print_endline
     (Visualize_helper.visualize
        mat
        ~current_directory:"/home"
        ~path_to_be_underlined:"/home/home_dir1");
-  let model =
-    { Navigate.State.choices = { matrix = mat }
-    ; current_path = "/home/home_dir1"
-    ; origin = "/home"
-    ; parent = "/home"
-    ; cursor = 0
-    ; path_to_preview = ""
-    ; show_reduced_tree = false
-    ; text =
-        Leaves.Text_input.make
-          ""
-          ~placeholder:"Type something"
-          ~cursor:cursor_func
-          ()
-    ; quitting = false
-    ; reduced_choices = { matrix = mat }
-    ; full_choices = { matrix = mat }
-    ; moving = false
-    ; move_from = ""
-    }
+  let model = get_init_model ~choices:{matrix = mat} ~current_path:"/home/home_dir1" ~cursor:0
   in
-  let new_model = Navigate.State.get_updated_model_for_down model in
+  let new_model = State.get_updated_model_for_down model in
   print_endline
     (Visualize_helper.visualize
-       new_model.choices.matrix
+      (State.get_tree new_model)
        ~current_directory:"/home"
-       ~path_to_be_underlined:new_model.current_path);
-  let newer_model = Navigate.State.get_updated_model_for_down new_model in
+       ~path_to_be_underlined:(State.get_current_path new_model));
+  let newer_model = State.get_updated_model_for_down new_model in
   print_endline
     (Visualize_helper.visualize
-       newer_model.choices.matrix
+      (State.get_tree newer_model)
        ~current_directory:"/home"
-       ~path_to_be_underlined:newer_model.current_path);
+       ~path_to_be_underlined:(State.get_current_path newer_model));
   [%expect
     {|
     .
