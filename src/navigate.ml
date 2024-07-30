@@ -22,7 +22,7 @@ module State = struct
     ; cursor : int
     ; path_to_preview : string
     ; text : Leaves.Text_input.t
-    ; quitting : bool
+    ; writing : bool
     ; show_reduced_tree : bool
     ; reduced_choices : Visualize.Adjacency_matrix.t
     ; full_choices : Visualize.Adjacency_matrix.t
@@ -70,11 +70,11 @@ module State = struct
   ;;
 
   let get_updated_model_for_rename t =
-    let quitting = true in
+    let writing = true in
     let text =
       Leaves.Text_input.make "" ~placeholder:"" ~cursor:cursor_func ()
     in
-    { t with quitting; text }
+    { t with writing; text }
   ;;
 
   let remove_helper t ~parent ~child =
@@ -243,7 +243,7 @@ let update event (model : State.t) =
   let open Minttea in
   if model.moving
   then move_arround event model
-  else if model.quitting |> not
+  else if model.writing |> not
   then (
     match event with
     | Event.KeyDown (Left, _modifier)
@@ -252,8 +252,7 @@ let update event (model : State.t) =
     | Event.KeyDown (Up, _modifier) ->
       move_arround event model
     | Event.KeyDown (Enter, _modifier) ->
-      print_endline (Format.sprintf "cd %s" model.current_path);
-      State.get_updated_model_for_change_dir model, Command.Noop
+      State.get_updated_model_for_change_dir model, exit 0
     | Event.KeyDown (Key "p", _modifier) ->
       State.get_updated_model_for_preview model, Command.Noop
     | Event.KeyDown (Key "v", _modifier) ->
@@ -276,7 +275,7 @@ let update event (model : State.t) =
         Leaves.Text_input.current_text model.text |> rename ~model
       in
       let _ = Sys_unix.command com in
-      let model = { model with quitting = false } in
+      let model = { model with writing = false } in
       model, Command.Noop
     | Event.KeyDown (Key s, _modifier) when valid s ->
       let text = Leaves.Text_input.update model.text event in
@@ -299,7 +298,7 @@ let visualize_tree (model : State.t) ~origin ~max_depth =
   "\n\n\x1b[0mPress ^C to quit\n"
   ^ Format.sprintf {|%s|} tree
   ^
-  if model.quitting
+  if model.writing
   then Format.sprintf "\n%s\n" @@ Leaves.Text_input.view model.text
   else ""
 ;;
@@ -309,7 +308,8 @@ let get_view (model : State.t) ~origin ~max_depth =
   | true ->
     (match State.is_directory model.choices.matrix model.path_to_preview with
      | true -> ""
-     | false -> Preview.preview model.path_to_preview ~num_lines:Int.max_value)
+     | false ->
+       Preview.preview model.path_to_preview ~num_lines:Int.max_value)
   | false -> visualize_tree model ~origin ~max_depth
 ;;
 
@@ -345,7 +345,7 @@ let get_initial_state ~origin ~max_depth : State.t =
   ; cursor = 0
   ; path_to_preview = ""
   ; text = Leaves.Text_input.make "" ~placeholder:"" ~cursor:cursor_func ()
-  ; quitting = false
+  ; writing = false
   ; show_reduced_tree = false
   ; reduced_choices = limited_tree
   ; full_choices = full_tree

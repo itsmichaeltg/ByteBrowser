@@ -9,7 +9,7 @@ module State : sig
     ; cursor : int
     ; path_to_preview : string
     ; text : Leaves.Text_input.t
-    ; quitting : bool
+    ; writing : bool
     ; show_reduced_tree : bool
     ; reduced_choices : Visualize.Adjacency_matrix.t
     ; full_choices : Visualize.Adjacency_matrix.t
