@@ -5,10 +5,16 @@ a command line tool that manages and visualizes directories
 ## Setup
 
 ```
-$ sudo mv bb /bin/bb
+$ sudo cp bb /bin/bb
 ```
 ```
-$ chmod +x /bin/bb
+$ sudo chmod +x /bin/bb
+```
+```
+$ echo "" >> /home/ubuntu/.bashrc && echo "alias bb='source bb \$@'" >> /home/ubuntu/.bashrc
+```
+```
+$ source /home/ubuntu/.bashrc
 ```
 
 ## Run

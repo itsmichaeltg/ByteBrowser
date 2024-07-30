@@ -11,6 +11,11 @@ if [[ "$4" =~ ^[0-9]+$ ]]; then
     command="${command} -max-depth ${4}"
 fi
 eval $command
-reset
-new_dir=$(cat "${tmp_path}")
-echo "cd ${new_dir}"
+if [ "$1" = "navigate" ]; then
+    if [ $# -gt 1 ]; then
+        reset
+        new_dir="cd $(cat "${tmp_path}")"
+        bind '"\e[0n": "'"${new_dir}"'\n"'
+        printf '\e[5n'
+    fi
+fi

@@ -252,7 +252,8 @@ let update event (model : State.t) =
     | Event.KeyDown (Up, _modifier) ->
       move_arround event model
     | Event.KeyDown (Enter, _modifier) ->
-      State.get_updated_model_for_change_dir model, exit 0
+      let model = State.get_updated_model_for_change_dir model in
+      model, exit 0
     | Event.KeyDown (Key "p", _modifier) ->
       State.get_updated_model_for_preview model, Command.Noop
     | Event.KeyDown (Key "v", _modifier) ->
