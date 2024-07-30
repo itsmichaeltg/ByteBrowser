@@ -79,8 +79,8 @@ let update event (model : State.t) =
     | Event.KeyDown (Up, _modifier) ->
       move_arround event model
     | Event.KeyDown (Enter, _modifier) ->
-      print_endline (Format.sprintf "cd %s" (State.get_current_path model));
-      State.get_updated_model_for_change_dir model, Command.Noop
+      let model = State.get_updated_model_for_change_dir model in
+      model, exit 0
     | Event.KeyDown (Key "p", _modifier) ->
       State.get_updated_model_for_preview model, Command.Noop
     (* | Event.KeyDown (Key "v", _modifier) ->
@@ -166,11 +166,7 @@ let get_initial_state ~origin ~max_depth : State.t =
        | false -> origin)
     ~cursor:0
     ~path_to_preview:""
-    ~text:(Leaves.Text_input.make
-    ""
-    ~placeholder:""
-    ~cursor:cursor_func
-    ())
+    ~text:(Leaves.Text_input.make "" ~placeholder:"" ~cursor:cursor_func ())
     ~is_writing:false
     ~show_reduced_tree:false
     ~is_moving:false
