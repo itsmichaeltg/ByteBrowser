@@ -1,1 +1,1 @@
-/home/ubuntu/jsip-final-project/demos
+/home/ubuntu/wiki-game/src
