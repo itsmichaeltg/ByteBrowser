@@ -166,11 +166,7 @@ let get_initial_state ~origin ~max_depth : State.t =
        | false -> origin)
     ~cursor:0
     ~path_to_preview:""
-    ~text:(Leaves.Text_input.make
-    ""
-    ~placeholder:""
-    ~cursor:cursor_func
-    ())
+    ~text:(Leaves.Text_input.make "" ~placeholder:"" ~cursor:cursor_func ())
     ~is_writing:false
     ~show_reduced_tree:false
     ~is_moving:false
