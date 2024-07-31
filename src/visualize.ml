@@ -14,12 +14,6 @@ module Adjacency_matrix = struct
     try Sys_unix.ls_dir origin with _ -> []
   ;;
 
-  let format_str ~origin i =
-    match String.equal (List.last_exn (String.split origin ~on:'/')) "" with
-    | true -> String.concat [ origin; i ]
-    | false -> String.concat [ origin; "/"; i ]
-  ;;
-
   let rec get_adjacency_matrix t ~origin ~max_depth =
     match max_depth with
     | 0 ->
@@ -29,7 +23,7 @@ module Adjacency_matrix = struct
       t
     | _ ->
       let data =
-        List.map (get_files_in_dir origin) ~f:(fun i -> format_str ~origin i)
+        List.map (get_files_in_dir origin) ~f:(fun i -> String.concat [ origin; "/"; i ])
       in
       Hashtbl.add_exn t.matrix ~key:origin ~data;
       List.fold ~init:t data ~f:(fun _ i ->
@@ -51,7 +45,7 @@ module Adjacency_matrix = struct
         List.slice children 0 (Int.min num_to_show (List.length children))
       in
       let data =
-        List.map limited_children ~f:(fun i -> format_str ~origin i)
+        List.map limited_children ~f:(fun i -> String.concat [ origin; "/"; i ])
       in
       Hashtbl.add_exn t.matrix ~key:origin ~data;
       List.fold ~init:t data ~f:(fun _ i ->
