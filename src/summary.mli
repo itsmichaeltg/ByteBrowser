@@ -1,3 +1,3 @@
 open! Core
 
-val generate : string -> string
+val generate : Visualize.Adjacency_matrix.tree -> string -> string

@@ -6,11 +6,17 @@ module Adjacency_matrix = struct
 
   let create () = { matrix = Hashtbl.create (module String) }
 
+  let get_name path =
+    match String.contains path '/' with
+    | false -> path
+    | true -> List.last_exn (String.split path ~on:'/')
+  ;;
+
   let is_directory t (value : string) =
     Hashtbl.mem t.matrix value
   ;;
 
-  let get_children t path = Hashtbl.find t path
+  let get_children (t : tree) path = Hashtbl.find t path
 
   let get_files_in_dir origin : string list =
     try Sys_unix.ls_dir origin with _ -> []

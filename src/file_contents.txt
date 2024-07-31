@@ -1,0 +1,5465 @@
+/nFile name: preview.mlContents of file: open! Core
+
+let preview file ~num_lines =
+  let lst = In_channel.read_lines file in
+  let lines_to_show = List.slice lst 0 (min num_lines (List.length lst)) in
+  String.concat lines_to_show ~sep:"\n"
+;;/nFile name: visualize_helper.mliContents of file: open! Core
+
+val visualize
+  :  (string, string list) Hashtbl.t
+  -> current_directory:string
+  -> path_to_be_underlined:string
+  -> string
+
+val get_name : string -> string/nFile name: summary.mliContents of file: open! Core
+
+val generate : Visualize.Adjacency_matrix.tree -> string -> string/nFile name: file_manager.mliContents of file: open! Core
+
+(** Wrapper around all commands in this library. *)
+val command : Command.t/nFile name: file_manager.mlContents of file: open! Core
+
+let command =
+  Command.group
+    ~summary:""
+    [ "visualize", Visualize.command; "navigate", Navigate.command ]
+;;/nFile name: file_contents.txtContents of file: /nFile name: preview.mlContents of file: open! Core
+
+let preview file ~num_lines =
+  let lst = In_channel.read_lines file in
+  let lines_to_show = List.slice lst 0 (min num_lines (List.length lst)) in
+  String.concat lines_to_show ~sep:"\n"
+;;/nFile name: visualize_helper.mliContents of file: open! Core
+
+val visualize
+  :  (string, string list) Hashtbl.t
+  -> current_directory:string
+  -> path_to_be_underlined:string
+  -> string
+
+val get_name : string -> string/nFile name: summary.mliContents of file: open! Core
+
+val generate : Visualize.Adjacency_matrix.tree -> string -> string/nFile name: file_manager.mliContents of file: open! Core
+
+(** Wrapper around all commands in this library. *)
+val command : Command.t/nFile name: file_manager.mlContents of file: open! Core
+
+let command =
+  Command.group
+    ~summary:""
+    [ "visualize", Visualize.command; "navigate", Navigate.command ]
+;;/nFile name: file_contents.txtContents of file: /nFile name: preview.mlContents of file: open! Core
+
+let preview file ~num_lines =
+  let lst = In_channel.read_lines file in
+  let lines_to_show = List.slice lst 0 (min num_lines (List.length lst)) in
+  String.concat lines_to_show ~sep:"\n"
+;;/nFile name: visualize_helper.mliContents of file: open! Core
+
+val visualize
+  :  (string, string list) Hashtbl.t
+  -> current_directory:string
+  -> path_to_be_underlined:string
+  -> string
+
+val get_name : string -> string/nFile name: summary.mliContents of file: open! Core
+
+val generate : Visualize.Adjacency_matrix.tree -> string -> string/nFile name: file_manager.mliContents of file: open! Core
+
+(** Wrapper around all commands in this library. *)
+val command : Command.t/nFile name: file_manager.mlContents of file: open! Core
+
+let command =
+  Command.group
+    ~summary:""
+    [ "visualize", Visualize.command; "navigate", Navigate.command ]
+;;/nFile name: file_contents.txtContents of file: /nFile name: preview.mlContents of file: open! Core
+
+let preview file ~num_lines =
+  let lst = In_channel.read_lines file in
+  let lines_to_show = List.slice lst 0 (min num_lines (List.length lst)) in
+  String.concat lines_to_show ~sep:"\n"
+;;/nFile name: visualize_helper.mliContents of file: open! Core
+
+val visualize
+  :  (string, string list) Hashtbl.t
+  -> current_directory:string
+  -> path_to_be_underlined:string
+  -> string
+
+val get_name : string -> string/nFile name: summary.mliContents of file: open! Core
+
+val generate : Visualize.Adjacency_matrix.tree -> string -> string/nFile name: file_manager.mliContents of file: open! Core
+
+(** Wrapper around all commands in this library. *)
+val command : Command.t/nFile name: file_manager.mlContents of file: open! Core
+
+let command =
+  Command.group
+    ~summary:""
+    [ "visualize", Visualize.command; "navigate", Navigate.command ]
+;;/nFile name: file_contents.txtContents of file: /nFile name: preview.mlContents of file: open! Core
+
+let preview file ~num_lines =
+  let lst = In_channel.read_lines file in
+  let lines_to_show = List.slice lst 0 (min num_lines (List.length lst)) in
+  String.concat lines_to_show ~sep:"\n"
+;;/nFile name: visualize_helper.mliContents of file: open! Core
+
+val visualize
+  :  (string, string list) Hashtbl.t
+  -> current_directory:string
+  -> path_to_be_underlined:string
+  -> string
+
+val get_name : string -> string/nFile name: summary.mliContents of file: open! Core
+
+val generate : Visualize.Adjacency_matrix.tree -> string -> string/nFile name: file_manager.mliContents of file: open! Core
+
+(** Wrapper around all commands in this library. *)
+val command : Command.t/nFile name: file_manager.mlContents of file: open! Core
+
+let command =
+  Command.group
+    ~summary:""
+    [ "visualize", Visualize.command; "navigate", Navigate.command ]
+;;/nFile name: file_contents.txtContents of file: /nFile name: preview.mlContents of file: open! Core
+
+let preview file ~num_lines =
+  let lst = In_channel.read_lines file in
+  let lines_to_show = List.slice lst 0 (min num_lines (List.length lst)) in
+  String.concat lines_to_show ~sep:"\n"
+;;/nFile name: visualize_helper.mliContents of file: open! Core
+
+val visualize
+  :  (string, string list) Hashtbl.t
+  -> current_directory:string
+  -> path_to_be_underlined:string
+  -> string
+
+val get_name : string -> string/nFile name: summary.mliContents of file: open! Core
+
+val generate : Visualize.Adjacency_matrix.tree -> string -> string/nFile name: file_manager.mliContents of file: open! Core
+
+(** Wrapper around all commands in this library. *)
+val command : Command.t/nFile name: file_manager.mlContents of file: open! Core
+
+let command =
+  Command.group
+    ~summary:""
+    [ "visualize", Visualize.command; "navigate", Navigate.command ]
+;;/nFile name: visualize.mlContents of file: open! Core
+
+module Adjacency_matrix = struct
+  type tree = (string, string list) Hashtbl.t [@@deriving sexp_of]
+  type t = { matrix : tree } [@@deriving sexp_of]
+
+  let create () = { matrix = Hashtbl.create (module String) }
+
+  let get_name path =
+    match String.contains path '/' with
+    | false -> path
+    | true -> List.last_exn (String.split path ~on:'/')
+  ;;
+
+  let is_directory t (value : string) =
+    Hashtbl.mem t.matrix value
+  ;;
+
+  let get_children (t : tree) path = Hashtbl.find t path
+
+  let get_files_in_dir origin : string list =
+    try Sys_unix.ls_dir origin with _ -> []
+  ;;
+
+  let format_str ~origin i =
+    match String.equal (List.last_exn (String.split origin ~on:'/')) "" with
+    | true -> String.concat [ origin; i ]
+    | false -> String.concat [ origin; "/"; i ]
+  ;;
+
+  let rec get_adjacency_matrix t ~origin ~max_depth =
+    match max_depth with
+    | 0 ->
+      (match Sys_unix.is_directory origin with
+       | `Yes -> Hashtbl.add_exn t.matrix ~key:origin ~data:[]
+       | _ -> ());
+      t
+    | _ ->
+      let data =
+        List.map (get_files_in_dir origin) ~f:(fun i -> format_str ~origin i)
+      in
+      Hashtbl.add_exn t.matrix ~key:origin ~data;
+      List.fold ~init:t data ~f:(fun _ i ->
+        match Sys_unix.is_directory i with
+        | `Yes -> get_adjacency_matrix t ~origin:i ~max_depth:(max_depth - 1)
+        | _ -> get_adjacency_matrix t ~origin:i ~max_depth:0)
+  ;;
+
+  let rec get_limited_adjacency_matrix t ~origin ~max_depth ~num_to_show =
+    match max_depth with
+    | 0 ->
+      (match Sys_unix.is_directory origin with
+       | `Yes -> Hashtbl.add_exn t.matrix ~key:origin ~data:[]
+       | _ -> ());
+      t
+    | _ ->
+      let children = get_files_in_dir origin in
+      let limited_children =
+        List.slice children 0 (Int.min num_to_show (List.length children))
+      in
+      let data =
+        List.map limited_children ~f:(fun i -> format_str ~origin i)
+      in
+      Hashtbl.add_exn t.matrix ~key:origin ~data;
+      List.fold ~init:t data ~f:(fun _ i ->
+        match Sys_unix.is_directory i with
+        | `Yes ->
+          get_limited_adjacency_matrix
+            t
+            ~origin:i
+            ~max_depth:(max_depth - 1)
+            ~num_to_show
+        | _ ->
+          get_limited_adjacency_matrix t ~origin:i ~max_depth:0 ~num_to_show)
+  ;;
+end
+
+let print_dir (tree : Adjacency_matrix.t) ~origin =
+  Visualize_helper.visualize
+    tree.matrix
+    ~current_directory:origin
+    ~path_to_be_underlined:""
+;;
+
+let visualize ~max_depth ~origin =
+  let matrix =
+    Adjacency_matrix.create ()
+    |> Adjacency_matrix.get_adjacency_matrix ~origin ~max_depth
+  in
+  print_dir ~origin matrix |> print_endline
+;;
+
+let pwd_visualize_command =
+  let open Command.Let_syntax in
+  Command.basic
+    ~summary:"starts at the current working directory"
+    [%map_open
+      let max_depth =
+        flag
+          "max-depth"
+          (optional_with_default 3 int)
+          ~doc:"INT maximum length of path to search for (default 10)"
+      in
+      fun () -> visualize ~max_depth ~origin:(Sys_unix.getcwd ())]
+;;
+
+let start_visualize_command =
+  let open Command.Let_syntax in
+  Command.basic
+    ~summary:"starts at a given path"
+    [%map_open
+      let origin = flag "start" (required string) ~doc:" the starting path"
+      and max_depth =
+        flag
+          "max-depth"
+          (optional_with_default 3 int)
+          ~doc:"INT maximum length of path to search for (default 10)"
+      in
+      fun () -> visualize ~max_depth ~origin]
+;;
+
+let command =
+  Command.group
+    ~summary:"file manager commands"
+    [ "pwd", pwd_visualize_command; "dir", start_visualize_command ]
+;;/nFile name: duneContents of file: ;; -*- mode: scheme; -*-
+
+(library
+ (name file_manager_lib)
+ (libraries async core minttea leaves)
+ (inline_tests)
+ (preprocess
+  (pps ppx_jane)))
+
+(env
+ (dev
+  (flags
+   (:standard -w -20 -w -27 -w -32 -w -34 -w -37 -w -39 -w -69)))
+ (release
+  (flags (:standard))))/nFile name: visualize.mliContents of file: open! Core
+
+module Adjacency_matrix : sig
+  type tree = (string, string list) Hashtbl.t
+  type t = { matrix : tree } [@@deriving sexp_of]
+  val create : unit -> t
+  val get_adjacency_matrix : t -> origin:string -> max_depth:int -> t
+  val get_files_in_dir : string -> string list
+  val is_directory : t -> string -> bool
+  val get_children : tree -> string -> string list option
+  val get_name : string -> string
+  val get_limited_adjacency_matrix
+    :  t
+    -> origin:string
+    -> max_depth:int
+    -> num_to_show:int
+    -> t
+end
+
+val visualize : max_depth:int -> origin:string -> unit
+val command : Command.t/nFile name: summary.mlContents of file: open! Core
+
+let path_to_read_from = "/home/ubuntu/jsip-final-project/src/completion.txt"
+let path_to_script = "/home/ubuntu/jsip-final-project/src/summarization_script.py"
+let path_to_write_to = "/home/ubuntu/jsip-final-project/src/file_contents.txt"
+
+let rec find_paths_to_skim tree origin =
+  match Hashtbl.find tree origin with
+  | None -> [origin]
+  | Some children ->
+    List.fold children ~init:[] ~f:(fun acc child ->
+      List.append acc (find_paths_to_skim tree child))
+
+let generate (tree : Visualize.Adjacency_matrix.tree) (origin : string) =
+  let paths_to_skim = find_paths_to_skim tree origin in
+  let contents_of_paths =
+    List.fold paths_to_skim ~init:"" ~f:(fun acc path ->
+      acc
+      ^ "/n"
+      ^ Printf.sprintf "File name: %s" (Visualize.Adjacency_matrix.get_name path)
+      ^ Printf.sprintf "Contents of file: %s" (Preview.preview path ~num_lines:Int.max_value)
+    )
+  in
+  Out_channel.write_all path_to_write_to ~data:contents_of_paths;
+  let command = Printf.sprintf "python3 %s \"%s\"" path_to_script contents_of_paths in
+  let _ = Sys_unix.command command in
+  let result = In_channel.read_all path_to_read_from in
+  result/nFile name: navigate.mliContents of file: open! Core
+
+val command : Command.t/nFile name: visualize_helper.mlContents of file: open! Core
+
+(* TODO: add a way to highlight two places *)
+
+module Styling = struct
+  type t = { mutable styles : string list }
+
+  let get_emoji_by_dir ~is_dir =
+    match is_dir with true -> "📁" | false -> ""
+  ;;
+
+  let apply_style t ~apply_to ~is_dir =
+    "\x1b["
+    ^ List.fold t.styles ~init:"" ~f:(fun acc style -> acc ^ ";" ^ style)
+    ^ "m"
+    ^ apply_to
+  ;;
+end
+
+let get_depth_space ~depth =
+  List.fold (List.init depth ~f:Fn.id) ~init:"\x1b[0m" ~f:(fun acc num ->
+    match num = depth - 1 with
+    | true -> acc ^ "\x1b[0m|__"
+    | false -> acc ^ "  ")
+  ^ " "
+;;
+
+let is_directory (tree : (string, string list) Hashtbl.t) (value : string) =
+  Hashtbl.mem tree value
+;;
+
+let is_hidden_file name = String.is_prefix name ~prefix:"."
+
+let get_name path =
+  match String.contains path '/' with
+  | false -> path
+  | true -> List.last_exn (String.split path ~on:'/')
+;;
+
+let%expect_test "get_name" =
+  print_endline (get_name "/home/ubuntu/jsip-final-project");
+  print_endline (get_name "dune-project");
+  [%expect {|
+  jsip-final-project
+  dune-project
+  |}]
+;;
+
+let get_styles tree ~(path_to_be_underlined : string) ~(parent : string) =
+  let (styles : Styling.t) = { styles = [ "0" ] } in
+  (match String.equal path_to_be_underlined parent with
+   | true -> styles.styles <- List.append styles.styles [ "4" ]
+   | false -> ());
+  (match is_directory tree parent with
+   | true -> styles.styles <- List.append styles.styles [ "36" ]
+   | false ->
+     (match is_hidden_file (get_name parent) with
+      | true -> styles.styles <- List.append styles.styles [ "35" ]
+      | false -> ()));
+  styles
+;;
+
+let get_formatted_tree_with_new_parent
+  tree
+  ~(path_to_be_underlined : string)
+  ~(parent : string)
+  ~(depth : int)
+  ~(so_far : string)
+  =
+  so_far
+  ^ "\n"
+  ^ get_depth_space ~depth
+  ^ Styling.get_emoji_by_dir ~is_dir:(is_directory tree parent)
+  ^ Printf.sprintf
+      "%s"
+      (Styling.apply_style
+         (get_styles tree ~path_to_be_underlined ~parent)
+         ~apply_to:(get_name parent)
+         ~is_dir:(is_directory tree parent))
+;;
+
+let rec helper
+  ~(so_far : string)
+  (tree : (string, string list) Hashtbl.t)
+  ~(depth : int)
+  ~(parent : string)
+  ~(path_to_be_underlined : string)
+  ~(start_from : string)
+  ~(has_started : bool)
+  ~(num_lines_down : int)
+  : string
+  =
+  let has_started = match Bool.equal has_started false && String.equal parent start_from with | true -> true | false -> has_started in
+  match has_started && num_lines_down < 3 with
+  | true ->
+    (match Hashtbl.find tree parent with
+     | None ->
+       get_formatted_tree_with_new_parent
+         tree
+         ~parent
+         ~depth
+         ~so_far
+         ~path_to_be_underlined
+     | Some current_children ->
+       let init =
+         ((get_formatted_tree_with_new_parent
+           tree
+           ~parent
+           ~depth
+           ~so_far
+           ~path_to_be_underlined), 0)
+       in
+      List.fold current_children ~init ~f:(fun (acc, count) child ->
+          helper
+           ~so_far:acc
+           tree
+           ~depth:(depth + 1)
+           ~parent:child
+           ~path_to_be_underlined
+           ~has_started
+           ~start_from
+           ~num_lines_down:(count + 1), count + 1
+        ) |> fst )
+  | false -> so_far
+;;
+
+type result =
+  { count : int
+  ; so_far : string
+  }
+
+let find_start_path tree path limit =
+  let past_tokens =
+    List.fold
+      (String.split path ~on:'/')
+      ~init:("", [])
+      ~f:(fun (full_path_so_far, paths) token ->
+        match String.length token > 0 with
+        | false -> (full_path_so_far, paths)
+        | true ->
+        let new_path = full_path_so_far ^ "/" ^ token in
+        new_path, List.append paths [ new_path ])
+    |> snd
+    |> List.rev
+  in
+  let final =
+    List.fold
+      past_tokens
+      ~init:{ count = 0; so_far = "" }
+      ~f:(fun { count; so_far } token ->
+        match Hashtbl.find tree token with
+        | None -> { count = count + 1; so_far = token }
+        | Some children ->
+          print_endline token;
+          let new_count = List.length children + count + 1 in
+          print_endline (Int.to_string new_count);
+          (match new_count <= limit with
+           | true -> { count = new_count; so_far = token }
+           | false -> { count; so_far }))
+  in
+  final.so_far
+;;
+
+let visualize
+  (tree : (string, string list) Hashtbl.t)
+  ~(current_directory : string)
+  ~(path_to_be_underlined : string)
+  : string
+  =
+  let start_from = find_start_path tree path_to_be_underlined 10 in
+  let res = helper
+    tree
+    ~depth:1
+    ~so_far:"."
+    ~parent:current_directory
+    ~path_to_be_underlined
+    ~start_from
+    ~has_started:false
+    ~num_lines_down:0 in
+  print_endline res; res
+;;/nFile name: completion.txtContents of file: I can help summarize the contents of a directory. However, I need you to provide me with the details of the directory you want to summarize. Please list the files and subdirectories within that directory, along with any specific information you would like to know!Sure! To help you summarize the contents of a directory, please provide me with the details of the files and folders present in that directory. This may include file names, types, sizes, and any other relevant information. Then, I can help you create a summary of the contents./nFile name: preview.mliContents of file: open! Core
+
+val preview : string -> num_lines:int -> string/nFile name: statistics.mlContents of file: open! Core
+
+(* not implemented yet *)
+
+let statistics file = ""/nFile name: state.mliContents of file: open! Core
+open! Leaves
+
+type t
+
+val remove_last_path : string -> string
+val get_updated_model_for_preview : t -> t
+val get_updated_model_for_rename : t -> t
+val get_updated_model_for_change_dir : t -> t
+val get_updated_model_for_move : t -> t
+val get_updated_model_for_remove : t -> t
+val get_updated_model_for_right : t -> t
+val get_updated_model_for_left : t -> t
+val get_updated_model_for_up : t -> t
+val get_updated_model_for_down : t -> t
+val get_updated_model_for_move : t -> t
+val get_path_to_preview : t -> string
+val get_tree : t -> Visualize.Adjacency_matrix.tree
+val get_current_path : t -> string
+val get_is_writing : t -> bool
+val get_text : t -> Text_input.t
+val get_parent : t -> string
+val get_is_moving : t -> bool
+val should_preview : t -> bool
+val get_model_after_writing : t -> t
+val get_model_with_new_text : t -> Text_input.t -> t
+val get_model_with_new_current_path : t -> string -> t
+
+val init
+  :  choices:Visualize.Adjacency_matrix.t
+  -> origin:string
+  -> current_path:string
+  -> parent:string
+  -> cursor:int
+  -> path_to_preview:string
+  -> text:Text_input.t
+  -> is_writing:bool
+  -> show_reduced_tree:bool
+  -> is_moving:bool
+  -> move_from:string
+  -> t/nFile name: statistics.mliContents of file: open! Core
+
+val statistics : string -> string/nFile name: summarization_script.pyContents of file: import sys
+import os
+from dotenv import load_dotenv, dotenv_values
+from openai import OpenAI
+
+path_to_write_to = "/home/ubuntu/jsip-final-project/src/completion.txt"
+path_to_read_from = "/home/ubuntu/jsip-final-project/src/file_contents.txt"
+
+load_dotenv()
+
+if __name__ == "__main__":
+    file_contents = sys.argv[1]
+    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+    file = open(path_to_read_from, "r")
+    file_contents = file.read()
+    completion = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {
+                "role": "system",
+                "content": "you are an assitant file manager. summarize the contents of the file contents of a directory."
+            },
+            {
+                "role": "user"
+                "content": file_contents
+            }
+        ]
+    )
+    file_to_write = open(path_to_write, "a")
+    file_to_write.write(completion.choices[0].message.content)
+    file_to_write.close()/nFile name: state.mlContents of file: open! Core
+open! Leaves
+open! Leaves.Cursor
+
+let write_path = "/home/ubuntu/jsip-final-project/bin/path.txt"
+
+let cursor_func =
+  Leaves.Cursor.make
+    ~style:
+      Spices.(
+        default
+        |> bg (Spices.color "#77e5b7")
+        |> fg (Spices.color "#FFFFFF")
+        |> bold true)
+    ()
+;;
+
+type t =
+  { choices : Visualize.Adjacency_matrix.t
+  ; current_path : string
+  ; origin : string
+  ; parent : string
+  ; cursor : int
+  ; path_to_preview : string
+  ; text : Text_input.t
+  ; is_writing : bool
+  ; show_reduced_tree : bool
+  ; move_from : string
+  ; is_moving : bool
+  }
+
+type dir =
+  | UP
+  | DOWN
+
+let should_preview t =
+  String.length t.path_to_preview > 0
+  && not
+       (Visualize.Adjacency_matrix.is_directory t.choices t.path_to_preview)
+;;
+
+let get_is_moving t = t.is_moving
+let get_tree t = t.choices.matrix
+let get_current_path t = t.current_path
+let get_text t = t.text
+let get_parent t = t.parent
+let get_is_writing t = t.is_writing
+let get_path_to_preview t = t.path_to_preview
+let get_model_after_writing t = { t with is_writing = false }
+let get_model_with_new_text t new_text = { t with text = new_text }
+
+let get_model_with_new_current_path t new_current_path =
+  { t with current_path = new_current_path }
+;;
+
+let get_updated_model_for_move t =
+  { t with is_moving = true; move_from = t.current_path }
+;;
+
+let remove_last_path current_path =
+  let str_lst = String.split current_path ~on:'/' in
+  List.foldi str_lst ~init:[] ~f:(fun idx new_lst elem ->
+    match idx = List.length str_lst - 1 with
+    | true -> new_lst
+    | false -> new_lst @ [ elem ])
+  |> String.concat ~sep:"/"
+;;
+
+let init
+  ~choices
+  ~origin
+  ~current_path
+  ~parent
+  ~cursor
+  ~path_to_preview
+  ~text
+  ~is_writing
+  ~show_reduced_tree
+  ~is_moving
+  ~move_from
+  =
+  { choices
+  ; current_path
+  ; origin
+  ; parent
+  ; cursor
+  ; path_to_preview
+  ; text
+  ; is_writing
+  ; show_reduced_tree
+  ; is_moving
+  ; move_from
+  }
+;;
+
+let get_idx_by_dir t ~dir =
+  match dir with
+  | UP ->
+    (try
+       (t.cursor - 1)
+       % (Hashtbl.find_exn t.choices.matrix t.parent |> List.length)
+     with
+     | _ -> 0)
+  | DOWN ->
+    (try
+       (t.cursor + 1)
+       % (Hashtbl.find_exn t.choices.matrix t.parent |> List.length)
+     with
+     | _ -> 0)
+;;
+
+let get_updated_model_for_preview t =
+  match t.path_to_preview with
+  | "" -> { t with path_to_preview = t.current_path }
+  | _ -> { t with path_to_preview = "" }
+;;
+
+let get_updated_model_for_rename t =
+  let is_writing = true in
+  let text =
+    Leaves.Text_input.make "" ~placeholder:"" ~cursor:cursor_func ()
+  in
+  { t with is_writing; text }
+;;
+
+let remove_helper t ~parent ~child =
+  let siblings =
+    (match Hashtbl.find t.choices.matrix parent with
+     | Some lst -> lst
+     | None -> [])
+    |> List.filter ~f:(fun elem -> String.equal child elem |> not)
+  in
+  match siblings with
+  | [] -> ()
+  | _ -> Hashtbl.set t.choices.matrix ~key:parent ~data:siblings
+;;
+
+let get_updated_model_for_change_dir t =
+  Out_channel.write_all write_path ~data:t.current_path;
+  t
+;;
+
+let get_updated_model_for_move t =
+  match Visualize.Adjacency_matrix.is_directory t.choices t.current_path with
+  | true ->
+    remove_helper t ~parent:(remove_last_path t.move_from) ~child:t.move_from;
+    Hashtbl.set
+      t.choices.matrix
+      ~key:t.current_path
+      ~data:
+        (Hashtbl.find_exn t.choices.matrix t.current_path
+         @ [ String.concat
+               [ t.current_path; "/"; Visualize_helper.get_name t.move_from ]
+           ]);
+    let _ =
+      Format.sprintf {|mv %s %s|} t.move_from t.current_path
+      |> Sys_unix.command
+    in
+    let move_from = "" in
+    let is_moving = false in
+    { t with move_from; is_moving }
+  | false -> t
+;;
+
+let get_updated_model_for_remove t =
+  remove_helper t ~parent:t.parent ~child:t.current_path;
+  let _ = Format.sprintf {|rm -rf %s|} t.current_path |> Sys_unix.command in
+  t
+;;
+
+let handle_up_and_down t ~dir =
+  let cursor = get_idx_by_dir t ~dir in
+  let current_path =
+    try List.nth_exn (Hashtbl.find_exn t.choices.matrix t.parent) cursor with
+    | _ -> t.current_path
+  in
+  let tmp_model = { t with cursor } in
+  { tmp_model with current_path }
+;;
+
+let get_updated_model_for_right t =
+  let current_path =
+    try Hashtbl.find_exn t.choices.matrix t.current_path with
+    | _ -> [ t.current_path ]
+  in
+  if current_path |> List.is_empty
+  then t
+  else (
+    let current_path = List.hd_exn current_path in
+    let parent =
+      if String.equal t.current_path current_path
+      then t.parent
+      else t.current_path
+    in
+    { t with current_path; cursor = 0; parent })
+;;
+
+let get_idx t ~parent ~current_path =
+  match Hashtbl.find t.choices.matrix parent with
+  | Some lst ->
+    List.foldi ~init:None lst ~f:(fun idx acc elem ->
+      if String.equal elem current_path then Some idx else acc)
+  | None -> None
+;;
+
+let get_updated_model_for_left t =
+  let current_path, parent =
+    match String.equal t.current_path t.origin with
+    | true -> t.current_path, t.parent
+    | false -> remove_last_path t.current_path, remove_last_path t.parent
+  in
+  let tmp_model = { t with parent } in
+  { tmp_model with current_path }
+;;
+
+let get_updated_model_for_up t = handle_up_and_down t ~dir:UP
+let get_updated_model_for_down t = handle_up_and_down t ~dir:DOWN
+(* let get_updated_model_for_reduced_tree t = match t.show_reduced_tree with
+   | true -> { t with show_reduced_tree = false; choices = t.full_choices } |
+   false -> { t with show_reduced_tree = true ; choices = t.reduced_choices
+   (* ; current_path = t.origin *) } *)/nFile name: navigate.mlContents of file: open! Core
+
+let cursor_func =
+  Leaves.Cursor.make
+    ~style:
+      Spices.(
+        default
+        |> bg (Spices.color "#77e5b7")
+        |> fg (Spices.color "#FFFFFF")
+        |> bold true)
+    ()
+;;
+
+let rename ~(model : State.t) new_name =
+  let new_path =
+    String.concat
+      [ State.remove_last_path (State.get_current_path model)
+      ; "/"
+      ; new_name
+      ]
+  in
+  let siblings =
+    (match Hashtbl.find (State.get_tree model) (State.get_parent model) with
+     | Some lst -> lst
+     | None -> [])
+    |> List.map ~f:(fun elem ->
+      match String.equal (State.get_current_path model) elem with
+      | true -> new_path
+      | false -> elem)
+  in
+  let _ =
+    match siblings with
+    | [] -> ()
+    | _ ->
+      Hashtbl.set
+        (State.get_tree model)
+        ~key:(State.get_parent model)
+        ~data:siblings
+  in
+  ( Format.sprintf {|mv %s %s|} (State.get_current_path model) new_path
+  , State.get_model_with_new_current_path
+      model
+      (String.concat [ State.get_parent model; "/"; new_name ]) )
+;;
+
+let valid s =
+  String.fold ~init:true s ~f:(fun acc ch ->
+    match Char.is_alphanum ch with
+    | true -> acc
+    | false -> (match ch with '.' | '_' | '-' -> true | _ -> false))
+;;
+
+let move_arround event (model : State.t) =
+  let open Minttea in
+  match event with
+  | Event.KeyDown ((Left | Key "h"), _modifier) ->
+    State.get_updated_model_for_left model, Command.Noop
+  | Event.KeyDown ((Right | Key "l"), _modifier) ->
+    State.get_updated_model_for_right model, Command.Noop
+  | Event.KeyDown ((Up | Key "k"), _modifier) ->
+    State.get_updated_model_for_up model, Command.Noop
+  | Event.KeyDown ((Down | Key "j"), _modifier) ->
+    State.get_updated_model_for_down model, Command.Noop
+  | Event.KeyDown (Enter, _modifier) ->
+    State.get_updated_model_for_move model, Command.Noop
+  | _ -> model, Command.Noop
+;;
+
+let update event (model : State.t) =
+  let open Minttea in
+  if State.get_is_moving model
+  then move_arround event model
+  else if not (State.get_is_writing model)
+  then (
+    match event with
+    | Event.KeyDown (Left, _modifier)
+    | Event.KeyDown (Down, _modifier)
+    | Event.KeyDown (Right, _modifier)
+    | Event.KeyDown (Up, _modifier) ->
+      move_arround event model
+    | Event.KeyDown (Enter, _modifier) ->
+      let model = State.get_updated_model_for_change_dir model in
+      model, exit 0
+    | Event.KeyDown (Key "p", _modifier) ->
+      State.get_updated_model_for_preview model, Command.Noop
+    (* | Event.KeyDown (Key "v", _modifier) ->
+       State.get_updated_model_for_reduced_tree model, Command.Noop *)
+    | Event.KeyDown (Key "d", Ctrl) ->
+      State.get_updated_model_for_remove model, Minttea.Command.Noop
+    | Event.KeyDown (Key "r", _modifier) ->
+      State.get_updated_model_for_rename model, Command.Noop
+    | Event.KeyDown (Key "m", _modifier) ->
+      print_endline
+        (Format.sprintf "moivng %s" (State.get_current_path model));
+      State.get_updated_model_for_move model, Command.Noop
+    | _ -> model, Minttea.Command.Noop)
+  else (
+    match event with
+    | Event.KeyDown (Escape, _modifier) ->
+      State.get_updated_model_for_rename model, Command.Noop
+    | Event.KeyDown (Enter, _modifier) ->
+      let com, model =
+        Leaves.Text_input.current_text (State.get_text model)
+        |> rename ~model
+      in
+      let _ = Sys_unix.command com in
+      State.get_model_after_writing model, Command.Noop
+    | Event.KeyDown (Key s, _modifier) when valid s ->
+      let text = Leaves.Text_input.update (State.get_text model) event in
+      State.get_model_with_new_text model text, Command.Noop
+    | Event.KeyDown (Backspace, _modifier)
+    | Event.KeyDown (Left, _modifier)
+    | Event.KeyDown (Right, _modifier) ->
+      let text = Leaves.Text_input.update (State.get_text model) event in
+      State.get_model_with_new_text model text, Command.Noop
+    | _ -> model, Command.Noop)
+;;
+
+let visualize_tree (model : State.t) ~origin ~max_depth =
+  let tree =
+    Visualize_helper.visualize
+      (State.get_tree model)
+      ~current_directory:origin
+      ~path_to_be_underlined:(State.get_current_path model)
+  in
+  "\n\n\x1b[0mPress ^C to quit\n"
+  ^ Format.sprintf {|%s|} tree
+  ^
+  if State.get_is_writing model
+  then
+    Format.sprintf "\n%s\n" @@ Leaves.Text_input.view (State.get_text model)
+  else ""
+;;
+
+let get_view (model : State.t) ~origin ~max_depth =
+  match State.should_preview model with
+  | true ->
+    Preview.preview
+      (State.get_path_to_preview model)
+      ~num_lines:Int.max_value
+  | false -> visualize_tree model ~origin ~max_depth
+;;
+
+let get_initial_state ~origin ~max_depth : State.t =
+  let tree =
+    Visualize.Adjacency_matrix.create ()
+    |> Visualize.Adjacency_matrix.get_adjacency_matrix ~origin ~max_depth
+  in
+  let children =
+    match Hashtbl.find tree.matrix origin with
+    | None -> []
+    | Some children -> children
+  in
+  let initial_path =
+    match List.hd children with
+    | None -> origin
+    | Some first_child -> first_child
+  in
+  State.init
+    ~choices:tree
+    ~current_path:initial_path
+    ~origin
+    ~parent:
+      (match String.equal initial_path origin with
+       | true -> State.remove_last_path origin
+       | false -> origin)
+    ~cursor:0
+    ~path_to_preview:""
+    ~text:(Leaves.Text_input.make "" ~placeholder:"" ~cursor:cursor_func ())
+    ~is_writing:false
+    ~show_reduced_tree:false
+    ~is_moving:false
+    ~move_from:""
+;;
+
+let init _model =
+  let open Minttea in
+  Command.Noop
+;;
+
+let navigate ~max_depth ~origin =
+  let app =
+    Minttea.app ~init ~update ~view:(get_view ~origin ~max_depth) ()
+  in
+  Minttea.start app ~initial_model:(get_initial_state ~origin ~max_depth)
+;;
+
+let pwd_navigate_command =
+  let open Core.Command.Let_syntax in
+  Core.Command.basic
+    ~summary:"starts at the current working directory"
+    [%map_open
+      let max_depth =
+        flag
+          "max-depth"
+          (optional_with_default 3 int)
+          ~doc:"INT maximum length of path to search for (default 3)"
+      in
+      fun () -> navigate ~max_depth ~origin:(Sys_unix.getcwd ())]
+;;
+
+let start_navigate_command =
+  let open Command.Let_syntax in
+  Command.basic
+    ~summary:"starts at a given path"
+    [%map_open
+      let origin = flag "start" (required string) ~doc:" the starting path"
+      and max_depth =
+        flag
+          "max-depth"
+          (optional_with_default 3 int)
+          ~doc:"INT maximum length of path to search for (default 10)"
+      in
+      fun () -> navigate ~max_depth ~origin]
+;;
+
+let command =
+  Core.Command.group
+    ~summary:"file manager commands"
+    [ "pwd", pwd_navigate_command; "dir", start_navigate_command ]
+;;/nFile name: visualize.mlContents of file: open! Core
+
+module Adjacency_matrix = struct
+  type tree = (string, string list) Hashtbl.t [@@deriving sexp_of]
+  type t = { matrix : tree } [@@deriving sexp_of]
+
+  let create () = { matrix = Hashtbl.create (module String) }
+
+  let get_name path =
+    match String.contains path '/' with
+    | false -> path
+    | true -> List.last_exn (String.split path ~on:'/')
+  ;;
+
+  let is_directory t (value : string) =
+    Hashtbl.mem t.matrix value
+  ;;
+
+  let get_children (t : tree) path = Hashtbl.find t path
+
+  let get_files_in_dir origin : string list =
+    try Sys_unix.ls_dir origin with _ -> []
+  ;;
+
+  let format_str ~origin i =
+    match String.equal (List.last_exn (String.split origin ~on:'/')) "" with
+    | true -> String.concat [ origin; i ]
+    | false -> String.concat [ origin; "/"; i ]
+  ;;
+
+  let rec get_adjacency_matrix t ~origin ~max_depth =
+    match max_depth with
+    | 0 ->
+      (match Sys_unix.is_directory origin with
+       | `Yes -> Hashtbl.add_exn t.matrix ~key:origin ~data:[]
+       | _ -> ());
+      t
+    | _ ->
+      let data =
+        List.map (get_files_in_dir origin) ~f:(fun i -> format_str ~origin i)
+      in
+      Hashtbl.add_exn t.matrix ~key:origin ~data;
+      List.fold ~init:t data ~f:(fun _ i ->
+        match Sys_unix.is_directory i with
+        | `Yes -> get_adjacency_matrix t ~origin:i ~max_depth:(max_depth - 1)
+        | _ -> get_adjacency_matrix t ~origin:i ~max_depth:0)
+  ;;
+
+  let rec get_limited_adjacency_matrix t ~origin ~max_depth ~num_to_show =
+    match max_depth with
+    | 0 ->
+      (match Sys_unix.is_directory origin with
+       | `Yes -> Hashtbl.add_exn t.matrix ~key:origin ~data:[]
+       | _ -> ());
+      t
+    | _ ->
+      let children = get_files_in_dir origin in
+      let limited_children =
+        List.slice children 0 (Int.min num_to_show (List.length children))
+      in
+      let data =
+        List.map limited_children ~f:(fun i -> format_str ~origin i)
+      in
+      Hashtbl.add_exn t.matrix ~key:origin ~data;
+      List.fold ~init:t data ~f:(fun _ i ->
+        match Sys_unix.is_directory i with
+        | `Yes ->
+          get_limited_adjacency_matrix
+            t
+            ~origin:i
+            ~max_depth:(max_depth - 1)
+            ~num_to_show
+        | _ ->
+          get_limited_adjacency_matrix t ~origin:i ~max_depth:0 ~num_to_show)
+  ;;
+end
+
+let print_dir (tree : Adjacency_matrix.t) ~origin =
+  Visualize_helper.visualize
+    tree.matrix
+    ~current_directory:origin
+    ~path_to_be_underlined:""
+;;
+
+let visualize ~max_depth ~origin =
+  let matrix =
+    Adjacency_matrix.create ()
+    |> Adjacency_matrix.get_adjacency_matrix ~origin ~max_depth
+  in
+  print_dir ~origin matrix |> print_endline
+;;
+
+let pwd_visualize_command =
+  let open Command.Let_syntax in
+  Command.basic
+    ~summary:"starts at the current working directory"
+    [%map_open
+      let max_depth =
+        flag
+          "max-depth"
+          (optional_with_default 3 int)
+          ~doc:"INT maximum length of path to search for (default 10)"
+      in
+      fun () -> visualize ~max_depth ~origin:(Sys_unix.getcwd ())]
+;;
+
+let start_visualize_command =
+  let open Command.Let_syntax in
+  Command.basic
+    ~summary:"starts at a given path"
+    [%map_open
+      let origin = flag "start" (required string) ~doc:" the starting path"
+      and max_depth =
+        flag
+          "max-depth"
+          (optional_with_default 3 int)
+          ~doc:"INT maximum length of path to search for (default 10)"
+      in
+      fun () -> visualize ~max_depth ~origin]
+;;
+
+let command =
+  Command.group
+    ~summary:"file manager commands"
+    [ "pwd", pwd_visualize_command; "dir", start_visualize_command ]
+;;/nFile name: duneContents of file: ;; -*- mode: scheme; -*-
+
+(library
+ (name file_manager_lib)
+ (libraries async core minttea leaves)
+ (inline_tests)
+ (preprocess
+  (pps ppx_jane)))
+
+(env
+ (dev
+  (flags
+   (:standard -w -20 -w -27 -w -32 -w -34 -w -37 -w -39 -w -69)))
+ (release
+  (flags (:standard))))/nFile name: visualize.mliContents of file: open! Core
+
+module Adjacency_matrix : sig
+  type tree = (string, string list) Hashtbl.t
+  type t = { matrix : tree } [@@deriving sexp_of]
+  val create : unit -> t
+  val get_adjacency_matrix : t -> origin:string -> max_depth:int -> t
+  val get_files_in_dir : string -> string list
+  val is_directory : t -> string -> bool
+  val get_children : tree -> string -> string list option
+  val get_name : string -> string
+  val get_limited_adjacency_matrix
+    :  t
+    -> origin:string
+    -> max_depth:int
+    -> num_to_show:int
+    -> t
+end
+
+val visualize : max_depth:int -> origin:string -> unit
+val command : Command.t/nFile name: summary.mlContents of file: open! Core
+
+let path_to_read_from = "/home/ubuntu/jsip-final-project/src/completion.txt"
+let path_to_script = "/home/ubuntu/jsip-final-project/src/summarization_script.py"
+let path_to_write_to = "/home/ubuntu/jsip-final-project/src/file_contents.txt"
+
+let rec find_paths_to_skim tree origin =
+  match Hashtbl.find tree origin with
+  | None -> [origin]
+  | Some children ->
+    List.fold children ~init:[] ~f:(fun acc child ->
+      List.append acc (find_paths_to_skim tree child))
+
+let generate (tree : Visualize.Adjacency_matrix.tree) (origin : string) =
+  let paths_to_skim = find_paths_to_skim tree origin in
+  let contents_of_paths =
+    List.fold paths_to_skim ~init:"" ~f:(fun acc path ->
+      acc
+      ^ "/n"
+      ^ Printf.sprintf "File name: %s" (Visualize.Adjacency_matrix.get_name path)
+      ^ Printf.sprintf "Contents of file: %s" (Preview.preview path ~num_lines:Int.max_value)
+    )
+  in
+  Out_channel.write_all path_to_write_to ~data:contents_of_paths;
+  let command = Printf.sprintf "python3 %s \"%s\"" path_to_script contents_of_paths in
+  let _ = Sys_unix.command command in
+  let result = In_channel.read_all path_to_read_from in
+  result/nFile name: navigate.mliContents of file: open! Core
+
+val command : Command.t/nFile name: visualize_helper.mlContents of file: open! Core
+
+(* TODO: add a way to highlight two places *)
+
+module Styling = struct
+  type t = { mutable styles : string list }
+
+  let get_emoji_by_dir ~is_dir =
+    match is_dir with true -> "📁" | false -> ""
+  ;;
+
+  let apply_style t ~apply_to ~is_dir =
+    "\x1b["
+    ^ List.fold t.styles ~init:"" ~f:(fun acc style -> acc ^ ";" ^ style)
+    ^ "m"
+    ^ apply_to
+  ;;
+end
+
+let get_depth_space ~depth =
+  List.fold (List.init depth ~f:Fn.id) ~init:"\x1b[0m" ~f:(fun acc num ->
+    match num = depth - 1 with
+    | true -> acc ^ "\x1b[0m|__"
+    | false -> acc ^ "  ")
+  ^ " "
+;;
+
+let is_directory (tree : (string, string list) Hashtbl.t) (value : string) =
+  Hashtbl.mem tree value
+;;
+
+let is_hidden_file name = String.is_prefix name ~prefix:"."
+
+let get_name path =
+  match String.contains path '/' with
+  | false -> path
+  | true -> List.last_exn (String.split path ~on:'/')
+;;
+
+let%expect_test "get_name" =
+  print_endline (get_name "/home/ubuntu/jsip-final-project");
+  print_endline (get_name "dune-project");
+  [%expect {|
+  jsip-final-project
+  dune-project
+  |}]
+;;
+
+let get_styles tree ~(path_to_be_underlined : string) ~(parent : string) =
+  let (styles : Styling.t) = { styles = [ "0" ] } in
+  (match String.equal path_to_be_underlined parent with
+   | true -> styles.styles <- List.append styles.styles [ "4" ]
+   | false -> ());
+  (match is_directory tree parent with
+   | true -> styles.styles <- List.append styles.styles [ "36" ]
+   | false ->
+     (match is_hidden_file (get_name parent) with
+      | true -> styles.styles <- List.append styles.styles [ "35" ]
+      | false -> ()));
+  styles
+;;
+
+let get_formatted_tree_with_new_parent
+  tree
+  ~(path_to_be_underlined : string)
+  ~(parent : string)
+  ~(depth : int)
+  ~(so_far : string)
+  =
+  so_far
+  ^ "\n"
+  ^ get_depth_space ~depth
+  ^ Styling.get_emoji_by_dir ~is_dir:(is_directory tree parent)
+  ^ Printf.sprintf
+      "%s"
+      (Styling.apply_style
+         (get_styles tree ~path_to_be_underlined ~parent)
+         ~apply_to:(get_name parent)
+         ~is_dir:(is_directory tree parent))
+;;
+
+let rec helper
+  ~(so_far : string)
+  (tree : (string, string list) Hashtbl.t)
+  ~(depth : int)
+  ~(parent : string)
+  ~(path_to_be_underlined : string)
+  ~(start_from : string)
+  ~(has_started : bool)
+  ~(num_lines_down : int)
+  : string
+  =
+  let has_started = match Bool.equal has_started false && String.equal parent start_from with | true -> true | false -> has_started in
+  match has_started && num_lines_down < 3 with
+  | true ->
+    (match Hashtbl.find tree parent with
+     | None ->
+       get_formatted_tree_with_new_parent
+         tree
+         ~parent
+         ~depth
+         ~so_far
+         ~path_to_be_underlined
+     | Some current_children ->
+       let init =
+         ((get_formatted_tree_with_new_parent
+           tree
+           ~parent
+           ~depth
+           ~so_far
+           ~path_to_be_underlined), 0)
+       in
+      List.fold current_children ~init ~f:(fun (acc, count) child ->
+          helper
+           ~so_far:acc
+           tree
+           ~depth:(depth + 1)
+           ~parent:child
+           ~path_to_be_underlined
+           ~has_started
+           ~start_from
+           ~num_lines_down:(count + 1), count + 1
+        ) |> fst )
+  | false -> so_far
+;;
+
+type result =
+  { count : int
+  ; so_far : string
+  }
+
+let find_start_path tree path limit =
+  let past_tokens =
+    List.fold
+      (String.split path ~on:'/')
+      ~init:("", [])
+      ~f:(fun (full_path_so_far, paths) token ->
+        match String.length token > 0 with
+        | false -> (full_path_so_far, paths)
+        | true ->
+        let new_path = full_path_so_far ^ "/" ^ token in
+        new_path, List.append paths [ new_path ])
+    |> snd
+    |> List.rev
+  in
+  let final =
+    List.fold
+      past_tokens
+      ~init:{ count = 0; so_far = "" }
+      ~f:(fun { count; so_far } token ->
+        match Hashtbl.find tree token with
+        | None -> { count = count + 1; so_far = token }
+        | Some children ->
+          print_endline token;
+          let new_count = List.length children + count + 1 in
+          print_endline (Int.to_string new_count);
+          (match new_count <= limit with
+           | true -> { count = new_count; so_far = token }
+           | false -> { count; so_far }))
+  in
+  final.so_far
+;;
+
+let visualize
+  (tree : (string, string list) Hashtbl.t)
+  ~(current_directory : string)
+  ~(path_to_be_underlined : string)
+  : string
+  =
+  let start_from = find_start_path tree path_to_be_underlined 10 in
+  let res = helper
+    tree
+    ~depth:1
+    ~so_far:"."
+    ~parent:current_directory
+    ~path_to_be_underlined
+    ~start_from
+    ~has_started:false
+    ~num_lines_down:0 in
+  print_endline res; res
+;;/nFile name: completion.txtContents of file: /nFile name: preview.mliContents of file: open! Core
+
+val preview : string -> num_lines:int -> string/nFile name: statistics.mlContents of file: open! Core
+
+(* not implemented yet *)
+
+let statistics file = ""/nFile name: state.mliContents of file: open! Core
+open! Leaves
+
+type t
+
+val remove_last_path : string -> string
+val get_updated_model_for_preview : t -> t
+val get_updated_model_for_rename : t -> t
+val get_updated_model_for_change_dir : t -> t
+val get_updated_model_for_move : t -> t
+val get_updated_model_for_remove : t -> t
+val get_updated_model_for_right : t -> t
+val get_updated_model_for_left : t -> t
+val get_updated_model_for_up : t -> t
+val get_updated_model_for_down : t -> t
+val get_updated_model_for_move : t -> t
+val get_path_to_preview : t -> string
+val get_tree : t -> Visualize.Adjacency_matrix.tree
+val get_current_path : t -> string
+val get_is_writing : t -> bool
+val get_text : t -> Text_input.t
+val get_parent : t -> string
+val get_is_moving : t -> bool
+val should_preview : t -> bool
+val get_model_after_writing : t -> t
+val get_model_with_new_text : t -> Text_input.t -> t
+val get_model_with_new_current_path : t -> string -> t
+
+val init
+  :  choices:Visualize.Adjacency_matrix.t
+  -> origin:string
+  -> current_path:string
+  -> parent:string
+  -> cursor:int
+  -> path_to_preview:string
+  -> text:Text_input.t
+  -> is_writing:bool
+  -> show_reduced_tree:bool
+  -> is_moving:bool
+  -> move_from:string
+  -> t/nFile name: statistics.mliContents of file: open! Core
+
+val statistics : string -> string/nFile name: summarization_script.pyContents of file: import sys
+import os
+from dotenv import load_dotenv, dotenv_values
+from openai import OpenAI
+
+path_to_write_to = "/home/ubuntu/jsip-final-project/src/completion.txt"
+path_to_read_from = "/home/ubuntu/jsip-final-project/src/file_contents.txt"
+
+load_dotenv()
+
+if __name__ == "__main__":
+    file_contents = sys.argv[1]
+    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+    file = open(path_to_read_from, "r")
+    file_contents = file.read()
+    completion = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {
+                "role": "system",
+                "content": "you are an assitant file manager. summarize the contents of the file contents of a directory."
+            },
+            {
+                "role": "user"
+                "content": file_contents
+            }
+        ]
+    )
+    file_to_write = open(path_to_write, "a")
+    file_to_write.write(completion.choices[0].message.content)
+    file_to_write.close()/nFile name: state.mlContents of file: open! Core
+open! Leaves
+open! Leaves.Cursor
+
+let write_path = "/home/ubuntu/jsip-final-project/bin/path.txt"
+
+let cursor_func =
+  Leaves.Cursor.make
+    ~style:
+      Spices.(
+        default
+        |> bg (Spices.color "#77e5b7")
+        |> fg (Spices.color "#FFFFFF")
+        |> bold true)
+    ()
+;;
+
+type t =
+  { choices : Visualize.Adjacency_matrix.t
+  ; current_path : string
+  ; origin : string
+  ; parent : string
+  ; cursor : int
+  ; path_to_preview : string
+  ; text : Text_input.t
+  ; is_writing : bool
+  ; show_reduced_tree : bool
+  ; move_from : string
+  ; is_moving : bool
+  }
+
+type dir =
+  | UP
+  | DOWN
+
+let should_preview t =
+  String.length t.path_to_preview > 0
+  && not
+       (Visualize.Adjacency_matrix.is_directory t.choices t.path_to_preview)
+;;
+
+let get_is_moving t = t.is_moving
+let get_tree t = t.choices.matrix
+let get_current_path t = t.current_path
+let get_text t = t.text
+let get_parent t = t.parent
+let get_is_writing t = t.is_writing
+let get_path_to_preview t = t.path_to_preview
+let get_model_after_writing t = { t with is_writing = false }
+let get_model_with_new_text t new_text = { t with text = new_text }
+
+let get_model_with_new_current_path t new_current_path =
+  { t with current_path = new_current_path }
+;;
+
+let get_updated_model_for_move t =
+  { t with is_moving = true; move_from = t.current_path }
+;;
+
+let remove_last_path current_path =
+  let str_lst = String.split current_path ~on:'/' in
+  List.foldi str_lst ~init:[] ~f:(fun idx new_lst elem ->
+    match idx = List.length str_lst - 1 with
+    | true -> new_lst
+    | false -> new_lst @ [ elem ])
+  |> String.concat ~sep:"/"
+;;
+
+let init
+  ~choices
+  ~origin
+  ~current_path
+  ~parent
+  ~cursor
+  ~path_to_preview
+  ~text
+  ~is_writing
+  ~show_reduced_tree
+  ~is_moving
+  ~move_from
+  =
+  { choices
+  ; current_path
+  ; origin
+  ; parent
+  ; cursor
+  ; path_to_preview
+  ; text
+  ; is_writing
+  ; show_reduced_tree
+  ; is_moving
+  ; move_from
+  }
+;;
+
+let get_idx_by_dir t ~dir =
+  match dir with
+  | UP ->
+    (try
+       (t.cursor - 1)
+       % (Hashtbl.find_exn t.choices.matrix t.parent |> List.length)
+     with
+     | _ -> 0)
+  | DOWN ->
+    (try
+       (t.cursor + 1)
+       % (Hashtbl.find_exn t.choices.matrix t.parent |> List.length)
+     with
+     | _ -> 0)
+;;
+
+let get_updated_model_for_preview t =
+  match t.path_to_preview with
+  | "" -> { t with path_to_preview = t.current_path }
+  | _ -> { t with path_to_preview = "" }
+;;
+
+let get_updated_model_for_rename t =
+  let is_writing = true in
+  let text =
+    Leaves.Text_input.make "" ~placeholder:"" ~cursor:cursor_func ()
+  in
+  { t with is_writing; text }
+;;
+
+let remove_helper t ~parent ~child =
+  let siblings =
+    (match Hashtbl.find t.choices.matrix parent with
+     | Some lst -> lst
+     | None -> [])
+    |> List.filter ~f:(fun elem -> String.equal child elem |> not)
+  in
+  match siblings with
+  | [] -> ()
+  | _ -> Hashtbl.set t.choices.matrix ~key:parent ~data:siblings
+;;
+
+let get_updated_model_for_change_dir t =
+  Out_channel.write_all write_path ~data:t.current_path;
+  t
+;;
+
+let get_updated_model_for_move t =
+  match Visualize.Adjacency_matrix.is_directory t.choices t.current_path with
+  | true ->
+    remove_helper t ~parent:(remove_last_path t.move_from) ~child:t.move_from;
+    Hashtbl.set
+      t.choices.matrix
+      ~key:t.current_path
+      ~data:
+        (Hashtbl.find_exn t.choices.matrix t.current_path
+         @ [ String.concat
+               [ t.current_path; "/"; Visualize_helper.get_name t.move_from ]
+           ]);
+    let _ =
+      Format.sprintf {|mv %s %s|} t.move_from t.current_path
+      |> Sys_unix.command
+    in
+    let move_from = "" in
+    let is_moving = false in
+    { t with move_from; is_moving }
+  | false -> t
+;;
+
+let get_updated_model_for_remove t =
+  remove_helper t ~parent:t.parent ~child:t.current_path;
+  let _ = Format.sprintf {|rm -rf %s|} t.current_path |> Sys_unix.command in
+  t
+;;
+
+let handle_up_and_down t ~dir =
+  let cursor = get_idx_by_dir t ~dir in
+  let current_path =
+    try List.nth_exn (Hashtbl.find_exn t.choices.matrix t.parent) cursor with
+    | _ -> t.current_path
+  in
+  let tmp_model = { t with cursor } in
+  { tmp_model with current_path }
+;;
+
+let get_updated_model_for_right t =
+  let current_path =
+    try Hashtbl.find_exn t.choices.matrix t.current_path with
+    | _ -> [ t.current_path ]
+  in
+  if current_path |> List.is_empty
+  then t
+  else (
+    let current_path = List.hd_exn current_path in
+    let parent =
+      if String.equal t.current_path current_path
+      then t.parent
+      else t.current_path
+    in
+    { t with current_path; cursor = 0; parent })
+;;
+
+let get_idx t ~parent ~current_path =
+  match Hashtbl.find t.choices.matrix parent with
+  | Some lst ->
+    List.foldi ~init:None lst ~f:(fun idx acc elem ->
+      if String.equal elem current_path then Some idx else acc)
+  | None -> None
+;;
+
+let get_updated_model_for_left t =
+  let current_path, parent =
+    match String.equal t.current_path t.origin with
+    | true -> t.current_path, t.parent
+    | false -> remove_last_path t.current_path, remove_last_path t.parent
+  in
+  let tmp_model = { t with parent } in
+  { tmp_model with current_path }
+;;
+
+let get_updated_model_for_up t = handle_up_and_down t ~dir:UP
+let get_updated_model_for_down t = handle_up_and_down t ~dir:DOWN
+(* let get_updated_model_for_reduced_tree t = match t.show_reduced_tree with
+   | true -> { t with show_reduced_tree = false; choices = t.full_choices } |
+   false -> { t with show_reduced_tree = true ; choices = t.reduced_choices
+   (* ; current_path = t.origin *) } *)/nFile name: navigate.mlContents of file: open! Core
+
+let cursor_func =
+  Leaves.Cursor.make
+    ~style:
+      Spices.(
+        default
+        |> bg (Spices.color "#77e5b7")
+        |> fg (Spices.color "#FFFFFF")
+        |> bold true)
+    ()
+;;
+
+let rename ~(model : State.t) new_name =
+  let new_path =
+    String.concat
+      [ State.remove_last_path (State.get_current_path model)
+      ; "/"
+      ; new_name
+      ]
+  in
+  let siblings =
+    (match Hashtbl.find (State.get_tree model) (State.get_parent model) with
+     | Some lst -> lst
+     | None -> [])
+    |> List.map ~f:(fun elem ->
+      match String.equal (State.get_current_path model) elem with
+      | true -> new_path
+      | false -> elem)
+  in
+  let _ =
+    match siblings with
+    | [] -> ()
+    | _ ->
+      Hashtbl.set
+        (State.get_tree model)
+        ~key:(State.get_parent model)
+        ~data:siblings
+  in
+  ( Format.sprintf {|mv %s %s|} (State.get_current_path model) new_path
+  , State.get_model_with_new_current_path
+      model
+      (String.concat [ State.get_parent model; "/"; new_name ]) )
+;;
+
+let valid s =
+  String.fold ~init:true s ~f:(fun acc ch ->
+    match Char.is_alphanum ch with
+    | true -> acc
+    | false -> (match ch with '.' | '_' | '-' -> true | _ -> false))
+;;
+
+let move_arround event (model : State.t) =
+  let open Minttea in
+  match event with
+  | Event.KeyDown ((Left | Key "h"), _modifier) ->
+    State.get_updated_model_for_left model, Command.Noop
+  | Event.KeyDown ((Right | Key "l"), _modifier) ->
+    State.get_updated_model_for_right model, Command.Noop
+  | Event.KeyDown ((Up | Key "k"), _modifier) ->
+    State.get_updated_model_for_up model, Command.Noop
+  | Event.KeyDown ((Down | Key "j"), _modifier) ->
+    State.get_updated_model_for_down model, Command.Noop
+  | Event.KeyDown (Enter, _modifier) ->
+    State.get_updated_model_for_move model, Command.Noop
+  | _ -> model, Command.Noop
+;;
+
+let update event (model : State.t) =
+  let open Minttea in
+  if State.get_is_moving model
+  then move_arround event model
+  else if not (State.get_is_writing model)
+  then (
+    match event with
+    | Event.KeyDown (Left, _modifier)
+    | Event.KeyDown (Down, _modifier)
+    | Event.KeyDown (Right, _modifier)
+    | Event.KeyDown (Up, _modifier) ->
+      move_arround event model
+    | Event.KeyDown (Enter, _modifier) ->
+      let model = State.get_updated_model_for_change_dir model in
+      model, exit 0
+    | Event.KeyDown (Key "p", _modifier) ->
+      State.get_updated_model_for_preview model, Command.Noop
+    (* | Event.KeyDown (Key "v", _modifier) ->
+       State.get_updated_model_for_reduced_tree model, Command.Noop *)
+    | Event.KeyDown (Key "d", Ctrl) ->
+      State.get_updated_model_for_remove model, Minttea.Command.Noop
+    | Event.KeyDown (Key "r", _modifier) ->
+      State.get_updated_model_for_rename model, Command.Noop
+    | Event.KeyDown (Key "m", _modifier) ->
+      print_endline
+        (Format.sprintf "moivng %s" (State.get_current_path model));
+      State.get_updated_model_for_move model, Command.Noop
+    | _ -> model, Minttea.Command.Noop)
+  else (
+    match event with
+    | Event.KeyDown (Escape, _modifier) ->
+      State.get_updated_model_for_rename model, Command.Noop
+    | Event.KeyDown (Enter, _modifier) ->
+      let com, model =
+        Leaves.Text_input.current_text (State.get_text model)
+        |> rename ~model
+      in
+      let _ = Sys_unix.command com in
+      State.get_model_after_writing model, Command.Noop
+    | Event.KeyDown (Key s, _modifier) when valid s ->
+      let text = Leaves.Text_input.update (State.get_text model) event in
+      State.get_model_with_new_text model text, Command.Noop
+    | Event.KeyDown (Backspace, _modifier)
+    | Event.KeyDown (Left, _modifier)
+    | Event.KeyDown (Right, _modifier) ->
+      let text = Leaves.Text_input.update (State.get_text model) event in
+      State.get_model_with_new_text model text, Command.Noop
+    | _ -> model, Command.Noop)
+;;
+
+let visualize_tree (model : State.t) ~origin ~max_depth =
+  let tree =
+    Visualize_helper.visualize
+      (State.get_tree model)
+      ~current_directory:origin
+      ~path_to_be_underlined:(State.get_current_path model)
+  in
+  "\n\n\x1b[0mPress ^C to quit\n"
+  ^ Format.sprintf {|%s|} tree
+  ^
+  if State.get_is_writing model
+  then
+    Format.sprintf "\n%s\n" @@ Leaves.Text_input.view (State.get_text model)
+  else ""
+;;
+
+let get_view (model : State.t) ~origin ~max_depth =
+  match State.should_preview model with
+  | true ->
+    Preview.preview
+      (State.get_path_to_preview model)
+      ~num_lines:Int.max_value
+  | false -> visualize_tree model ~origin ~max_depth
+;;
+
+let get_initial_state ~origin ~max_depth : State.t =
+  let tree =
+    Visualize.Adjacency_matrix.create ()
+    |> Visualize.Adjacency_matrix.get_adjacency_matrix ~origin ~max_depth
+  in
+  let children =
+    match Hashtbl.find tree.matrix origin with
+    | None -> []
+    | Some children -> children
+  in
+  let initial_path =
+    match List.hd children with
+    | None -> origin
+    | Some first_child -> first_child
+  in
+  State.init
+    ~choices:tree
+    ~current_path:initial_path
+    ~origin
+    ~parent:
+      (match String.equal initial_path origin with
+       | true -> State.remove_last_path origin
+       | false -> origin)
+    ~cursor:0
+    ~path_to_preview:""
+    ~text:(Leaves.Text_input.make "" ~placeholder:"" ~cursor:cursor_func ())
+    ~is_writing:false
+    ~show_reduced_tree:false
+    ~is_moving:false
+    ~move_from:""
+;;
+
+let init _model =
+  let open Minttea in
+  Command.Noop
+;;
+
+let navigate ~max_depth ~origin =
+  let app =
+    Minttea.app ~init ~update ~view:(get_view ~origin ~max_depth) ()
+  in
+  Minttea.start app ~initial_model:(get_initial_state ~origin ~max_depth)
+;;
+
+let pwd_navigate_command =
+  let open Core.Command.Let_syntax in
+  Core.Command.basic
+    ~summary:"starts at the current working directory"
+    [%map_open
+      let max_depth =
+        flag
+          "max-depth"
+          (optional_with_default 3 int)
+          ~doc:"INT maximum length of path to search for (default 3)"
+      in
+      fun () -> navigate ~max_depth ~origin:(Sys_unix.getcwd ())]
+;;
+
+let start_navigate_command =
+  let open Command.Let_syntax in
+  Command.basic
+    ~summary:"starts at a given path"
+    [%map_open
+      let origin = flag "start" (required string) ~doc:" the starting path"
+      and max_depth =
+        flag
+          "max-depth"
+          (optional_with_default 3 int)
+          ~doc:"INT maximum length of path to search for (default 10)"
+      in
+      fun () -> navigate ~max_depth ~origin]
+;;
+
+let command =
+  Core.Command.group
+    ~summary:"file manager commands"
+    [ "pwd", pwd_navigate_command; "dir", start_navigate_command ]
+;;/nFile name: visualize.mlContents of file: open! Core
+
+module Adjacency_matrix = struct
+  type tree = (string, string list) Hashtbl.t [@@deriving sexp_of]
+  type t = { matrix : tree } [@@deriving sexp_of]
+
+  let create () = { matrix = Hashtbl.create (module String) }
+
+  let get_name path =
+    match String.contains path '/' with
+    | false -> path
+    | true -> List.last_exn (String.split path ~on:'/')
+  ;;
+
+  let is_directory t (value : string) =
+    Hashtbl.mem t.matrix value
+  ;;
+
+  let get_children (t : tree) path = Hashtbl.find t path
+
+  let get_files_in_dir origin : string list =
+    try Sys_unix.ls_dir origin with _ -> []
+  ;;
+
+  let format_str ~origin i =
+    match String.equal (List.last_exn (String.split origin ~on:'/')) "" with
+    | true -> String.concat [ origin; i ]
+    | false -> String.concat [ origin; "/"; i ]
+  ;;
+
+  let rec get_adjacency_matrix t ~origin ~max_depth =
+    match max_depth with
+    | 0 ->
+      (match Sys_unix.is_directory origin with
+       | `Yes -> Hashtbl.add_exn t.matrix ~key:origin ~data:[]
+       | _ -> ());
+      t
+    | _ ->
+      let data =
+        List.map (get_files_in_dir origin) ~f:(fun i -> format_str ~origin i)
+      in
+      Hashtbl.add_exn t.matrix ~key:origin ~data;
+      List.fold ~init:t data ~f:(fun _ i ->
+        match Sys_unix.is_directory i with
+        | `Yes -> get_adjacency_matrix t ~origin:i ~max_depth:(max_depth - 1)
+        | _ -> get_adjacency_matrix t ~origin:i ~max_depth:0)
+  ;;
+
+  let rec get_limited_adjacency_matrix t ~origin ~max_depth ~num_to_show =
+    match max_depth with
+    | 0 ->
+      (match Sys_unix.is_directory origin with
+       | `Yes -> Hashtbl.add_exn t.matrix ~key:origin ~data:[]
+       | _ -> ());
+      t
+    | _ ->
+      let children = get_files_in_dir origin in
+      let limited_children =
+        List.slice children 0 (Int.min num_to_show (List.length children))
+      in
+      let data =
+        List.map limited_children ~f:(fun i -> format_str ~origin i)
+      in
+      Hashtbl.add_exn t.matrix ~key:origin ~data;
+      List.fold ~init:t data ~f:(fun _ i ->
+        match Sys_unix.is_directory i with
+        | `Yes ->
+          get_limited_adjacency_matrix
+            t
+            ~origin:i
+            ~max_depth:(max_depth - 1)
+            ~num_to_show
+        | _ ->
+          get_limited_adjacency_matrix t ~origin:i ~max_depth:0 ~num_to_show)
+  ;;
+end
+
+let print_dir (tree : Adjacency_matrix.t) ~origin =
+  Visualize_helper.visualize
+    tree.matrix
+    ~current_directory:origin
+    ~path_to_be_underlined:""
+;;
+
+let visualize ~max_depth ~origin =
+  let matrix =
+    Adjacency_matrix.create ()
+    |> Adjacency_matrix.get_adjacency_matrix ~origin ~max_depth
+  in
+  print_dir ~origin matrix |> print_endline
+;;
+
+let pwd_visualize_command =
+  let open Command.Let_syntax in
+  Command.basic
+    ~summary:"starts at the current working directory"
+    [%map_open
+      let max_depth =
+        flag
+          "max-depth"
+          (optional_with_default 3 int)
+          ~doc:"INT maximum length of path to search for (default 10)"
+      in
+      fun () -> visualize ~max_depth ~origin:(Sys_unix.getcwd ())]
+;;
+
+let start_visualize_command =
+  let open Command.Let_syntax in
+  Command.basic
+    ~summary:"starts at a given path"
+    [%map_open
+      let origin = flag "start" (required string) ~doc:" the starting path"
+      and max_depth =
+        flag
+          "max-depth"
+          (optional_with_default 3 int)
+          ~doc:"INT maximum length of path to search for (default 10)"
+      in
+      fun () -> visualize ~max_depth ~origin]
+;;
+
+let command =
+  Command.group
+    ~summary:"file manager commands"
+    [ "pwd", pwd_visualize_command; "dir", start_visualize_command ]
+;;/nFile name: duneContents of file: ;; -*- mode: scheme; -*-
+
+(library
+ (name file_manager_lib)
+ (libraries async core minttea leaves)
+ (inline_tests)
+ (preprocess
+  (pps ppx_jane)))
+
+(env
+ (dev
+  (flags
+   (:standard -w -20 -w -27 -w -32 -w -34 -w -37 -w -39 -w -69)))
+ (release
+  (flags (:standard))))/nFile name: visualize.mliContents of file: open! Core
+
+module Adjacency_matrix : sig
+  type tree = (string, string list) Hashtbl.t
+  type t = { matrix : tree } [@@deriving sexp_of]
+  val create : unit -> t
+  val get_adjacency_matrix : t -> origin:string -> max_depth:int -> t
+  val get_files_in_dir : string -> string list
+  val is_directory : t -> string -> bool
+  val get_children : tree -> string -> string list option
+  val get_name : string -> string
+  val get_limited_adjacency_matrix
+    :  t
+    -> origin:string
+    -> max_depth:int
+    -> num_to_show:int
+    -> t
+end
+
+val visualize : max_depth:int -> origin:string -> unit
+val command : Command.t/nFile name: summary.mlContents of file: open! Core
+
+let path_to_read_from = "/home/ubuntu/jsip-final-project/src/completion.txt"
+let path_to_script = "/home/ubuntu/jsip-final-project/src/summarization_script.py"
+let path_to_write_to = "/home/ubuntu/jsip-final-project/src/file_contents.txt"
+
+let rec find_paths_to_skim tree origin =
+  match Hashtbl.find tree origin with
+  | None -> [origin]
+  | Some children ->
+    List.fold children ~init:[] ~f:(fun acc child ->
+      List.append acc (find_paths_to_skim tree child))
+
+let generate (tree : Visualize.Adjacency_matrix.tree) (origin : string) =
+  let paths_to_skim = find_paths_to_skim tree origin in
+  let contents_of_paths =
+    List.fold paths_to_skim ~init:"" ~f:(fun acc path ->
+      acc
+      ^ "/n"
+      ^ Printf.sprintf "File name: %s" (Visualize.Adjacency_matrix.get_name path)
+      ^ Printf.sprintf "Contents of file: %s" (Preview.preview path ~num_lines:Int.max_value)
+    )
+  in
+  Out_channel.write_all path_to_write_to ~data:contents_of_paths;
+  let command = Printf.sprintf "python3 %s" path_to_script in
+  let _ = Sys_unix.command command in
+  let result = In_channel.read_all path_to_read_from in
+  result/nFile name: navigate.mliContents of file: open! Core
+
+val command : Command.t/nFile name: visualize_helper.mlContents of file: open! Core
+
+(* TODO: add a way to highlight two places *)
+
+module Styling = struct
+  type t = { mutable styles : string list }
+
+  let get_emoji_by_dir ~is_dir =
+    match is_dir with true -> "📁" | false -> ""
+  ;;
+
+  let apply_style t ~apply_to ~is_dir =
+    "\x1b["
+    ^ List.fold t.styles ~init:"" ~f:(fun acc style -> acc ^ ";" ^ style)
+    ^ "m"
+    ^ apply_to
+  ;;
+end
+
+let get_depth_space ~depth =
+  List.fold (List.init depth ~f:Fn.id) ~init:"\x1b[0m" ~f:(fun acc num ->
+    match num = depth - 1 with
+    | true -> acc ^ "\x1b[0m|__"
+    | false -> acc ^ "  ")
+  ^ " "
+;;
+
+let is_directory (tree : (string, string list) Hashtbl.t) (value : string) =
+  Hashtbl.mem tree value
+;;
+
+let is_hidden_file name = String.is_prefix name ~prefix:"."
+
+let get_name path =
+  match String.contains path '/' with
+  | false -> path
+  | true -> List.last_exn (String.split path ~on:'/')
+;;
+
+let%expect_test "get_name" =
+  print_endline (get_name "/home/ubuntu/jsip-final-project");
+  print_endline (get_name "dune-project");
+  [%expect {|
+  jsip-final-project
+  dune-project
+  |}]
+;;
+
+let get_styles tree ~(path_to_be_underlined : string) ~(parent : string) =
+  let (styles : Styling.t) = { styles = [ "0" ] } in
+  (match String.equal path_to_be_underlined parent with
+   | true -> styles.styles <- List.append styles.styles [ "4" ]
+   | false -> ());
+  (match is_directory tree parent with
+   | true -> styles.styles <- List.append styles.styles [ "36" ]
+   | false ->
+     (match is_hidden_file (get_name parent) with
+      | true -> styles.styles <- List.append styles.styles [ "35" ]
+      | false -> ()));
+  styles
+;;
+
+let get_formatted_tree_with_new_parent
+  tree
+  ~(path_to_be_underlined : string)
+  ~(parent : string)
+  ~(depth : int)
+  ~(so_far : string)
+  =
+  so_far
+  ^ "\n"
+  ^ get_depth_space ~depth
+  ^ Styling.get_emoji_by_dir ~is_dir:(is_directory tree parent)
+  ^ Printf.sprintf
+      "%s"
+      (Styling.apply_style
+         (get_styles tree ~path_to_be_underlined ~parent)
+         ~apply_to:(get_name parent)
+         ~is_dir:(is_directory tree parent))
+;;
+
+let rec helper
+  ~(so_far : string)
+  (tree : (string, string list) Hashtbl.t)
+  ~(depth : int)
+  ~(parent : string)
+  ~(path_to_be_underlined : string)
+  ~(start_from : string)
+  ~(has_started : bool)
+  ~(num_lines_down : int)
+  : string
+  =
+  let has_started = match Bool.equal has_started false && String.equal parent start_from with | true -> true | false -> has_started in
+  match has_started && num_lines_down < 3 with
+  | true ->
+    (match Hashtbl.find tree parent with
+     | None ->
+       get_formatted_tree_with_new_parent
+         tree
+         ~parent
+         ~depth
+         ~so_far
+         ~path_to_be_underlined
+     | Some current_children ->
+       let init =
+         ((get_formatted_tree_with_new_parent
+           tree
+           ~parent
+           ~depth
+           ~so_far
+           ~path_to_be_underlined), 0)
+       in
+      List.fold current_children ~init ~f:(fun (acc, count) child ->
+          helper
+           ~so_far:acc
+           tree
+           ~depth:(depth + 1)
+           ~parent:child
+           ~path_to_be_underlined
+           ~has_started
+           ~start_from
+           ~num_lines_down:(count + 1), count + 1
+        ) |> fst )
+  | false -> so_far
+;;
+
+type result =
+  { count : int
+  ; so_far : string
+  }
+
+let find_start_path tree path limit =
+  let past_tokens =
+    List.fold
+      (String.split path ~on:'/')
+      ~init:("", [])
+      ~f:(fun (full_path_so_far, paths) token ->
+        match String.length token > 0 with
+        | false -> (full_path_so_far, paths)
+        | true ->
+        let new_path = full_path_so_far ^ "/" ^ token in
+        new_path, List.append paths [ new_path ])
+    |> snd
+    |> List.rev
+  in
+  let final =
+    List.fold
+      past_tokens
+      ~init:{ count = 0; so_far = "" }
+      ~f:(fun { count; so_far } token ->
+        match Hashtbl.find tree token with
+        | None -> { count = count + 1; so_far = token }
+        | Some children ->
+          print_endline token;
+          let new_count = List.length children + count + 1 in
+          print_endline (Int.to_string new_count);
+          (match new_count <= limit with
+           | true -> { count = new_count; so_far = token }
+           | false -> { count; so_far }))
+  in
+  final.so_far
+;;
+
+let visualize
+  (tree : (string, string list) Hashtbl.t)
+  ~(current_directory : string)
+  ~(path_to_be_underlined : string)
+  : string
+  =
+  let start_from = find_start_path tree path_to_be_underlined 10 in
+  let res = helper
+    tree
+    ~depth:1
+    ~so_far:"."
+    ~parent:current_directory
+    ~path_to_be_underlined
+    ~start_from
+    ~has_started:false
+    ~num_lines_down:0 in
+  print_endline res; res
+;;/nFile name: completion.txtContents of file: /nFile name: preview.mliContents of file: open! Core
+
+val preview : string -> num_lines:int -> string/nFile name: statistics.mlContents of file: open! Core
+
+(* not implemented yet *)
+
+let statistics file = ""/nFile name: state.mliContents of file: open! Core
+open! Leaves
+
+type t
+
+val remove_last_path : string -> string
+val get_updated_model_for_preview : t -> t
+val get_updated_model_for_rename : t -> t
+val get_updated_model_for_change_dir : t -> t
+val get_updated_model_for_move : t -> t
+val get_updated_model_for_remove : t -> t
+val get_updated_model_for_right : t -> t
+val get_updated_model_for_left : t -> t
+val get_updated_model_for_up : t -> t
+val get_updated_model_for_down : t -> t
+val get_updated_model_for_move : t -> t
+val get_path_to_preview : t -> string
+val get_tree : t -> Visualize.Adjacency_matrix.tree
+val get_current_path : t -> string
+val get_is_writing : t -> bool
+val get_text : t -> Text_input.t
+val get_parent : t -> string
+val get_is_moving : t -> bool
+val should_preview : t -> bool
+val get_model_after_writing : t -> t
+val get_model_with_new_text : t -> Text_input.t -> t
+val get_model_with_new_current_path : t -> string -> t
+
+val init
+  :  choices:Visualize.Adjacency_matrix.t
+  -> origin:string
+  -> current_path:string
+  -> parent:string
+  -> cursor:int
+  -> path_to_preview:string
+  -> text:Text_input.t
+  -> is_writing:bool
+  -> show_reduced_tree:bool
+  -> is_moving:bool
+  -> move_from:string
+  -> t/nFile name: statistics.mliContents of file: open! Core
+
+val statistics : string -> string/nFile name: summarization_script.pyContents of file: import sys
+import os
+from dotenv import load_dotenv, dotenv_values
+from openai import OpenAI
+
+path_to_write_to = "/home/ubuntu/jsip-final-project/src/completion.txt"
+path_to_read_from = "/home/ubuntu/jsip-final-project/src/file_contents.txt"
+
+load_dotenv()
+
+if __name__ == "__main__":
+    file_contents = sys.argv[1]
+    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+    file = open(path_to_read_from, "r")
+    file_contents = file.read()
+    completion = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {
+                "role": "system",
+                "content": "you are an assitant file manager. summarize the contents of the file contents of a directory."
+            },
+            {
+                "role": "user"
+                "content": file_contents
+            }
+        ]
+    )
+    file_to_write = open(path_to_write, "a")
+    file_to_write.write(completion.choices[0].message.content)
+    file_to_write.close()/nFile name: state.mlContents of file: open! Core
+open! Leaves
+open! Leaves.Cursor
+
+let write_path = "/home/ubuntu/jsip-final-project/bin/path.txt"
+
+let cursor_func =
+  Leaves.Cursor.make
+    ~style:
+      Spices.(
+        default
+        |> bg (Spices.color "#77e5b7")
+        |> fg (Spices.color "#FFFFFF")
+        |> bold true)
+    ()
+;;
+
+type t =
+  { choices : Visualize.Adjacency_matrix.t
+  ; current_path : string
+  ; origin : string
+  ; parent : string
+  ; cursor : int
+  ; path_to_preview : string
+  ; text : Text_input.t
+  ; is_writing : bool
+  ; show_reduced_tree : bool
+  ; move_from : string
+  ; is_moving : bool
+  }
+
+type dir =
+  | UP
+  | DOWN
+
+let should_preview t =
+  String.length t.path_to_preview > 0
+  && not
+       (Visualize.Adjacency_matrix.is_directory t.choices t.path_to_preview)
+;;
+
+let get_is_moving t = t.is_moving
+let get_tree t = t.choices.matrix
+let get_current_path t = t.current_path
+let get_text t = t.text
+let get_parent t = t.parent
+let get_is_writing t = t.is_writing
+let get_path_to_preview t = t.path_to_preview
+let get_model_after_writing t = { t with is_writing = false }
+let get_model_with_new_text t new_text = { t with text = new_text }
+
+let get_model_with_new_current_path t new_current_path =
+  { t with current_path = new_current_path }
+;;
+
+let get_updated_model_for_move t =
+  { t with is_moving = true; move_from = t.current_path }
+;;
+
+let remove_last_path current_path =
+  let str_lst = String.split current_path ~on:'/' in
+  List.foldi str_lst ~init:[] ~f:(fun idx new_lst elem ->
+    match idx = List.length str_lst - 1 with
+    | true -> new_lst
+    | false -> new_lst @ [ elem ])
+  |> String.concat ~sep:"/"
+;;
+
+let init
+  ~choices
+  ~origin
+  ~current_path
+  ~parent
+  ~cursor
+  ~path_to_preview
+  ~text
+  ~is_writing
+  ~show_reduced_tree
+  ~is_moving
+  ~move_from
+  =
+  { choices
+  ; current_path
+  ; origin
+  ; parent
+  ; cursor
+  ; path_to_preview
+  ; text
+  ; is_writing
+  ; show_reduced_tree
+  ; is_moving
+  ; move_from
+  }
+;;
+
+let get_idx_by_dir t ~dir =
+  match dir with
+  | UP ->
+    (try
+       (t.cursor - 1)
+       % (Hashtbl.find_exn t.choices.matrix t.parent |> List.length)
+     with
+     | _ -> 0)
+  | DOWN ->
+    (try
+       (t.cursor + 1)
+       % (Hashtbl.find_exn t.choices.matrix t.parent |> List.length)
+     with
+     | _ -> 0)
+;;
+
+let get_updated_model_for_preview t =
+  match t.path_to_preview with
+  | "" -> { t with path_to_preview = t.current_path }
+  | _ -> { t with path_to_preview = "" }
+;;
+
+let get_updated_model_for_rename t =
+  let is_writing = true in
+  let text =
+    Leaves.Text_input.make "" ~placeholder:"" ~cursor:cursor_func ()
+  in
+  { t with is_writing; text }
+;;
+
+let remove_helper t ~parent ~child =
+  let siblings =
+    (match Hashtbl.find t.choices.matrix parent with
+     | Some lst -> lst
+     | None -> [])
+    |> List.filter ~f:(fun elem -> String.equal child elem |> not)
+  in
+  match siblings with
+  | [] -> ()
+  | _ -> Hashtbl.set t.choices.matrix ~key:parent ~data:siblings
+;;
+
+let get_updated_model_for_change_dir t =
+  Out_channel.write_all write_path ~data:t.current_path;
+  t
+;;
+
+let get_updated_model_for_move t =
+  match Visualize.Adjacency_matrix.is_directory t.choices t.current_path with
+  | true ->
+    remove_helper t ~parent:(remove_last_path t.move_from) ~child:t.move_from;
+    Hashtbl.set
+      t.choices.matrix
+      ~key:t.current_path
+      ~data:
+        (Hashtbl.find_exn t.choices.matrix t.current_path
+         @ [ String.concat
+               [ t.current_path; "/"; Visualize_helper.get_name t.move_from ]
+           ]);
+    let _ =
+      Format.sprintf {|mv %s %s|} t.move_from t.current_path
+      |> Sys_unix.command
+    in
+    let move_from = "" in
+    let is_moving = false in
+    { t with move_from; is_moving }
+  | false -> t
+;;
+
+let get_updated_model_for_remove t =
+  remove_helper t ~parent:t.parent ~child:t.current_path;
+  let _ = Format.sprintf {|rm -rf %s|} t.current_path |> Sys_unix.command in
+  t
+;;
+
+let handle_up_and_down t ~dir =
+  let cursor = get_idx_by_dir t ~dir in
+  let current_path =
+    try List.nth_exn (Hashtbl.find_exn t.choices.matrix t.parent) cursor with
+    | _ -> t.current_path
+  in
+  let tmp_model = { t with cursor } in
+  { tmp_model with current_path }
+;;
+
+let get_updated_model_for_right t =
+  let current_path =
+    try Hashtbl.find_exn t.choices.matrix t.current_path with
+    | _ -> [ t.current_path ]
+  in
+  if current_path |> List.is_empty
+  then t
+  else (
+    let current_path = List.hd_exn current_path in
+    let parent =
+      if String.equal t.current_path current_path
+      then t.parent
+      else t.current_path
+    in
+    { t with current_path; cursor = 0; parent })
+;;
+
+let get_idx t ~parent ~current_path =
+  match Hashtbl.find t.choices.matrix parent with
+  | Some lst ->
+    List.foldi ~init:None lst ~f:(fun idx acc elem ->
+      if String.equal elem current_path then Some idx else acc)
+  | None -> None
+;;
+
+let get_updated_model_for_left t =
+  let current_path, parent =
+    match String.equal t.current_path t.origin with
+    | true -> t.current_path, t.parent
+    | false -> remove_last_path t.current_path, remove_last_path t.parent
+  in
+  let tmp_model = { t with parent } in
+  { tmp_model with current_path }
+;;
+
+let get_updated_model_for_up t = handle_up_and_down t ~dir:UP
+let get_updated_model_for_down t = handle_up_and_down t ~dir:DOWN
+(* let get_updated_model_for_reduced_tree t = match t.show_reduced_tree with
+   | true -> { t with show_reduced_tree = false; choices = t.full_choices } |
+   false -> { t with show_reduced_tree = true ; choices = t.reduced_choices
+   (* ; current_path = t.origin *) } *)/nFile name: navigate.mlContents of file: open! Core
+
+let cursor_func =
+  Leaves.Cursor.make
+    ~style:
+      Spices.(
+        default
+        |> bg (Spices.color "#77e5b7")
+        |> fg (Spices.color "#FFFFFF")
+        |> bold true)
+    ()
+;;
+
+let rename ~(model : State.t) new_name =
+  let new_path =
+    String.concat
+      [ State.remove_last_path (State.get_current_path model)
+      ; "/"
+      ; new_name
+      ]
+  in
+  let siblings =
+    (match Hashtbl.find (State.get_tree model) (State.get_parent model) with
+     | Some lst -> lst
+     | None -> [])
+    |> List.map ~f:(fun elem ->
+      match String.equal (State.get_current_path model) elem with
+      | true -> new_path
+      | false -> elem)
+  in
+  let _ =
+    match siblings with
+    | [] -> ()
+    | _ ->
+      Hashtbl.set
+        (State.get_tree model)
+        ~key:(State.get_parent model)
+        ~data:siblings
+  in
+  ( Format.sprintf {|mv %s %s|} (State.get_current_path model) new_path
+  , State.get_model_with_new_current_path
+      model
+      (String.concat [ State.get_parent model; "/"; new_name ]) )
+;;
+
+let valid s =
+  String.fold ~init:true s ~f:(fun acc ch ->
+    match Char.is_alphanum ch with
+    | true -> acc
+    | false -> (match ch with '.' | '_' | '-' -> true | _ -> false))
+;;
+
+let move_arround event (model : State.t) =
+  let open Minttea in
+  match event with
+  | Event.KeyDown ((Left | Key "h"), _modifier) ->
+    State.get_updated_model_for_left model, Command.Noop
+  | Event.KeyDown ((Right | Key "l"), _modifier) ->
+    State.get_updated_model_for_right model, Command.Noop
+  | Event.KeyDown ((Up | Key "k"), _modifier) ->
+    State.get_updated_model_for_up model, Command.Noop
+  | Event.KeyDown ((Down | Key "j"), _modifier) ->
+    State.get_updated_model_for_down model, Command.Noop
+  | Event.KeyDown (Enter, _modifier) ->
+    State.get_updated_model_for_move model, Command.Noop
+  | _ -> model, Command.Noop
+;;
+
+let update event (model : State.t) =
+  let open Minttea in
+  if State.get_is_moving model
+  then move_arround event model
+  else if not (State.get_is_writing model)
+  then (
+    match event with
+    | Event.KeyDown (Left, _modifier)
+    | Event.KeyDown (Down, _modifier)
+    | Event.KeyDown (Right, _modifier)
+    | Event.KeyDown (Up, _modifier) ->
+      move_arround event model
+    | Event.KeyDown (Enter, _modifier) ->
+      let model = State.get_updated_model_for_change_dir model in
+      model, exit 0
+    | Event.KeyDown (Key "p", _modifier) ->
+      State.get_updated_model_for_preview model, Command.Noop
+    (* | Event.KeyDown (Key "v", _modifier) ->
+       State.get_updated_model_for_reduced_tree model, Command.Noop *)
+    | Event.KeyDown (Key "d", Ctrl) ->
+      State.get_updated_model_for_remove model, Minttea.Command.Noop
+    | Event.KeyDown (Key "r", _modifier) ->
+      State.get_updated_model_for_rename model, Command.Noop
+    | Event.KeyDown (Key "m", _modifier) ->
+      print_endline
+        (Format.sprintf "moivng %s" (State.get_current_path model));
+      State.get_updated_model_for_move model, Command.Noop
+    | _ -> model, Minttea.Command.Noop)
+  else (
+    match event with
+    | Event.KeyDown (Escape, _modifier) ->
+      State.get_updated_model_for_rename model, Command.Noop
+    | Event.KeyDown (Enter, _modifier) ->
+      let com, model =
+        Leaves.Text_input.current_text (State.get_text model)
+        |> rename ~model
+      in
+      let _ = Sys_unix.command com in
+      State.get_model_after_writing model, Command.Noop
+    | Event.KeyDown (Key s, _modifier) when valid s ->
+      let text = Leaves.Text_input.update (State.get_text model) event in
+      State.get_model_with_new_text model text, Command.Noop
+    | Event.KeyDown (Backspace, _modifier)
+    | Event.KeyDown (Left, _modifier)
+    | Event.KeyDown (Right, _modifier) ->
+      let text = Leaves.Text_input.update (State.get_text model) event in
+      State.get_model_with_new_text model text, Command.Noop
+    | _ -> model, Command.Noop)
+;;
+
+let visualize_tree (model : State.t) ~origin ~max_depth =
+  let tree =
+    Visualize_helper.visualize
+      (State.get_tree model)
+      ~current_directory:origin
+      ~path_to_be_underlined:(State.get_current_path model)
+  in
+  "\n\n\x1b[0mPress ^C to quit\n"
+  ^ Format.sprintf {|%s|} tree
+  ^
+  if State.get_is_writing model
+  then
+    Format.sprintf "\n%s\n" @@ Leaves.Text_input.view (State.get_text model)
+  else ""
+;;
+
+let get_view (model : State.t) ~origin ~max_depth =
+  match State.should_preview model with
+  | true ->
+    Preview.preview
+      (State.get_path_to_preview model)
+      ~num_lines:Int.max_value
+  | false -> visualize_tree model ~origin ~max_depth
+;;
+
+let get_initial_state ~origin ~max_depth : State.t =
+  let tree =
+    Visualize.Adjacency_matrix.create ()
+    |> Visualize.Adjacency_matrix.get_adjacency_matrix ~origin ~max_depth
+  in
+  let children =
+    match Hashtbl.find tree.matrix origin with
+    | None -> []
+    | Some children -> children
+  in
+  let initial_path =
+    match List.hd children with
+    | None -> origin
+    | Some first_child -> first_child
+  in
+  State.init
+    ~choices:tree
+    ~current_path:initial_path
+    ~origin
+    ~parent:
+      (match String.equal initial_path origin with
+       | true -> State.remove_last_path origin
+       | false -> origin)
+    ~cursor:0
+    ~path_to_preview:""
+    ~text:(Leaves.Text_input.make "" ~placeholder:"" ~cursor:cursor_func ())
+    ~is_writing:false
+    ~show_reduced_tree:false
+    ~is_moving:false
+    ~move_from:""
+;;
+
+let init _model =
+  let open Minttea in
+  Command.Noop
+;;
+
+let navigate ~max_depth ~origin =
+  let app =
+    Minttea.app ~init ~update ~view:(get_view ~origin ~max_depth) ()
+  in
+  Minttea.start app ~initial_model:(get_initial_state ~origin ~max_depth)
+;;
+
+let pwd_navigate_command =
+  let open Core.Command.Let_syntax in
+  Core.Command.basic
+    ~summary:"starts at the current working directory"
+    [%map_open
+      let max_depth =
+        flag
+          "max-depth"
+          (optional_with_default 3 int)
+          ~doc:"INT maximum length of path to search for (default 3)"
+      in
+      fun () -> navigate ~max_depth ~origin:(Sys_unix.getcwd ())]
+;;
+
+let start_navigate_command =
+  let open Command.Let_syntax in
+  Command.basic
+    ~summary:"starts at a given path"
+    [%map_open
+      let origin = flag "start" (required string) ~doc:" the starting path"
+      and max_depth =
+        flag
+          "max-depth"
+          (optional_with_default 3 int)
+          ~doc:"INT maximum length of path to search for (default 10)"
+      in
+      fun () -> navigate ~max_depth ~origin]
+;;
+
+let command =
+  Core.Command.group
+    ~summary:"file manager commands"
+    [ "pwd", pwd_navigate_command; "dir", start_navigate_command ]
+;;/nFile name: visualize.mlContents of file: open! Core
+
+module Adjacency_matrix = struct
+  type tree = (string, string list) Hashtbl.t [@@deriving sexp_of]
+  type t = { matrix : tree } [@@deriving sexp_of]
+
+  let create () = { matrix = Hashtbl.create (module String) }
+
+  let get_name path =
+    match String.contains path '/' with
+    | false -> path
+    | true -> List.last_exn (String.split path ~on:'/')
+  ;;
+
+  let is_directory t (value : string) =
+    Hashtbl.mem t.matrix value
+  ;;
+
+  let get_children (t : tree) path = Hashtbl.find t path
+
+  let get_files_in_dir origin : string list =
+    try Sys_unix.ls_dir origin with _ -> []
+  ;;
+
+  let format_str ~origin i =
+    match String.equal (List.last_exn (String.split origin ~on:'/')) "" with
+    | true -> String.concat [ origin; i ]
+    | false -> String.concat [ origin; "/"; i ]
+  ;;
+
+  let rec get_adjacency_matrix t ~origin ~max_depth =
+    match max_depth with
+    | 0 ->
+      (match Sys_unix.is_directory origin with
+       | `Yes -> Hashtbl.add_exn t.matrix ~key:origin ~data:[]
+       | _ -> ());
+      t
+    | _ ->
+      let data =
+        List.map (get_files_in_dir origin) ~f:(fun i -> format_str ~origin i)
+      in
+      Hashtbl.add_exn t.matrix ~key:origin ~data;
+      List.fold ~init:t data ~f:(fun _ i ->
+        match Sys_unix.is_directory i with
+        | `Yes -> get_adjacency_matrix t ~origin:i ~max_depth:(max_depth - 1)
+        | _ -> get_adjacency_matrix t ~origin:i ~max_depth:0)
+  ;;
+
+  let rec get_limited_adjacency_matrix t ~origin ~max_depth ~num_to_show =
+    match max_depth with
+    | 0 ->
+      (match Sys_unix.is_directory origin with
+       | `Yes -> Hashtbl.add_exn t.matrix ~key:origin ~data:[]
+       | _ -> ());
+      t
+    | _ ->
+      let children = get_files_in_dir origin in
+      let limited_children =
+        List.slice children 0 (Int.min num_to_show (List.length children))
+      in
+      let data =
+        List.map limited_children ~f:(fun i -> format_str ~origin i)
+      in
+      Hashtbl.add_exn t.matrix ~key:origin ~data;
+      List.fold ~init:t data ~f:(fun _ i ->
+        match Sys_unix.is_directory i with
+        | `Yes ->
+          get_limited_adjacency_matrix
+            t
+            ~origin:i
+            ~max_depth:(max_depth - 1)
+            ~num_to_show
+        | _ ->
+          get_limited_adjacency_matrix t ~origin:i ~max_depth:0 ~num_to_show)
+  ;;
+end
+
+let print_dir (tree : Adjacency_matrix.t) ~origin =
+  Visualize_helper.visualize
+    tree.matrix
+    ~current_directory:origin
+    ~path_to_be_underlined:""
+;;
+
+let visualize ~max_depth ~origin =
+  let matrix =
+    Adjacency_matrix.create ()
+    |> Adjacency_matrix.get_adjacency_matrix ~origin ~max_depth
+  in
+  print_dir ~origin matrix |> print_endline
+;;
+
+let pwd_visualize_command =
+  let open Command.Let_syntax in
+  Command.basic
+    ~summary:"starts at the current working directory"
+    [%map_open
+      let max_depth =
+        flag
+          "max-depth"
+          (optional_with_default 3 int)
+          ~doc:"INT maximum length of path to search for (default 10)"
+      in
+      fun () -> visualize ~max_depth ~origin:(Sys_unix.getcwd ())]
+;;
+
+let start_visualize_command =
+  let open Command.Let_syntax in
+  Command.basic
+    ~summary:"starts at a given path"
+    [%map_open
+      let origin = flag "start" (required string) ~doc:" the starting path"
+      and max_depth =
+        flag
+          "max-depth"
+          (optional_with_default 3 int)
+          ~doc:"INT maximum length of path to search for (default 10)"
+      in
+      fun () -> visualize ~max_depth ~origin]
+;;
+
+let command =
+  Command.group
+    ~summary:"file manager commands"
+    [ "pwd", pwd_visualize_command; "dir", start_visualize_command ]
+;;/nFile name: duneContents of file: ;; -*- mode: scheme; -*-
+
+(library
+ (name file_manager_lib)
+ (libraries async core minttea leaves)
+ (inline_tests)
+ (preprocess
+  (pps ppx_jane)))
+
+(env
+ (dev
+  (flags
+   (:standard -w -20 -w -27 -w -32 -w -34 -w -37 -w -39 -w -69)))
+ (release
+  (flags (:standard))))/nFile name: visualize.mliContents of file: open! Core
+
+module Adjacency_matrix : sig
+  type tree = (string, string list) Hashtbl.t
+  type t = { matrix : tree } [@@deriving sexp_of]
+  val create : unit -> t
+  val get_adjacency_matrix : t -> origin:string -> max_depth:int -> t
+  val get_files_in_dir : string -> string list
+  val is_directory : t -> string -> bool
+  val get_children : tree -> string -> string list option
+  val get_name : string -> string
+  val get_limited_adjacency_matrix
+    :  t
+    -> origin:string
+    -> max_depth:int
+    -> num_to_show:int
+    -> t
+end
+
+val visualize : max_depth:int -> origin:string -> unit
+val command : Command.t/nFile name: summary.mlContents of file: open! Core
+
+let path_to_read_from = "/home/ubuntu/jsip-final-project/src/completion.txt"
+let path_to_script = "/home/ubuntu/jsip-final-project/src/summarization_script.py"
+let path_to_write_to = "/home/ubuntu/jsip-final-project/src/file_contents.txt"
+
+let rec find_paths_to_skim tree origin =
+  match Hashtbl.find tree origin with
+  | None -> [origin]
+  | Some children ->
+    List.fold children ~init:[] ~f:(fun acc child ->
+      List.append acc (find_paths_to_skim tree child))
+
+let generate (tree : Visualize.Adjacency_matrix.tree) (origin : string) =
+  let paths_to_skim = find_paths_to_skim tree origin in
+  let contents_of_paths =
+    List.fold paths_to_skim ~init:"" ~f:(fun acc path ->
+      acc
+      ^ "/n"
+      ^ Printf.sprintf "File name: %s" (Visualize.Adjacency_matrix.get_name path)
+      ^ Printf.sprintf "Contents of file: %s" (Preview.preview path ~num_lines:Int.max_value)
+    )
+  in
+  Out_channel.write_all path_to_write_to ~data:contents_of_paths;
+  let command = Printf.sprintf "python3 %s" path_to_script in
+  let _ = Sys_unix.command command in
+  let result = In_channel.read_all path_to_read_from in
+  result/nFile name: navigate.mliContents of file: open! Core
+
+val command : Command.t/nFile name: visualize_helper.mlContents of file: open! Core
+
+(* TODO: add a way to highlight two places *)
+
+module Styling = struct
+  type t = { mutable styles : string list }
+
+  let get_emoji_by_dir ~is_dir =
+    match is_dir with true -> "📁" | false -> ""
+  ;;
+
+  let apply_style t ~apply_to ~is_dir =
+    "\x1b["
+    ^ List.fold t.styles ~init:"" ~f:(fun acc style -> acc ^ ";" ^ style)
+    ^ "m"
+    ^ apply_to
+  ;;
+end
+
+let get_depth_space ~depth =
+  List.fold (List.init depth ~f:Fn.id) ~init:"\x1b[0m" ~f:(fun acc num ->
+    match num = depth - 1 with
+    | true -> acc ^ "\x1b[0m|__"
+    | false -> acc ^ "  ")
+  ^ " "
+;;
+
+let is_directory (tree : (string, string list) Hashtbl.t) (value : string) =
+  Hashtbl.mem tree value
+;;
+
+let is_hidden_file name = String.is_prefix name ~prefix:"."
+
+let get_name path =
+  match String.contains path '/' with
+  | false -> path
+  | true -> List.last_exn (String.split path ~on:'/')
+;;
+
+let%expect_test "get_name" =
+  print_endline (get_name "/home/ubuntu/jsip-final-project");
+  print_endline (get_name "dune-project");
+  [%expect {|
+  jsip-final-project
+  dune-project
+  |}]
+;;
+
+let get_styles tree ~(path_to_be_underlined : string) ~(parent : string) =
+  let (styles : Styling.t) = { styles = [ "0" ] } in
+  (match String.equal path_to_be_underlined parent with
+   | true -> styles.styles <- List.append styles.styles [ "4" ]
+   | false -> ());
+  (match is_directory tree parent with
+   | true -> styles.styles <- List.append styles.styles [ "36" ]
+   | false ->
+     (match is_hidden_file (get_name parent) with
+      | true -> styles.styles <- List.append styles.styles [ "35" ]
+      | false -> ()));
+  styles
+;;
+
+let get_formatted_tree_with_new_parent
+  tree
+  ~(path_to_be_underlined : string)
+  ~(parent : string)
+  ~(depth : int)
+  ~(so_far : string)
+  =
+  so_far
+  ^ "\n"
+  ^ get_depth_space ~depth
+  ^ Styling.get_emoji_by_dir ~is_dir:(is_directory tree parent)
+  ^ Printf.sprintf
+      "%s"
+      (Styling.apply_style
+         (get_styles tree ~path_to_be_underlined ~parent)
+         ~apply_to:(get_name parent)
+         ~is_dir:(is_directory tree parent))
+;;
+
+let rec helper
+  ~(so_far : string)
+  (tree : (string, string list) Hashtbl.t)
+  ~(depth : int)
+  ~(parent : string)
+  ~(path_to_be_underlined : string)
+  ~(start_from : string)
+  ~(has_started : bool)
+  ~(num_lines_down : int)
+  : string
+  =
+  let has_started = match Bool.equal has_started false && String.equal parent start_from with | true -> true | false -> has_started in
+  match has_started && num_lines_down < 3 with
+  | true ->
+    (match Hashtbl.find tree parent with
+     | None ->
+       get_formatted_tree_with_new_parent
+         tree
+         ~parent
+         ~depth
+         ~so_far
+         ~path_to_be_underlined
+     | Some current_children ->
+       let init =
+         ((get_formatted_tree_with_new_parent
+           tree
+           ~parent
+           ~depth
+           ~so_far
+           ~path_to_be_underlined), 0)
+       in
+      List.fold current_children ~init ~f:(fun (acc, count) child ->
+          helper
+           ~so_far:acc
+           tree
+           ~depth:(depth + 1)
+           ~parent:child
+           ~path_to_be_underlined
+           ~has_started
+           ~start_from
+           ~num_lines_down:(count + 1), count + 1
+        ) |> fst )
+  | false -> so_far
+;;
+
+type result =
+  { count : int
+  ; so_far : string
+  }
+
+let find_start_path tree path limit =
+  let past_tokens =
+    List.fold
+      (String.split path ~on:'/')
+      ~init:("", [])
+      ~f:(fun (full_path_so_far, paths) token ->
+        match String.length token > 0 with
+        | false -> (full_path_so_far, paths)
+        | true ->
+        let new_path = full_path_so_far ^ "/" ^ token in
+        new_path, List.append paths [ new_path ])
+    |> snd
+    |> List.rev
+  in
+  let final =
+    List.fold
+      past_tokens
+      ~init:{ count = 0; so_far = "" }
+      ~f:(fun { count; so_far } token ->
+        match Hashtbl.find tree token with
+        | None -> { count = count + 1; so_far = token }
+        | Some children ->
+          print_endline token;
+          let new_count = List.length children + count + 1 in
+          print_endline (Int.to_string new_count);
+          (match new_count <= limit with
+           | true -> { count = new_count; so_far = token }
+           | false -> { count; so_far }))
+  in
+  final.so_far
+;;
+
+let visualize
+  (tree : (string, string list) Hashtbl.t)
+  ~(current_directory : string)
+  ~(path_to_be_underlined : string)
+  : string
+  =
+  let start_from = find_start_path tree path_to_be_underlined 10 in
+  let res = helper
+    tree
+    ~depth:1
+    ~so_far:"."
+    ~parent:current_directory
+    ~path_to_be_underlined
+    ~start_from
+    ~has_started:false
+    ~num_lines_down:0 in
+  print_endline res; res
+;;/nFile name: completion.txtContents of file: /nFile name: preview.mliContents of file: open! Core
+
+val preview : string -> num_lines:int -> string/nFile name: statistics.mlContents of file: open! Core
+
+(* not implemented yet *)
+
+let statistics file = ""/nFile name: state.mliContents of file: open! Core
+open! Leaves
+
+type t
+
+val remove_last_path : string -> string
+val get_updated_model_for_preview : t -> t
+val get_updated_model_for_rename : t -> t
+val get_updated_model_for_change_dir : t -> t
+val get_updated_model_for_move : t -> t
+val get_updated_model_for_remove : t -> t
+val get_updated_model_for_right : t -> t
+val get_updated_model_for_left : t -> t
+val get_updated_model_for_up : t -> t
+val get_updated_model_for_down : t -> t
+val get_updated_model_for_move : t -> t
+val get_path_to_preview : t -> string
+val get_tree : t -> Visualize.Adjacency_matrix.tree
+val get_current_path : t -> string
+val get_is_writing : t -> bool
+val get_text : t -> Text_input.t
+val get_parent : t -> string
+val get_is_moving : t -> bool
+val should_preview : t -> bool
+val get_model_after_writing : t -> t
+val get_model_with_new_text : t -> Text_input.t -> t
+val get_model_with_new_current_path : t -> string -> t
+
+val init
+  :  choices:Visualize.Adjacency_matrix.t
+  -> origin:string
+  -> current_path:string
+  -> parent:string
+  -> cursor:int
+  -> path_to_preview:string
+  -> text:Text_input.t
+  -> is_writing:bool
+  -> show_reduced_tree:bool
+  -> is_moving:bool
+  -> move_from:string
+  -> t/nFile name: statistics.mliContents of file: open! Core
+
+val statistics : string -> string/nFile name: summarization_script.pyContents of file: import sys
+import os
+from dotenv import load_dotenv, dotenv_values
+from openai import OpenAI
+
+path_to_write_to = "/home/ubuntu/jsip-final-project/src/completion.txt"
+path_to_read_from = "/home/ubuntu/jsip-final-project/src/file_contents.txt"
+
+load_dotenv()
+
+if __name__ == "__main__":
+    file_contents = sys.argv[1]
+    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+    file = open(path_to_read_from, "r")
+    file_contents = file.read()
+    completion = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {
+                "role": "system",
+                "content": "you are an assitant file manager. summarize the contents of the file contents of a directory."
+            },
+            {
+                "role": "user",
+                "content": file_contents
+            }
+        ]
+    )
+    file_to_write = open(path_to_write, "a")
+    file_to_write.write(completion.choices[0].message.content)
+    file_to_write.close()/nFile name: state.mlContents of file: open! Core
+open! Leaves
+open! Leaves.Cursor
+
+let write_path = "/home/ubuntu/jsip-final-project/bin/path.txt"
+
+let cursor_func =
+  Leaves.Cursor.make
+    ~style:
+      Spices.(
+        default
+        |> bg (Spices.color "#77e5b7")
+        |> fg (Spices.color "#FFFFFF")
+        |> bold true)
+    ()
+;;
+
+type t =
+  { choices : Visualize.Adjacency_matrix.t
+  ; current_path : string
+  ; origin : string
+  ; parent : string
+  ; cursor : int
+  ; path_to_preview : string
+  ; text : Text_input.t
+  ; is_writing : bool
+  ; show_reduced_tree : bool
+  ; move_from : string
+  ; is_moving : bool
+  }
+
+type dir =
+  | UP
+  | DOWN
+
+let should_preview t =
+  String.length t.path_to_preview > 0
+  && not
+       (Visualize.Adjacency_matrix.is_directory t.choices t.path_to_preview)
+;;
+
+let get_is_moving t = t.is_moving
+let get_tree t = t.choices.matrix
+let get_current_path t = t.current_path
+let get_text t = t.text
+let get_parent t = t.parent
+let get_is_writing t = t.is_writing
+let get_path_to_preview t = t.path_to_preview
+let get_model_after_writing t = { t with is_writing = false }
+let get_model_with_new_text t new_text = { t with text = new_text }
+
+let get_model_with_new_current_path t new_current_path =
+  { t with current_path = new_current_path }
+;;
+
+let get_updated_model_for_move t =
+  { t with is_moving = true; move_from = t.current_path }
+;;
+
+let remove_last_path current_path =
+  let str_lst = String.split current_path ~on:'/' in
+  List.foldi str_lst ~init:[] ~f:(fun idx new_lst elem ->
+    match idx = List.length str_lst - 1 with
+    | true -> new_lst
+    | false -> new_lst @ [ elem ])
+  |> String.concat ~sep:"/"
+;;
+
+let init
+  ~choices
+  ~origin
+  ~current_path
+  ~parent
+  ~cursor
+  ~path_to_preview
+  ~text
+  ~is_writing
+  ~show_reduced_tree
+  ~is_moving
+  ~move_from
+  =
+  { choices
+  ; current_path
+  ; origin
+  ; parent
+  ; cursor
+  ; path_to_preview
+  ; text
+  ; is_writing
+  ; show_reduced_tree
+  ; is_moving
+  ; move_from
+  }
+;;
+
+let get_idx_by_dir t ~dir =
+  match dir with
+  | UP ->
+    (try
+       (t.cursor - 1)
+       % (Hashtbl.find_exn t.choices.matrix t.parent |> List.length)
+     with
+     | _ -> 0)
+  | DOWN ->
+    (try
+       (t.cursor + 1)
+       % (Hashtbl.find_exn t.choices.matrix t.parent |> List.length)
+     with
+     | _ -> 0)
+;;
+
+let get_updated_model_for_preview t =
+  match t.path_to_preview with
+  | "" -> { t with path_to_preview = t.current_path }
+  | _ -> { t with path_to_preview = "" }
+;;
+
+let get_updated_model_for_rename t =
+  let is_writing = true in
+  let text =
+    Leaves.Text_input.make "" ~placeholder:"" ~cursor:cursor_func ()
+  in
+  { t with is_writing; text }
+;;
+
+let remove_helper t ~parent ~child =
+  let siblings =
+    (match Hashtbl.find t.choices.matrix parent with
+     | Some lst -> lst
+     | None -> [])
+    |> List.filter ~f:(fun elem -> String.equal child elem |> not)
+  in
+  match siblings with
+  | [] -> ()
+  | _ -> Hashtbl.set t.choices.matrix ~key:parent ~data:siblings
+;;
+
+let get_updated_model_for_change_dir t =
+  Out_channel.write_all write_path ~data:t.current_path;
+  t
+;;
+
+let get_updated_model_for_move t =
+  match Visualize.Adjacency_matrix.is_directory t.choices t.current_path with
+  | true ->
+    remove_helper t ~parent:(remove_last_path t.move_from) ~child:t.move_from;
+    Hashtbl.set
+      t.choices.matrix
+      ~key:t.current_path
+      ~data:
+        (Hashtbl.find_exn t.choices.matrix t.current_path
+         @ [ String.concat
+               [ t.current_path; "/"; Visualize_helper.get_name t.move_from ]
+           ]);
+    let _ =
+      Format.sprintf {|mv %s %s|} t.move_from t.current_path
+      |> Sys_unix.command
+    in
+    let move_from = "" in
+    let is_moving = false in
+    { t with move_from; is_moving }
+  | false -> t
+;;
+
+let get_updated_model_for_remove t =
+  remove_helper t ~parent:t.parent ~child:t.current_path;
+  let _ = Format.sprintf {|rm -rf %s|} t.current_path |> Sys_unix.command in
+  t
+;;
+
+let handle_up_and_down t ~dir =
+  let cursor = get_idx_by_dir t ~dir in
+  let current_path =
+    try List.nth_exn (Hashtbl.find_exn t.choices.matrix t.parent) cursor with
+    | _ -> t.current_path
+  in
+  let tmp_model = { t with cursor } in
+  { tmp_model with current_path }
+;;
+
+let get_updated_model_for_right t =
+  let current_path =
+    try Hashtbl.find_exn t.choices.matrix t.current_path with
+    | _ -> [ t.current_path ]
+  in
+  if current_path |> List.is_empty
+  then t
+  else (
+    let current_path = List.hd_exn current_path in
+    let parent =
+      if String.equal t.current_path current_path
+      then t.parent
+      else t.current_path
+    in
+    { t with current_path; cursor = 0; parent })
+;;
+
+let get_idx t ~parent ~current_path =
+  match Hashtbl.find t.choices.matrix parent with
+  | Some lst ->
+    List.foldi ~init:None lst ~f:(fun idx acc elem ->
+      if String.equal elem current_path then Some idx else acc)
+  | None -> None
+;;
+
+let get_updated_model_for_left t =
+  let current_path, parent =
+    match String.equal t.current_path t.origin with
+    | true -> t.current_path, t.parent
+    | false -> remove_last_path t.current_path, remove_last_path t.parent
+  in
+  let tmp_model = { t with parent } in
+  { tmp_model with current_path }
+;;
+
+let get_updated_model_for_up t = handle_up_and_down t ~dir:UP
+let get_updated_model_for_down t = handle_up_and_down t ~dir:DOWN
+(* let get_updated_model_for_reduced_tree t = match t.show_reduced_tree with
+   | true -> { t with show_reduced_tree = false; choices = t.full_choices } |
+   false -> { t with show_reduced_tree = true ; choices = t.reduced_choices
+   (* ; current_path = t.origin *) } *)/nFile name: navigate.mlContents of file: open! Core
+
+let cursor_func =
+  Leaves.Cursor.make
+    ~style:
+      Spices.(
+        default
+        |> bg (Spices.color "#77e5b7")
+        |> fg (Spices.color "#FFFFFF")
+        |> bold true)
+    ()
+;;
+
+let rename ~(model : State.t) new_name =
+  let new_path =
+    String.concat
+      [ State.remove_last_path (State.get_current_path model)
+      ; "/"
+      ; new_name
+      ]
+  in
+  let siblings =
+    (match Hashtbl.find (State.get_tree model) (State.get_parent model) with
+     | Some lst -> lst
+     | None -> [])
+    |> List.map ~f:(fun elem ->
+      match String.equal (State.get_current_path model) elem with
+      | true -> new_path
+      | false -> elem)
+  in
+  let _ =
+    match siblings with
+    | [] -> ()
+    | _ ->
+      Hashtbl.set
+        (State.get_tree model)
+        ~key:(State.get_parent model)
+        ~data:siblings
+  in
+  ( Format.sprintf {|mv %s %s|} (State.get_current_path model) new_path
+  , State.get_model_with_new_current_path
+      model
+      (String.concat [ State.get_parent model; "/"; new_name ]) )
+;;
+
+let valid s =
+  String.fold ~init:true s ~f:(fun acc ch ->
+    match Char.is_alphanum ch with
+    | true -> acc
+    | false -> (match ch with '.' | '_' | '-' -> true | _ -> false))
+;;
+
+let move_arround event (model : State.t) =
+  let open Minttea in
+  match event with
+  | Event.KeyDown ((Left | Key "h"), _modifier) ->
+    State.get_updated_model_for_left model, Command.Noop
+  | Event.KeyDown ((Right | Key "l"), _modifier) ->
+    State.get_updated_model_for_right model, Command.Noop
+  | Event.KeyDown ((Up | Key "k"), _modifier) ->
+    State.get_updated_model_for_up model, Command.Noop
+  | Event.KeyDown ((Down | Key "j"), _modifier) ->
+    State.get_updated_model_for_down model, Command.Noop
+  | Event.KeyDown (Enter, _modifier) ->
+    State.get_updated_model_for_move model, Command.Noop
+  | _ -> model, Command.Noop
+;;
+
+let update event (model : State.t) =
+  let open Minttea in
+  if State.get_is_moving model
+  then move_arround event model
+  else if not (State.get_is_writing model)
+  then (
+    match event with
+    | Event.KeyDown (Left, _modifier)
+    | Event.KeyDown (Down, _modifier)
+    | Event.KeyDown (Right, _modifier)
+    | Event.KeyDown (Up, _modifier) ->
+      move_arround event model
+    | Event.KeyDown (Enter, _modifier) ->
+      let model = State.get_updated_model_for_change_dir model in
+      model, exit 0
+    | Event.KeyDown (Key "p", _modifier) ->
+      State.get_updated_model_for_preview model, Command.Noop
+    (* | Event.KeyDown (Key "v", _modifier) ->
+       State.get_updated_model_for_reduced_tree model, Command.Noop *)
+    | Event.KeyDown (Key "d", Ctrl) ->
+      State.get_updated_model_for_remove model, Minttea.Command.Noop
+    | Event.KeyDown (Key "r", _modifier) ->
+      State.get_updated_model_for_rename model, Command.Noop
+    | Event.KeyDown (Key "m", _modifier) ->
+      print_endline
+        (Format.sprintf "moivng %s" (State.get_current_path model));
+      State.get_updated_model_for_move model, Command.Noop
+    | _ -> model, Minttea.Command.Noop)
+  else (
+    match event with
+    | Event.KeyDown (Escape, _modifier) ->
+      State.get_updated_model_for_rename model, Command.Noop
+    | Event.KeyDown (Enter, _modifier) ->
+      let com, model =
+        Leaves.Text_input.current_text (State.get_text model)
+        |> rename ~model
+      in
+      let _ = Sys_unix.command com in
+      State.get_model_after_writing model, Command.Noop
+    | Event.KeyDown (Key s, _modifier) when valid s ->
+      let text = Leaves.Text_input.update (State.get_text model) event in
+      State.get_model_with_new_text model text, Command.Noop
+    | Event.KeyDown (Backspace, _modifier)
+    | Event.KeyDown (Left, _modifier)
+    | Event.KeyDown (Right, _modifier) ->
+      let text = Leaves.Text_input.update (State.get_text model) event in
+      State.get_model_with_new_text model text, Command.Noop
+    | _ -> model, Command.Noop)
+;;
+
+let visualize_tree (model : State.t) ~origin ~max_depth =
+  let tree =
+    Visualize_helper.visualize
+      (State.get_tree model)
+      ~current_directory:origin
+      ~path_to_be_underlined:(State.get_current_path model)
+  in
+  "\n\n\x1b[0mPress ^C to quit\n"
+  ^ Format.sprintf {|%s|} tree
+  ^
+  if State.get_is_writing model
+  then
+    Format.sprintf "\n%s\n" @@ Leaves.Text_input.view (State.get_text model)
+  else ""
+;;
+
+let get_view (model : State.t) ~origin ~max_depth =
+  match State.should_preview model with
+  | true ->
+    Preview.preview
+      (State.get_path_to_preview model)
+      ~num_lines:Int.max_value
+  | false -> visualize_tree model ~origin ~max_depth
+;;
+
+let get_initial_state ~origin ~max_depth : State.t =
+  let tree =
+    Visualize.Adjacency_matrix.create ()
+    |> Visualize.Adjacency_matrix.get_adjacency_matrix ~origin ~max_depth
+  in
+  let children =
+    match Hashtbl.find tree.matrix origin with
+    | None -> []
+    | Some children -> children
+  in
+  let initial_path =
+    match List.hd children with
+    | None -> origin
+    | Some first_child -> first_child
+  in
+  State.init
+    ~choices:tree
+    ~current_path:initial_path
+    ~origin
+    ~parent:
+      (match String.equal initial_path origin with
+       | true -> State.remove_last_path origin
+       | false -> origin)
+    ~cursor:0
+    ~path_to_preview:""
+    ~text:(Leaves.Text_input.make "" ~placeholder:"" ~cursor:cursor_func ())
+    ~is_writing:false
+    ~show_reduced_tree:false
+    ~is_moving:false
+    ~move_from:""
+;;
+
+let init _model =
+  let open Minttea in
+  Command.Noop
+;;
+
+let navigate ~max_depth ~origin =
+  let app =
+    Minttea.app ~init ~update ~view:(get_view ~origin ~max_depth) ()
+  in
+  Minttea.start app ~initial_model:(get_initial_state ~origin ~max_depth)
+;;
+
+let pwd_navigate_command =
+  let open Core.Command.Let_syntax in
+  Core.Command.basic
+    ~summary:"starts at the current working directory"
+    [%map_open
+      let max_depth =
+        flag
+          "max-depth"
+          (optional_with_default 3 int)
+          ~doc:"INT maximum length of path to search for (default 3)"
+      in
+      fun () -> navigate ~max_depth ~origin:(Sys_unix.getcwd ())]
+;;
+
+let start_navigate_command =
+  let open Command.Let_syntax in
+  Command.basic
+    ~summary:"starts at a given path"
+    [%map_open
+      let origin = flag "start" (required string) ~doc:" the starting path"
+      and max_depth =
+        flag
+          "max-depth"
+          (optional_with_default 3 int)
+          ~doc:"INT maximum length of path to search for (default 10)"
+      in
+      fun () -> navigate ~max_depth ~origin]
+;;
+
+let command =
+  Core.Command.group
+    ~summary:"file manager commands"
+    [ "pwd", pwd_navigate_command; "dir", start_navigate_command ]
+;;/nFile name: visualize.mlContents of file: open! Core
+
+module Adjacency_matrix = struct
+  type tree = (string, string list) Hashtbl.t [@@deriving sexp_of]
+  type t = { matrix : tree } [@@deriving sexp_of]
+
+  let create () = { matrix = Hashtbl.create (module String) }
+
+  let get_name path =
+    match String.contains path '/' with
+    | false -> path
+    | true -> List.last_exn (String.split path ~on:'/')
+  ;;
+
+  let is_directory t (value : string) =
+    Hashtbl.mem t.matrix value
+  ;;
+
+  let get_children (t : tree) path = Hashtbl.find t path
+
+  let get_files_in_dir origin : string list =
+    try Sys_unix.ls_dir origin with _ -> []
+  ;;
+
+  let format_str ~origin i =
+    match String.equal (List.last_exn (String.split origin ~on:'/')) "" with
+    | true -> String.concat [ origin; i ]
+    | false -> String.concat [ origin; "/"; i ]
+  ;;
+
+  let rec get_adjacency_matrix t ~origin ~max_depth =
+    match max_depth with
+    | 0 ->
+      (match Sys_unix.is_directory origin with
+       | `Yes -> Hashtbl.add_exn t.matrix ~key:origin ~data:[]
+       | _ -> ());
+      t
+    | _ ->
+      let data =
+        List.map (get_files_in_dir origin) ~f:(fun i -> format_str ~origin i)
+      in
+      Hashtbl.add_exn t.matrix ~key:origin ~data;
+      List.fold ~init:t data ~f:(fun _ i ->
+        match Sys_unix.is_directory i with
+        | `Yes -> get_adjacency_matrix t ~origin:i ~max_depth:(max_depth - 1)
+        | _ -> get_adjacency_matrix t ~origin:i ~max_depth:0)
+  ;;
+
+  let rec get_limited_adjacency_matrix t ~origin ~max_depth ~num_to_show =
+    match max_depth with
+    | 0 ->
+      (match Sys_unix.is_directory origin with
+       | `Yes -> Hashtbl.add_exn t.matrix ~key:origin ~data:[]
+       | _ -> ());
+      t
+    | _ ->
+      let children = get_files_in_dir origin in
+      let limited_children =
+        List.slice children 0 (Int.min num_to_show (List.length children))
+      in
+      let data =
+        List.map limited_children ~f:(fun i -> format_str ~origin i)
+      in
+      Hashtbl.add_exn t.matrix ~key:origin ~data;
+      List.fold ~init:t data ~f:(fun _ i ->
+        match Sys_unix.is_directory i with
+        | `Yes ->
+          get_limited_adjacency_matrix
+            t
+            ~origin:i
+            ~max_depth:(max_depth - 1)
+            ~num_to_show
+        | _ ->
+          get_limited_adjacency_matrix t ~origin:i ~max_depth:0 ~num_to_show)
+  ;;
+end
+
+let print_dir (tree : Adjacency_matrix.t) ~origin =
+  Visualize_helper.visualize
+    tree.matrix
+    ~current_directory:origin
+    ~path_to_be_underlined:""
+;;
+
+let visualize ~max_depth ~origin =
+  let matrix =
+    Adjacency_matrix.create ()
+    |> Adjacency_matrix.get_adjacency_matrix ~origin ~max_depth
+  in
+  print_dir ~origin matrix |> print_endline
+;;
+
+let pwd_visualize_command =
+  let open Command.Let_syntax in
+  Command.basic
+    ~summary:"starts at the current working directory"
+    [%map_open
+      let max_depth =
+        flag
+          "max-depth"
+          (optional_with_default 3 int)
+          ~doc:"INT maximum length of path to search for (default 10)"
+      in
+      fun () -> visualize ~max_depth ~origin:(Sys_unix.getcwd ())]
+;;
+
+let start_visualize_command =
+  let open Command.Let_syntax in
+  Command.basic
+    ~summary:"starts at a given path"
+    [%map_open
+      let origin = flag "start" (required string) ~doc:" the starting path"
+      and max_depth =
+        flag
+          "max-depth"
+          (optional_with_default 3 int)
+          ~doc:"INT maximum length of path to search for (default 10)"
+      in
+      fun () -> visualize ~max_depth ~origin]
+;;
+
+let command =
+  Command.group
+    ~summary:"file manager commands"
+    [ "pwd", pwd_visualize_command; "dir", start_visualize_command ]
+;;/nFile name: duneContents of file: ;; -*- mode: scheme; -*-
+
+(library
+ (name file_manager_lib)
+ (libraries async core minttea leaves)
+ (inline_tests)
+ (preprocess
+  (pps ppx_jane)))
+
+(env
+ (dev
+  (flags
+   (:standard -w -20 -w -27 -w -32 -w -34 -w -37 -w -39 -w -69)))
+ (release
+  (flags (:standard))))/nFile name: visualize.mliContents of file: open! Core
+
+module Adjacency_matrix : sig
+  type tree = (string, string list) Hashtbl.t
+  type t = { matrix : tree } [@@deriving sexp_of]
+  val create : unit -> t
+  val get_adjacency_matrix : t -> origin:string -> max_depth:int -> t
+  val get_files_in_dir : string -> string list
+  val is_directory : t -> string -> bool
+  val get_children : tree -> string -> string list option
+  val get_name : string -> string
+  val get_limited_adjacency_matrix
+    :  t
+    -> origin:string
+    -> max_depth:int
+    -> num_to_show:int
+    -> t
+end
+
+val visualize : max_depth:int -> origin:string -> unit
+val command : Command.t/nFile name: summary.mlContents of file: open! Core
+
+let path_to_read_from = "/home/ubuntu/jsip-final-project/src/completion.txt"
+let path_to_script = "/home/ubuntu/jsip-final-project/src/summarization_script.py"
+let path_to_write_to = "/home/ubuntu/jsip-final-project/src/file_contents.txt"
+
+let rec find_paths_to_skim tree origin =
+  match Hashtbl.find tree origin with
+  | None -> [origin]
+  | Some children ->
+    List.fold children ~init:[] ~f:(fun acc child ->
+      List.append acc (find_paths_to_skim tree child))
+
+let generate (tree : Visualize.Adjacency_matrix.tree) (origin : string) =
+  let paths_to_skim = find_paths_to_skim tree origin in
+  let contents_of_paths =
+    List.fold paths_to_skim ~init:"" ~f:(fun acc path ->
+      acc
+      ^ "/n"
+      ^ Printf.sprintf "File name: %s" (Visualize.Adjacency_matrix.get_name path)
+      ^ Printf.sprintf "Contents of file: %s" (Preview.preview path ~num_lines:Int.max_value)
+    )
+  in
+  Out_channel.write_all path_to_write_to ~data:contents_of_paths;
+  let command = Printf.sprintf "python3 %s" path_to_script in
+  let _ = Sys_unix.command command in
+  let result = In_channel.read_all path_to_read_from in
+  result/nFile name: navigate.mliContents of file: open! Core
+
+val command : Command.t/nFile name: visualize_helper.mlContents of file: open! Core
+
+(* TODO: add a way to highlight two places *)
+
+module Styling = struct
+  type t = { mutable styles : string list }
+
+  let get_emoji_by_dir ~is_dir =
+    match is_dir with true -> "📁" | false -> ""
+  ;;
+
+  let apply_style t ~apply_to ~is_dir =
+    "\x1b["
+    ^ List.fold t.styles ~init:"" ~f:(fun acc style -> acc ^ ";" ^ style)
+    ^ "m"
+    ^ apply_to
+  ;;
+end
+
+let get_depth_space ~depth =
+  List.fold (List.init depth ~f:Fn.id) ~init:"\x1b[0m" ~f:(fun acc num ->
+    match num = depth - 1 with
+    | true -> acc ^ "\x1b[0m|__"
+    | false -> acc ^ "  ")
+  ^ " "
+;;
+
+let is_directory (tree : (string, string list) Hashtbl.t) (value : string) =
+  Hashtbl.mem tree value
+;;
+
+let is_hidden_file name = String.is_prefix name ~prefix:"."
+
+let get_name path =
+  match String.contains path '/' with
+  | false -> path
+  | true -> List.last_exn (String.split path ~on:'/')
+;;
+
+let%expect_test "get_name" =
+  print_endline (get_name "/home/ubuntu/jsip-final-project");
+  print_endline (get_name "dune-project");
+  [%expect {|
+  jsip-final-project
+  dune-project
+  |}]
+;;
+
+let get_styles tree ~(path_to_be_underlined : string) ~(parent : string) =
+  let (styles : Styling.t) = { styles = [ "0" ] } in
+  (match String.equal path_to_be_underlined parent with
+   | true -> styles.styles <- List.append styles.styles [ "4" ]
+   | false -> ());
+  (match is_directory tree parent with
+   | true -> styles.styles <- List.append styles.styles [ "36" ]
+   | false ->
+     (match is_hidden_file (get_name parent) with
+      | true -> styles.styles <- List.append styles.styles [ "35" ]
+      | false -> ()));
+  styles
+;;
+
+let get_formatted_tree_with_new_parent
+  tree
+  ~(path_to_be_underlined : string)
+  ~(parent : string)
+  ~(depth : int)
+  ~(so_far : string)
+  =
+  so_far
+  ^ "\n"
+  ^ get_depth_space ~depth
+  ^ Styling.get_emoji_by_dir ~is_dir:(is_directory tree parent)
+  ^ Printf.sprintf
+      "%s"
+      (Styling.apply_style
+         (get_styles tree ~path_to_be_underlined ~parent)
+         ~apply_to:(get_name parent)
+         ~is_dir:(is_directory tree parent))
+;;
+
+let rec helper
+  ~(so_far : string)
+  (tree : (string, string list) Hashtbl.t)
+  ~(depth : int)
+  ~(parent : string)
+  ~(path_to_be_underlined : string)
+  ~(start_from : string)
+  ~(has_started : bool)
+  ~(num_lines_down : int)
+  : string
+  =
+  let has_started = match Bool.equal has_started false && String.equal parent start_from with | true -> true | false -> has_started in
+  match has_started && num_lines_down < 3 with
+  | true ->
+    (match Hashtbl.find tree parent with
+     | None ->
+       get_formatted_tree_with_new_parent
+         tree
+         ~parent
+         ~depth
+         ~so_far
+         ~path_to_be_underlined
+     | Some current_children ->
+       let init =
+         ((get_formatted_tree_with_new_parent
+           tree
+           ~parent
+           ~depth
+           ~so_far
+           ~path_to_be_underlined), 0)
+       in
+      List.fold current_children ~init ~f:(fun (acc, count) child ->
+          helper
+           ~so_far:acc
+           tree
+           ~depth:(depth + 1)
+           ~parent:child
+           ~path_to_be_underlined
+           ~has_started
+           ~start_from
+           ~num_lines_down:(count + 1), count + 1
+        ) |> fst )
+  | false -> so_far
+;;
+
+type result =
+  { count : int
+  ; so_far : string
+  }
+
+let find_start_path tree path limit =
+  let past_tokens =
+    List.fold
+      (String.split path ~on:'/')
+      ~init:("", [])
+      ~f:(fun (full_path_so_far, paths) token ->
+        match String.length token > 0 with
+        | false -> (full_path_so_far, paths)
+        | true ->
+        let new_path = full_path_so_far ^ "/" ^ token in
+        new_path, List.append paths [ new_path ])
+    |> snd
+    |> List.rev
+  in
+  let final =
+    List.fold
+      past_tokens
+      ~init:{ count = 0; so_far = "" }
+      ~f:(fun { count; so_far } token ->
+        match Hashtbl.find tree token with
+        | None -> { count = count + 1; so_far = token }
+        | Some children ->
+          print_endline token;
+          let new_count = List.length children + count + 1 in
+          print_endline (Int.to_string new_count);
+          (match new_count <= limit with
+           | true -> { count = new_count; so_far = token }
+           | false -> { count; so_far }))
+  in
+  final.so_far
+;;
+
+let visualize
+  (tree : (string, string list) Hashtbl.t)
+  ~(current_directory : string)
+  ~(path_to_be_underlined : string)
+  : string
+  =
+  let start_from = find_start_path tree path_to_be_underlined 10 in
+  let res = helper
+    tree
+    ~depth:1
+    ~so_far:"."
+    ~parent:current_directory
+    ~path_to_be_underlined
+    ~start_from
+    ~has_started:false
+    ~num_lines_down:0 in
+  print_endline res; res
+;;/nFile name: completion.txtContents of file: /nFile name: preview.mliContents of file: open! Core
+
+val preview : string -> num_lines:int -> string/nFile name: statistics.mlContents of file: open! Core
+
+(* not implemented yet *)
+
+let statistics file = ""/nFile name: state.mliContents of file: open! Core
+open! Leaves
+
+type t
+
+val remove_last_path : string -> string
+val get_updated_model_for_preview : t -> t
+val get_updated_model_for_rename : t -> t
+val get_updated_model_for_change_dir : t -> t
+val get_updated_model_for_move : t -> t
+val get_updated_model_for_remove : t -> t
+val get_updated_model_for_right : t -> t
+val get_updated_model_for_left : t -> t
+val get_updated_model_for_up : t -> t
+val get_updated_model_for_down : t -> t
+val get_updated_model_for_move : t -> t
+val get_path_to_preview : t -> string
+val get_tree : t -> Visualize.Adjacency_matrix.tree
+val get_current_path : t -> string
+val get_is_writing : t -> bool
+val get_text : t -> Text_input.t
+val get_parent : t -> string
+val get_is_moving : t -> bool
+val should_preview : t -> bool
+val get_model_after_writing : t -> t
+val get_model_with_new_text : t -> Text_input.t -> t
+val get_model_with_new_current_path : t -> string -> t
+
+val init
+  :  choices:Visualize.Adjacency_matrix.t
+  -> origin:string
+  -> current_path:string
+  -> parent:string
+  -> cursor:int
+  -> path_to_preview:string
+  -> text:Text_input.t
+  -> is_writing:bool
+  -> show_reduced_tree:bool
+  -> is_moving:bool
+  -> move_from:string
+  -> t/nFile name: statistics.mliContents of file: open! Core
+
+val statistics : string -> string/nFile name: summarization_script.pyContents of file: import sys
+import os
+from dotenv import load_dotenv, dotenv_values
+from openai import OpenAI
+
+path_to_write_to = "/home/ubuntu/jsip-final-project/src/completion.txt"
+path_to_read_from = "/home/ubuntu/jsip-final-project/src/file_contents.txt"
+
+load_dotenv()
+
+if __name__ == "__main__":
+    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+    file = open(path_to_read_from, "r")
+    file_contents = file.read()
+    completion = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {
+                "role": "system",
+                "content": "you are an assitant file manager. summarize the contents of the file contents of a directory."
+            },
+            {
+                "role": "user",
+                "content": file_contents
+            }
+        ]
+    )
+    file_to_write = open(path_to_write, "a")
+    file_to_write.write(completion.choices[0].message.content)
+    file_to_write.close()/nFile name: state.mlContents of file: open! Core
+open! Leaves
+open! Leaves.Cursor
+
+let write_path = "/home/ubuntu/jsip-final-project/bin/path.txt"
+
+let cursor_func =
+  Leaves.Cursor.make
+    ~style:
+      Spices.(
+        default
+        |> bg (Spices.color "#77e5b7")
+        |> fg (Spices.color "#FFFFFF")
+        |> bold true)
+    ()
+;;
+
+type t =
+  { choices : Visualize.Adjacency_matrix.t
+  ; current_path : string
+  ; origin : string
+  ; parent : string
+  ; cursor : int
+  ; path_to_preview : string
+  ; text : Text_input.t
+  ; is_writing : bool
+  ; show_reduced_tree : bool
+  ; move_from : string
+  ; is_moving : bool
+  }
+
+type dir =
+  | UP
+  | DOWN
+
+let should_preview t =
+  String.length t.path_to_preview > 0
+  && not
+       (Visualize.Adjacency_matrix.is_directory t.choices t.path_to_preview)
+;;
+
+let get_is_moving t = t.is_moving
+let get_tree t = t.choices.matrix
+let get_current_path t = t.current_path
+let get_text t = t.text
+let get_parent t = t.parent
+let get_is_writing t = t.is_writing
+let get_path_to_preview t = t.path_to_preview
+let get_model_after_writing t = { t with is_writing = false }
+let get_model_with_new_text t new_text = { t with text = new_text }
+
+let get_model_with_new_current_path t new_current_path =
+  { t with current_path = new_current_path }
+;;
+
+let get_updated_model_for_move t =
+  { t with is_moving = true; move_from = t.current_path }
+;;
+
+let remove_last_path current_path =
+  let str_lst = String.split current_path ~on:'/' in
+  List.foldi str_lst ~init:[] ~f:(fun idx new_lst elem ->
+    match idx = List.length str_lst - 1 with
+    | true -> new_lst
+    | false -> new_lst @ [ elem ])
+  |> String.concat ~sep:"/"
+;;
+
+let init
+  ~choices
+  ~origin
+  ~current_path
+  ~parent
+  ~cursor
+  ~path_to_preview
+  ~text
+  ~is_writing
+  ~show_reduced_tree
+  ~is_moving
+  ~move_from
+  =
+  { choices
+  ; current_path
+  ; origin
+  ; parent
+  ; cursor
+  ; path_to_preview
+  ; text
+  ; is_writing
+  ; show_reduced_tree
+  ; is_moving
+  ; move_from
+  }
+;;
+
+let get_idx_by_dir t ~dir =
+  match dir with
+  | UP ->
+    (try
+       (t.cursor - 1)
+       % (Hashtbl.find_exn t.choices.matrix t.parent |> List.length)
+     with
+     | _ -> 0)
+  | DOWN ->
+    (try
+       (t.cursor + 1)
+       % (Hashtbl.find_exn t.choices.matrix t.parent |> List.length)
+     with
+     | _ -> 0)
+;;
+
+let get_updated_model_for_preview t =
+  match t.path_to_preview with
+  | "" -> { t with path_to_preview = t.current_path }
+  | _ -> { t with path_to_preview = "" }
+;;
+
+let get_updated_model_for_rename t =
+  let is_writing = true in
+  let text =
+    Leaves.Text_input.make "" ~placeholder:"" ~cursor:cursor_func ()
+  in
+  { t with is_writing; text }
+;;
+
+let remove_helper t ~parent ~child =
+  let siblings =
+    (match Hashtbl.find t.choices.matrix parent with
+     | Some lst -> lst
+     | None -> [])
+    |> List.filter ~f:(fun elem -> String.equal child elem |> not)
+  in
+  match siblings with
+  | [] -> ()
+  | _ -> Hashtbl.set t.choices.matrix ~key:parent ~data:siblings
+;;
+
+let get_updated_model_for_change_dir t =
+  Out_channel.write_all write_path ~data:t.current_path;
+  t
+;;
+
+let get_updated_model_for_move t =
+  match Visualize.Adjacency_matrix.is_directory t.choices t.current_path with
+  | true ->
+    remove_helper t ~parent:(remove_last_path t.move_from) ~child:t.move_from;
+    Hashtbl.set
+      t.choices.matrix
+      ~key:t.current_path
+      ~data:
+        (Hashtbl.find_exn t.choices.matrix t.current_path
+         @ [ String.concat
+               [ t.current_path; "/"; Visualize_helper.get_name t.move_from ]
+           ]);
+    let _ =
+      Format.sprintf {|mv %s %s|} t.move_from t.current_path
+      |> Sys_unix.command
+    in
+    let move_from = "" in
+    let is_moving = false in
+    { t with move_from; is_moving }
+  | false -> t
+;;
+
+let get_updated_model_for_remove t =
+  remove_helper t ~parent:t.parent ~child:t.current_path;
+  let _ = Format.sprintf {|rm -rf %s|} t.current_path |> Sys_unix.command in
+  t
+;;
+
+let handle_up_and_down t ~dir =
+  let cursor = get_idx_by_dir t ~dir in
+  let current_path =
+    try List.nth_exn (Hashtbl.find_exn t.choices.matrix t.parent) cursor with
+    | _ -> t.current_path
+  in
+  let tmp_model = { t with cursor } in
+  { tmp_model with current_path }
+;;
+
+let get_updated_model_for_right t =
+  let current_path =
+    try Hashtbl.find_exn t.choices.matrix t.current_path with
+    | _ -> [ t.current_path ]
+  in
+  if current_path |> List.is_empty
+  then t
+  else (
+    let current_path = List.hd_exn current_path in
+    let parent =
+      if String.equal t.current_path current_path
+      then t.parent
+      else t.current_path
+    in
+    { t with current_path; cursor = 0; parent })
+;;
+
+let get_idx t ~parent ~current_path =
+  match Hashtbl.find t.choices.matrix parent with
+  | Some lst ->
+    List.foldi ~init:None lst ~f:(fun idx acc elem ->
+      if String.equal elem current_path then Some idx else acc)
+  | None -> None
+;;
+
+let get_updated_model_for_left t =
+  let current_path, parent =
+    match String.equal t.current_path t.origin with
+    | true -> t.current_path, t.parent
+    | false -> remove_last_path t.current_path, remove_last_path t.parent
+  in
+  let tmp_model = { t with parent } in
+  { tmp_model with current_path }
+;;
+
+let get_updated_model_for_up t = handle_up_and_down t ~dir:UP
+let get_updated_model_for_down t = handle_up_and_down t ~dir:DOWN
+(* let get_updated_model_for_reduced_tree t = match t.show_reduced_tree with
+   | true -> { t with show_reduced_tree = false; choices = t.full_choices } |
+   false -> { t with show_reduced_tree = true ; choices = t.reduced_choices
+   (* ; current_path = t.origin *) } *)/nFile name: navigate.mlContents of file: open! Core
+
+let cursor_func =
+  Leaves.Cursor.make
+    ~style:
+      Spices.(
+        default
+        |> bg (Spices.color "#77e5b7")
+        |> fg (Spices.color "#FFFFFF")
+        |> bold true)
+    ()
+;;
+
+let rename ~(model : State.t) new_name =
+  let new_path =
+    String.concat
+      [ State.remove_last_path (State.get_current_path model)
+      ; "/"
+      ; new_name
+      ]
+  in
+  let siblings =
+    (match Hashtbl.find (State.get_tree model) (State.get_parent model) with
+     | Some lst -> lst
+     | None -> [])
+    |> List.map ~f:(fun elem ->
+      match String.equal (State.get_current_path model) elem with
+      | true -> new_path
+      | false -> elem)
+  in
+  let _ =
+    match siblings with
+    | [] -> ()
+    | _ ->
+      Hashtbl.set
+        (State.get_tree model)
+        ~key:(State.get_parent model)
+        ~data:siblings
+  in
+  ( Format.sprintf {|mv %s %s|} (State.get_current_path model) new_path
+  , State.get_model_with_new_current_path
+      model
+      (String.concat [ State.get_parent model; "/"; new_name ]) )
+;;
+
+let valid s =
+  String.fold ~init:true s ~f:(fun acc ch ->
+    match Char.is_alphanum ch with
+    | true -> acc
+    | false -> (match ch with '.' | '_' | '-' -> true | _ -> false))
+;;
+
+let move_arround event (model : State.t) =
+  let open Minttea in
+  match event with
+  | Event.KeyDown ((Left | Key "h"), _modifier) ->
+    State.get_updated_model_for_left model, Command.Noop
+  | Event.KeyDown ((Right | Key "l"), _modifier) ->
+    State.get_updated_model_for_right model, Command.Noop
+  | Event.KeyDown ((Up | Key "k"), _modifier) ->
+    State.get_updated_model_for_up model, Command.Noop
+  | Event.KeyDown ((Down | Key "j"), _modifier) ->
+    State.get_updated_model_for_down model, Command.Noop
+  | Event.KeyDown (Enter, _modifier) ->
+    State.get_updated_model_for_move model, Command.Noop
+  | _ -> model, Command.Noop
+;;
+
+let update event (model : State.t) =
+  let open Minttea in
+  if State.get_is_moving model
+  then move_arround event model
+  else if not (State.get_is_writing model)
+  then (
+    match event with
+    | Event.KeyDown (Left, _modifier)
+    | Event.KeyDown (Down, _modifier)
+    | Event.KeyDown (Right, _modifier)
+    | Event.KeyDown (Up, _modifier) ->
+      move_arround event model
+    | Event.KeyDown (Enter, _modifier) ->
+      let model = State.get_updated_model_for_change_dir model in
+      model, exit 0
+    | Event.KeyDown (Key "p", _modifier) ->
+      State.get_updated_model_for_preview model, Command.Noop
+    (* | Event.KeyDown (Key "v", _modifier) ->
+       State.get_updated_model_for_reduced_tree model, Command.Noop *)
+    | Event.KeyDown (Key "d", Ctrl) ->
+      State.get_updated_model_for_remove model, Minttea.Command.Noop
+    | Event.KeyDown (Key "r", _modifier) ->
+      State.get_updated_model_for_rename model, Command.Noop
+    | Event.KeyDown (Key "m", _modifier) ->
+      print_endline
+        (Format.sprintf "moivng %s" (State.get_current_path model));
+      State.get_updated_model_for_move model, Command.Noop
+    | _ -> model, Minttea.Command.Noop)
+  else (
+    match event with
+    | Event.KeyDown (Escape, _modifier) ->
+      State.get_updated_model_for_rename model, Command.Noop
+    | Event.KeyDown (Enter, _modifier) ->
+      let com, model =
+        Leaves.Text_input.current_text (State.get_text model)
+        |> rename ~model
+      in
+      let _ = Sys_unix.command com in
+      State.get_model_after_writing model, Command.Noop
+    | Event.KeyDown (Key s, _modifier) when valid s ->
+      let text = Leaves.Text_input.update (State.get_text model) event in
+      State.get_model_with_new_text model text, Command.Noop
+    | Event.KeyDown (Backspace, _modifier)
+    | Event.KeyDown (Left, _modifier)
+    | Event.KeyDown (Right, _modifier) ->
+      let text = Leaves.Text_input.update (State.get_text model) event in
+      State.get_model_with_new_text model text, Command.Noop
+    | _ -> model, Command.Noop)
+;;
+
+let visualize_tree (model : State.t) ~origin ~max_depth =
+  let tree =
+    Visualize_helper.visualize
+      (State.get_tree model)
+      ~current_directory:origin
+      ~path_to_be_underlined:(State.get_current_path model)
+  in
+  "\n\n\x1b[0mPress ^C to quit\n"
+  ^ Format.sprintf {|%s|} tree
+  ^
+  if State.get_is_writing model
+  then
+    Format.sprintf "\n%s\n" @@ Leaves.Text_input.view (State.get_text model)
+  else ""
+;;
+
+let get_view (model : State.t) ~origin ~max_depth =
+  match State.should_preview model with
+  | true ->
+    Preview.preview
+      (State.get_path_to_preview model)
+      ~num_lines:Int.max_value
+  | false -> visualize_tree model ~origin ~max_depth
+;;
+
+let get_initial_state ~origin ~max_depth : State.t =
+  let tree =
+    Visualize.Adjacency_matrix.create ()
+    |> Visualize.Adjacency_matrix.get_adjacency_matrix ~origin ~max_depth
+  in
+  let children =
+    match Hashtbl.find tree.matrix origin with
+    | None -> []
+    | Some children -> children
+  in
+  let initial_path =
+    match List.hd children with
+    | None -> origin
+    | Some first_child -> first_child
+  in
+  State.init
+    ~choices:tree
+    ~current_path:initial_path
+    ~origin
+    ~parent:
+      (match String.equal initial_path origin with
+       | true -> State.remove_last_path origin
+       | false -> origin)
+    ~cursor:0
+    ~path_to_preview:""
+    ~text:(Leaves.Text_input.make "" ~placeholder:"" ~cursor:cursor_func ())
+    ~is_writing:false
+    ~show_reduced_tree:false
+    ~is_moving:false
+    ~move_from:""
+;;
+
+let init _model =
+  let open Minttea in
+  Command.Noop
+;;
+
+let navigate ~max_depth ~origin =
+  let app =
+    Minttea.app ~init ~update ~view:(get_view ~origin ~max_depth) ()
+  in
+  Minttea.start app ~initial_model:(get_initial_state ~origin ~max_depth)
+;;
+
+let pwd_navigate_command =
+  let open Core.Command.Let_syntax in
+  Core.Command.basic
+    ~summary:"starts at the current working directory"
+    [%map_open
+      let max_depth =
+        flag
+          "max-depth"
+          (optional_with_default 3 int)
+          ~doc:"INT maximum length of path to search for (default 3)"
+      in
+      fun () -> navigate ~max_depth ~origin:(Sys_unix.getcwd ())]
+;;
+
+let start_navigate_command =
+  let open Command.Let_syntax in
+  Command.basic
+    ~summary:"starts at a given path"
+    [%map_open
+      let origin = flag "start" (required string) ~doc:" the starting path"
+      and max_depth =
+        flag
+          "max-depth"
+          (optional_with_default 3 int)
+          ~doc:"INT maximum length of path to search for (default 10)"
+      in
+      fun () -> navigate ~max_depth ~origin]
+;;
+
+let command =
+  Core.Command.group
+    ~summary:"file manager commands"
+    [ "pwd", pwd_navigate_command; "dir", start_navigate_command ]
+;;/nFile name: visualize.mlContents of file: open! Core
+
+module Adjacency_matrix = struct
+  type tree = (string, string list) Hashtbl.t [@@deriving sexp_of]
+  type t = { matrix : tree } [@@deriving sexp_of]
+
+  let create () = { matrix = Hashtbl.create (module String) }
+
+  let get_name path =
+    match String.contains path '/' with
+    | false -> path
+    | true -> List.last_exn (String.split path ~on:'/')
+  ;;
+
+  let is_directory t (value : string) =
+    Hashtbl.mem t.matrix value
+  ;;
+
+  let get_children (t : tree) path = Hashtbl.find t path
+
+  let get_files_in_dir origin : string list =
+    try Sys_unix.ls_dir origin with _ -> []
+  ;;
+
+  let format_str ~origin i =
+    match String.equal (List.last_exn (String.split origin ~on:'/')) "" with
+    | true -> String.concat [ origin; i ]
+    | false -> String.concat [ origin; "/"; i ]
+  ;;
+
+  let rec get_adjacency_matrix t ~origin ~max_depth =
+    match max_depth with
+    | 0 ->
+      (match Sys_unix.is_directory origin with
+       | `Yes -> Hashtbl.add_exn t.matrix ~key:origin ~data:[]
+       | _ -> ());
+      t
+    | _ ->
+      let data =
+        List.map (get_files_in_dir origin) ~f:(fun i -> format_str ~origin i)
+      in
+      Hashtbl.add_exn t.matrix ~key:origin ~data;
+      List.fold ~init:t data ~f:(fun _ i ->
+        match Sys_unix.is_directory i with
+        | `Yes -> get_adjacency_matrix t ~origin:i ~max_depth:(max_depth - 1)
+        | _ -> get_adjacency_matrix t ~origin:i ~max_depth:0)
+  ;;
+
+  let rec get_limited_adjacency_matrix t ~origin ~max_depth ~num_to_show =
+    match max_depth with
+    | 0 ->
+      (match Sys_unix.is_directory origin with
+       | `Yes -> Hashtbl.add_exn t.matrix ~key:origin ~data:[]
+       | _ -> ());
+      t
+    | _ ->
+      let children = get_files_in_dir origin in
+      let limited_children =
+        List.slice children 0 (Int.min num_to_show (List.length children))
+      in
+      let data =
+        List.map limited_children ~f:(fun i -> format_str ~origin i)
+      in
+      Hashtbl.add_exn t.matrix ~key:origin ~data;
+      List.fold ~init:t data ~f:(fun _ i ->
+        match Sys_unix.is_directory i with
+        | `Yes ->
+          get_limited_adjacency_matrix
+            t
+            ~origin:i
+            ~max_depth:(max_depth - 1)
+            ~num_to_show
+        | _ ->
+          get_limited_adjacency_matrix t ~origin:i ~max_depth:0 ~num_to_show)
+  ;;
+end
+
+let print_dir (tree : Adjacency_matrix.t) ~origin =
+  Visualize_helper.visualize
+    tree.matrix
+    ~current_directory:origin
+    ~path_to_be_underlined:""
+;;
+
+let visualize ~max_depth ~origin =
+  let matrix =
+    Adjacency_matrix.create ()
+    |> Adjacency_matrix.get_adjacency_matrix ~origin ~max_depth
+  in
+  print_dir ~origin matrix |> print_endline
+;;
+
+let pwd_visualize_command =
+  let open Command.Let_syntax in
+  Command.basic
+    ~summary:"starts at the current working directory"
+    [%map_open
+      let max_depth =
+        flag
+          "max-depth"
+          (optional_with_default 3 int)
+          ~doc:"INT maximum length of path to search for (default 10)"
+      in
+      fun () -> visualize ~max_depth ~origin:(Sys_unix.getcwd ())]
+;;
+
+let start_visualize_command =
+  let open Command.Let_syntax in
+  Command.basic
+    ~summary:"starts at a given path"
+    [%map_open
+      let origin = flag "start" (required string) ~doc:" the starting path"
+      and max_depth =
+        flag
+          "max-depth"
+          (optional_with_default 3 int)
+          ~doc:"INT maximum length of path to search for (default 10)"
+      in
+      fun () -> visualize ~max_depth ~origin]
+;;
+
+let command =
+  Command.group
+    ~summary:"file manager commands"
+    [ "pwd", pwd_visualize_command; "dir", start_visualize_command ]
+;;/nFile name: duneContents of file: ;; -*- mode: scheme; -*-
+
+(library
+ (name file_manager_lib)
+ (libraries async core minttea leaves)
+ (inline_tests)
+ (preprocess
+  (pps ppx_jane)))
+
+(env
+ (dev
+  (flags
+   (:standard -w -20 -w -27 -w -32 -w -34 -w -37 -w -39 -w -69)))
+ (release
+  (flags (:standard))))/nFile name: visualize.mliContents of file: open! Core
+
+module Adjacency_matrix : sig
+  type tree = (string, string list) Hashtbl.t
+  type t = { matrix : tree } [@@deriving sexp_of]
+  val create : unit -> t
+  val get_adjacency_matrix : t -> origin:string -> max_depth:int -> t
+  val get_files_in_dir : string -> string list
+  val is_directory : t -> string -> bool
+  val get_children : tree -> string -> string list option
+  val get_name : string -> string
+  val get_limited_adjacency_matrix
+    :  t
+    -> origin:string
+    -> max_depth:int
+    -> num_to_show:int
+    -> t
+end
+
+val visualize : max_depth:int -> origin:string -> unit
+val command : Command.t/nFile name: summary.mlContents of file: open! Core
+
+let path_to_read_from = "/home/ubuntu/jsip-final-project/src/completion.txt"
+let path_to_script = "/home/ubuntu/jsip-final-project/src/summarization_script.py"
+let path_to_write_to = "/home/ubuntu/jsip-final-project/src/file_contents.txt"
+
+let rec find_paths_to_skim tree origin =
+  match Hashtbl.find tree origin with
+  | None -> [origin]
+  | Some children ->
+    List.fold children ~init:[] ~f:(fun acc child ->
+      List.append acc (find_paths_to_skim tree child))
+
+let generate (tree : Visualize.Adjacency_matrix.tree) (origin : string) =
+  let paths_to_skim = find_paths_to_skim tree origin in
+  let contents_of_paths =
+    List.fold paths_to_skim ~init:"" ~f:(fun acc path ->
+      acc
+      ^ "/n"
+      ^ Printf.sprintf "File name: %s" (Visualize.Adjacency_matrix.get_name path)
+      ^ Printf.sprintf "Contents of file: %s" (Preview.preview path ~num_lines:Int.max_value)
+    )
+  in
+  Out_channel.write_all path_to_write_to ~data:contents_of_paths;
+  let command = Printf.sprintf "python3 %s" path_to_script in
+  let _ = Sys_unix.command command in
+  let result = In_channel.read_all path_to_read_from in
+  result/nFile name: navigate.mliContents of file: open! Core
+
+val command : Command.t/nFile name: visualize_helper.mlContents of file: open! Core
+
+(* TODO: add a way to highlight two places *)
+
+module Styling = struct
+  type t = { mutable styles : string list }
+
+  let get_emoji_by_dir ~is_dir =
+    match is_dir with true -> "📁" | false -> ""
+  ;;
+
+  let apply_style t ~apply_to ~is_dir =
+    "\x1b["
+    ^ List.fold t.styles ~init:"" ~f:(fun acc style -> acc ^ ";" ^ style)
+    ^ "m"
+    ^ apply_to
+  ;;
+end
+
+let get_depth_space ~depth =
+  List.fold (List.init depth ~f:Fn.id) ~init:"\x1b[0m" ~f:(fun acc num ->
+    match num = depth - 1 with
+    | true -> acc ^ "\x1b[0m|__"
+    | false -> acc ^ "  ")
+  ^ " "
+;;
+
+let is_directory (tree : (string, string list) Hashtbl.t) (value : string) =
+  Hashtbl.mem tree value
+;;
+
+let is_hidden_file name = String.is_prefix name ~prefix:"."
+
+let get_name path =
+  match String.contains path '/' with
+  | false -> path
+  | true -> List.last_exn (String.split path ~on:'/')
+;;
+
+let%expect_test "get_name" =
+  print_endline (get_name "/home/ubuntu/jsip-final-project");
+  print_endline (get_name "dune-project");
+  [%expect {|
+  jsip-final-project
+  dune-project
+  |}]
+;;
+
+let get_styles tree ~(path_to_be_underlined : string) ~(parent : string) =
+  let (styles : Styling.t) = { styles = [ "0" ] } in
+  (match String.equal path_to_be_underlined parent with
+   | true -> styles.styles <- List.append styles.styles [ "4" ]
+   | false -> ());
+  (match is_directory tree parent with
+   | true -> styles.styles <- List.append styles.styles [ "36" ]
+   | false ->
+     (match is_hidden_file (get_name parent) with
+      | true -> styles.styles <- List.append styles.styles [ "35" ]
+      | false -> ()));
+  styles
+;;
+
+let get_formatted_tree_with_new_parent
+  tree
+  ~(path_to_be_underlined : string)
+  ~(parent : string)
+  ~(depth : int)
+  ~(so_far : string)
+  =
+  so_far
+  ^ "\n"
+  ^ get_depth_space ~depth
+  ^ Styling.get_emoji_by_dir ~is_dir:(is_directory tree parent)
+  ^ Printf.sprintf
+      "%s"
+      (Styling.apply_style
+         (get_styles tree ~path_to_be_underlined ~parent)
+         ~apply_to:(get_name parent)
+         ~is_dir:(is_directory tree parent))
+;;
+
+let rec helper
+  ~(so_far : string)
+  (tree : (string, string list) Hashtbl.t)
+  ~(depth : int)
+  ~(parent : string)
+  ~(path_to_be_underlined : string)
+  ~(start_from : string)
+  ~(has_started : bool)
+  ~(num_lines_down : int)
+  : string
+  =
+  let has_started = match Bool.equal has_started false && String.equal parent start_from with | true -> true | false -> has_started in
+  match has_started && num_lines_down < 3 with
+  | true ->
+    (match Hashtbl.find tree parent with
+     | None ->
+       get_formatted_tree_with_new_parent
+         tree
+         ~parent
+         ~depth
+         ~so_far
+         ~path_to_be_underlined
+     | Some current_children ->
+       let init =
+         ((get_formatted_tree_with_new_parent
+           tree
+           ~parent
+           ~depth
+           ~so_far
+           ~path_to_be_underlined), 0)
+       in
+      List.fold current_children ~init ~f:(fun (acc, count) child ->
+          helper
+           ~so_far:acc
+           tree
+           ~depth:(depth + 1)
+           ~parent:child
+           ~path_to_be_underlined
+           ~has_started
+           ~start_from
+           ~num_lines_down:(count + 1), count + 1
+        ) |> fst )
+  | false -> so_far
+;;
+
+type result =
+  { count : int
+  ; so_far : string
+  }
+
+let find_start_path tree path limit =
+  let past_tokens =
+    List.fold
+      (String.split path ~on:'/')
+      ~init:("", [])
+      ~f:(fun (full_path_so_far, paths) token ->
+        match String.length token > 0 with
+        | false -> (full_path_so_far, paths)
+        | true ->
+        let new_path = full_path_so_far ^ "/" ^ token in
+        new_path, List.append paths [ new_path ])
+    |> snd
+    |> List.rev
+  in
+  let final =
+    List.fold
+      past_tokens
+      ~init:{ count = 0; so_far = "" }
+      ~f:(fun { count; so_far } token ->
+        match Hashtbl.find tree token with
+        | None -> { count = count + 1; so_far = token }
+        | Some children ->
+          print_endline token;
+          let new_count = List.length children + count + 1 in
+          print_endline (Int.to_string new_count);
+          (match new_count <= limit with
+           | true -> { count = new_count; so_far = token }
+           | false -> { count; so_far }))
+  in
+  final.so_far
+;;
+
+let visualize
+  (tree : (string, string list) Hashtbl.t)
+  ~(current_directory : string)
+  ~(path_to_be_underlined : string)
+  : string
+  =
+  let start_from = find_start_path tree path_to_be_underlined 10 in
+  let res = helper
+    tree
+    ~depth:1
+    ~so_far:"."
+    ~parent:current_directory
+    ~path_to_be_underlined
+    ~start_from
+    ~has_started:false
+    ~num_lines_down:0 in
+  print_endline res; res
+;;/nFile name: completion.txtContents of file: /nFile name: preview.mliContents of file: open! Core
+
+val preview : string -> num_lines:int -> string/nFile name: statistics.mlContents of file: open! Core
+
+(* not implemented yet *)
+
+let statistics file = ""/nFile name: state.mliContents of file: open! Core
+open! Leaves
+
+type t
+
+val remove_last_path : string -> string
+val get_updated_model_for_preview : t -> t
+val get_updated_model_for_rename : t -> t
+val get_updated_model_for_change_dir : t -> t
+val get_updated_model_for_move : t -> t
+val get_updated_model_for_remove : t -> t
+val get_updated_model_for_right : t -> t
+val get_updated_model_for_left : t -> t
+val get_updated_model_for_up : t -> t
+val get_updated_model_for_down : t -> t
+val get_updated_model_for_move : t -> t
+val get_path_to_preview : t -> string
+val get_tree : t -> Visualize.Adjacency_matrix.tree
+val get_current_path : t -> string
+val get_is_writing : t -> bool
+val get_text : t -> Text_input.t
+val get_parent : t -> string
+val get_is_moving : t -> bool
+val should_preview : t -> bool
+val get_model_after_writing : t -> t
+val get_model_with_new_text : t -> Text_input.t -> t
+val get_model_with_new_current_path : t -> string -> t
+
+val init
+  :  choices:Visualize.Adjacency_matrix.t
+  -> origin:string
+  -> current_path:string
+  -> parent:string
+  -> cursor:int
+  -> path_to_preview:string
+  -> text:Text_input.t
+  -> is_writing:bool
+  -> show_reduced_tree:bool
+  -> is_moving:bool
+  -> move_from:string
+  -> t/nFile name: statistics.mliContents of file: open! Core
+
+val statistics : string -> string/nFile name: summarization_script.pyContents of file: import sys
+import os
+from dotenv import load_dotenv, dotenv_values
+from openai import OpenAI
+
+path_to_write_to = "/home/ubuntu/jsip-final-project/src/completion.txt"
+path_to_read_from = "/home/ubuntu/jsip-final-project/src/file_contents.txt"
+
+load_dotenv()
+
+if __name__ == "__main__":
+    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+    file = open(path_to_read_from, "r")
+    file_contents = file.read()
+    completion = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {
+                "role": "system",
+                "content": "you are an assitant file manager. summarize the contents of the file contents of a directory."
+            },
+            {
+                "role": "user",
+                "content": file_contents
+            }
+        ]
+    )
+    file_to_write = open(path_to_write_to, "a")
+    file_to_write.write(completion.choices[0].message.content)
+    file_to_write.close()/nFile name: state.mlContents of file: open! Core
+open! Leaves
+open! Leaves.Cursor
+
+let write_path = "/home/ubuntu/jsip-final-project/bin/path.txt"
+
+let cursor_func =
+  Leaves.Cursor.make
+    ~style:
+      Spices.(
+        default
+        |> bg (Spices.color "#77e5b7")
+        |> fg (Spices.color "#FFFFFF")
+        |> bold true)
+    ()
+;;
+
+type t =
+  { choices : Visualize.Adjacency_matrix.t
+  ; current_path : string
+  ; origin : string
+  ; parent : string
+  ; cursor : int
+  ; path_to_preview : string
+  ; text : Text_input.t
+  ; is_writing : bool
+  ; show_reduced_tree : bool
+  ; move_from : string
+  ; is_moving : bool
+  }
+
+type dir =
+  | UP
+  | DOWN
+
+let should_preview t =
+  String.length t.path_to_preview > 0
+  && not
+       (Visualize.Adjacency_matrix.is_directory t.choices t.path_to_preview)
+;;
+
+let get_is_moving t = t.is_moving
+let get_tree t = t.choices.matrix
+let get_current_path t = t.current_path
+let get_text t = t.text
+let get_parent t = t.parent
+let get_is_writing t = t.is_writing
+let get_path_to_preview t = t.path_to_preview
+let get_model_after_writing t = { t with is_writing = false }
+let get_model_with_new_text t new_text = { t with text = new_text }
+
+let get_model_with_new_current_path t new_current_path =
+  { t with current_path = new_current_path }
+;;
+
+let get_updated_model_for_move t =
+  { t with is_moving = true; move_from = t.current_path }
+;;
+
+let remove_last_path current_path =
+  let str_lst = String.split current_path ~on:'/' in
+  List.foldi str_lst ~init:[] ~f:(fun idx new_lst elem ->
+    match idx = List.length str_lst - 1 with
+    | true -> new_lst
+    | false -> new_lst @ [ elem ])
+  |> String.concat ~sep:"/"
+;;
+
+let init
+  ~choices
+  ~origin
+  ~current_path
+  ~parent
+  ~cursor
+  ~path_to_preview
+  ~text
+  ~is_writing
+  ~show_reduced_tree
+  ~is_moving
+  ~move_from
+  =
+  { choices
+  ; current_path
+  ; origin
+  ; parent
+  ; cursor
+  ; path_to_preview
+  ; text
+  ; is_writing
+  ; show_reduced_tree
+  ; is_moving
+  ; move_from
+  }
+;;
+
+let get_idx_by_dir t ~dir =
+  match dir with
+  | UP ->
+    (try
+       (t.cursor - 1)
+       % (Hashtbl.find_exn t.choices.matrix t.parent |> List.length)
+     with
+     | _ -> 0)
+  | DOWN ->
+    (try
+       (t.cursor + 1)
+       % (Hashtbl.find_exn t.choices.matrix t.parent |> List.length)
+     with
+     | _ -> 0)
+;;
+
+let get_updated_model_for_preview t =
+  match t.path_to_preview with
+  | "" -> { t with path_to_preview = t.current_path }
+  | _ -> { t with path_to_preview = "" }
+;;
+
+let get_updated_model_for_rename t =
+  let is_writing = true in
+  let text =
+    Leaves.Text_input.make "" ~placeholder:"" ~cursor:cursor_func ()
+  in
+  { t with is_writing; text }
+;;
+
+let remove_helper t ~parent ~child =
+  let siblings =
+    (match Hashtbl.find t.choices.matrix parent with
+     | Some lst -> lst
+     | None -> [])
+    |> List.filter ~f:(fun elem -> String.equal child elem |> not)
+  in
+  match siblings with
+  | [] -> ()
+  | _ -> Hashtbl.set t.choices.matrix ~key:parent ~data:siblings
+;;
+
+let get_updated_model_for_change_dir t =
+  Out_channel.write_all write_path ~data:t.current_path;
+  t
+;;
+
+let get_updated_model_for_move t =
+  match Visualize.Adjacency_matrix.is_directory t.choices t.current_path with
+  | true ->
+    remove_helper t ~parent:(remove_last_path t.move_from) ~child:t.move_from;
+    Hashtbl.set
+      t.choices.matrix
+      ~key:t.current_path
+      ~data:
+        (Hashtbl.find_exn t.choices.matrix t.current_path
+         @ [ String.concat
+               [ t.current_path; "/"; Visualize_helper.get_name t.move_from ]
+           ]);
+    let _ =
+      Format.sprintf {|mv %s %s|} t.move_from t.current_path
+      |> Sys_unix.command
+    in
+    let move_from = "" in
+    let is_moving = false in
+    { t with move_from; is_moving }
+  | false -> t
+;;
+
+let get_updated_model_for_remove t =
+  remove_helper t ~parent:t.parent ~child:t.current_path;
+  let _ = Format.sprintf {|rm -rf %s|} t.current_path |> Sys_unix.command in
+  t
+;;
+
+let handle_up_and_down t ~dir =
+  let cursor = get_idx_by_dir t ~dir in
+  let current_path =
+    try List.nth_exn (Hashtbl.find_exn t.choices.matrix t.parent) cursor with
+    | _ -> t.current_path
+  in
+  let tmp_model = { t with cursor } in
+  { tmp_model with current_path }
+;;
+
+let get_updated_model_for_right t =
+  let current_path =
+    try Hashtbl.find_exn t.choices.matrix t.current_path with
+    | _ -> [ t.current_path ]
+  in
+  if current_path |> List.is_empty
+  then t
+  else (
+    let current_path = List.hd_exn current_path in
+    let parent =
+      if String.equal t.current_path current_path
+      then t.parent
+      else t.current_path
+    in
+    { t with current_path; cursor = 0; parent })
+;;
+
+let get_idx t ~parent ~current_path =
+  match Hashtbl.find t.choices.matrix parent with
+  | Some lst ->
+    List.foldi ~init:None lst ~f:(fun idx acc elem ->
+      if String.equal elem current_path then Some idx else acc)
+  | None -> None
+;;
+
+let get_updated_model_for_left t =
+  let current_path, parent =
+    match String.equal t.current_path t.origin with
+    | true -> t.current_path, t.parent
+    | false -> remove_last_path t.current_path, remove_last_path t.parent
+  in
+  let tmp_model = { t with parent } in
+  { tmp_model with current_path }
+;;
+
+let get_updated_model_for_up t = handle_up_and_down t ~dir:UP
+let get_updated_model_for_down t = handle_up_and_down t ~dir:DOWN
+(* let get_updated_model_for_reduced_tree t = match t.show_reduced_tree with
+   | true -> { t with show_reduced_tree = false; choices = t.full_choices } |
+   false -> { t with show_reduced_tree = true ; choices = t.reduced_choices
+   (* ; current_path = t.origin *) } *)/nFile name: navigate.mlContents of file: open! Core
+
+let cursor_func =
+  Leaves.Cursor.make
+    ~style:
+      Spices.(
+        default
+        |> bg (Spices.color "#77e5b7")
+        |> fg (Spices.color "#FFFFFF")
+        |> bold true)
+    ()
+;;
+
+let rename ~(model : State.t) new_name =
+  let new_path =
+    String.concat
+      [ State.remove_last_path (State.get_current_path model)
+      ; "/"
+      ; new_name
+      ]
+  in
+  let siblings =
+    (match Hashtbl.find (State.get_tree model) (State.get_parent model) with
+     | Some lst -> lst
+     | None -> [])
+    |> List.map ~f:(fun elem ->
+      match String.equal (State.get_current_path model) elem with
+      | true -> new_path
+      | false -> elem)
+  in
+  let _ =
+    match siblings with
+    | [] -> ()
+    | _ ->
+      Hashtbl.set
+        (State.get_tree model)
+        ~key:(State.get_parent model)
+        ~data:siblings
+  in
+  ( Format.sprintf {|mv %s %s|} (State.get_current_path model) new_path
+  , State.get_model_with_new_current_path
+      model
+      (String.concat [ State.get_parent model; "/"; new_name ]) )
+;;
+
+let valid s =
+  String.fold ~init:true s ~f:(fun acc ch ->
+    match Char.is_alphanum ch with
+    | true -> acc
+    | false -> (match ch with '.' | '_' | '-' -> true | _ -> false))
+;;
+
+let move_arround event (model : State.t) =
+  let open Minttea in
+  match event with
+  | Event.KeyDown ((Left | Key "h"), _modifier) ->
+    State.get_updated_model_for_left model, Command.Noop
+  | Event.KeyDown ((Right | Key "l"), _modifier) ->
+    State.get_updated_model_for_right model, Command.Noop
+  | Event.KeyDown ((Up | Key "k"), _modifier) ->
+    State.get_updated_model_for_up model, Command.Noop
+  | Event.KeyDown ((Down | Key "j"), _modifier) ->
+    State.get_updated_model_for_down model, Command.Noop
+  | Event.KeyDown (Enter, _modifier) ->
+    State.get_updated_model_for_move model, Command.Noop
+  | _ -> model, Command.Noop
+;;
+
+let update event (model : State.t) =
+  let open Minttea in
+  if State.get_is_moving model
+  then move_arround event model
+  else if not (State.get_is_writing model)
+  then (
+    match event with
+    | Event.KeyDown (Left, _modifier)
+    | Event.KeyDown (Down, _modifier)
+    | Event.KeyDown (Right, _modifier)
+    | Event.KeyDown (Up, _modifier) ->
+      move_arround event model
+    | Event.KeyDown (Enter, _modifier) ->
+      let model = State.get_updated_model_for_change_dir model in
+      model, exit 0
+    | Event.KeyDown (Key "p", _modifier) ->
+      State.get_updated_model_for_preview model, Command.Noop
+    (* | Event.KeyDown (Key "v", _modifier) ->
+       State.get_updated_model_for_reduced_tree model, Command.Noop *)
+    | Event.KeyDown (Key "d", Ctrl) ->
+      State.get_updated_model_for_remove model, Minttea.Command.Noop
+    | Event.KeyDown (Key "r", _modifier) ->
+      State.get_updated_model_for_rename model, Command.Noop
+    | Event.KeyDown (Key "m", _modifier) ->
+      print_endline
+        (Format.sprintf "moivng %s" (State.get_current_path model));
+      State.get_updated_model_for_move model, Command.Noop
+    | _ -> model, Minttea.Command.Noop)
+  else (
+    match event with
+    | Event.KeyDown (Escape, _modifier) ->
+      State.get_updated_model_for_rename model, Command.Noop
+    | Event.KeyDown (Enter, _modifier) ->
+      let com, model =
+        Leaves.Text_input.current_text (State.get_text model)
+        |> rename ~model
+      in
+      let _ = Sys_unix.command com in
+      State.get_model_after_writing model, Command.Noop
+    | Event.KeyDown (Key s, _modifier) when valid s ->
+      let text = Leaves.Text_input.update (State.get_text model) event in
+      State.get_model_with_new_text model text, Command.Noop
+    | Event.KeyDown (Backspace, _modifier)
+    | Event.KeyDown (Left, _modifier)
+    | Event.KeyDown (Right, _modifier) ->
+      let text = Leaves.Text_input.update (State.get_text model) event in
+      State.get_model_with_new_text model text, Command.Noop
+    | _ -> model, Command.Noop)
+;;
+
+let visualize_tree (model : State.t) ~origin ~max_depth =
+  let tree =
+    Visualize_helper.visualize
+      (State.get_tree model)
+      ~current_directory:origin
+      ~path_to_be_underlined:(State.get_current_path model)
+  in
+  "\n\n\x1b[0mPress ^C to quit\n"
+  ^ Format.sprintf {|%s|} tree
+  ^
+  if State.get_is_writing model
+  then
+    Format.sprintf "\n%s\n" @@ Leaves.Text_input.view (State.get_text model)
+  else ""
+;;
+
+let get_view (model : State.t) ~origin ~max_depth =
+  match State.should_preview model with
+  | true ->
+    Preview.preview
+      (State.get_path_to_preview model)
+      ~num_lines:Int.max_value
+  | false -> visualize_tree model ~origin ~max_depth
+;;
+
+let get_initial_state ~origin ~max_depth : State.t =
+  let tree =
+    Visualize.Adjacency_matrix.create ()
+    |> Visualize.Adjacency_matrix.get_adjacency_matrix ~origin ~max_depth
+  in
+  let children =
+    match Hashtbl.find tree.matrix origin with
+    | None -> []
+    | Some children -> children
+  in
+  let initial_path =
+    match List.hd children with
+    | None -> origin
+    | Some first_child -> first_child
+  in
+  State.init
+    ~choices:tree
+    ~current_path:initial_path
+    ~origin
+    ~parent:
+      (match String.equal initial_path origin with
+       | true -> State.remove_last_path origin
+       | false -> origin)
+    ~cursor:0
+    ~path_to_preview:""
+    ~text:(Leaves.Text_input.make "" ~placeholder:"" ~cursor:cursor_func ())
+    ~is_writing:false
+    ~show_reduced_tree:false
+    ~is_moving:false
+    ~move_from:""
+;;
+
+let init _model =
+  let open Minttea in
+  Command.Noop
+;;
+
+let navigate ~max_depth ~origin =
+  let app =
+    Minttea.app ~init ~update ~view:(get_view ~origin ~max_depth) ()
+  in
+  Minttea.start app ~initial_model:(get_initial_state ~origin ~max_depth)
+;;
+
+let pwd_navigate_command =
+  let open Core.Command.Let_syntax in
+  Core.Command.basic
+    ~summary:"starts at the current working directory"
+    [%map_open
+      let max_depth =
+        flag
+          "max-depth"
+          (optional_with_default 3 int)
+          ~doc:"INT maximum length of path to search for (default 3)"
+      in
+      fun () -> navigate ~max_depth ~origin:(Sys_unix.getcwd ())]
+;;
+
+let start_navigate_command =
+  let open Command.Let_syntax in
+  Command.basic
+    ~summary:"starts at a given path"
+    [%map_open
+      let origin = flag "start" (required string) ~doc:" the starting path"
+      and max_depth =
+        flag
+          "max-depth"
+          (optional_with_default 3 int)
+          ~doc:"INT maximum length of path to search for (default 10)"
+      in
+      fun () -> navigate ~max_depth ~origin]
+;;
+
+let command =
+  Core.Command.group
+    ~summary:"file manager commands"
+    [ "pwd", pwd_navigate_command; "dir", start_navigate_command ]
+;;
