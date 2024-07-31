@@ -168,18 +168,31 @@ let get_updated_model_for_remove t =
   t
 ;;
 
+let get_idx t ~parent ~current_path =
+  if String.equal t.parent current_path |> not
+  then
+    Hashtbl.find_exn t.choices.matrix parent
+    |> List.foldi ~init:0 ~f:(fun idx acc elem ->
+      if String.equal elem current_path then idx else acc)
+  else 0
+;;
+
 let get_updated_model_for_search t ~key =
-  let _first_path =
+  let current_path =
     Hashtbl.find_exn t.choices.matrix t.parent
     |> List.fold_until
          ~init:""
          ~finish:(fun str -> str)
          ~f:(fun str i ->
-           if String.equal (String.get i 0 |> String.of_char) key
+           if String.equal
+                (String.get (Visualize_helper.get_name i) 0 |> String.of_char)
+                key
+              && String.equal t.current_path i |> not
            then Stop i
            else Continue str)
   in
-  t
+  let cursor = get_idx t ~parent:t.parent ~current_path in
+  { t with cursor; current_path }
 ;;
 
 let handle_up_and_down t ~dir =
@@ -206,15 +219,6 @@ let get_updated_model_for_right t =
       else t.current_path
     in
     { t with current_path; cursor = 0; parent })
-;;
-
-let get_idx t ~parent ~current_path =
-  if String.equal t.parent current_path |> not
-  then
-    Hashtbl.find_exn t.choices.matrix parent
-    |> List.foldi ~init:0 ~f:(fun idx acc elem ->
-      if String.equal elem current_path then idx else acc)
-  else 0
 ;;
 
 let get_updated_model_for_left t =
