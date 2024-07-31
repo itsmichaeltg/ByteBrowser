@@ -81,18 +81,21 @@ let update event (model : State.t) =
     | Event.KeyDown (Enter, _modifier) ->
       let model = State.get_updated_model_for_change_dir model in
       model, exit 0
-    | Event.KeyDown (Key "p", _modifier) ->
+    | Event.KeyDown (Escape, _modifier) -> model, exit 0
+    | Event.KeyDown (Key "p", Ctrl) ->
       State.get_updated_model_for_preview model, Command.Noop
     (* | Event.KeyDown (Key "v", _modifier) ->
        State.get_updated_model_for_reduced_tree model, Command.Noop *)
     | Event.KeyDown (Key "d", Ctrl) ->
       State.get_updated_model_for_remove model, Minttea.Command.Noop
-    | Event.KeyDown (Key "r", _modifier) ->
+    | Event.KeyDown (Key "r", Ctrl) ->
       State.get_updated_model_for_rename model, Command.Noop
-    | Event.KeyDown (Key "m", _modifier) ->
+    | Event.KeyDown (Key "m", Ctrl) ->
       print_endline
         (Format.sprintf "moivng %s" (State.get_current_path model));
       State.get_updated_model_for_move model, Command.Noop
+    | Event.KeyDown (Key key, _modifier) ->
+      State.get_updated_model_for_search model ~key, Minttea.Command.Noop
     | _ -> model, Minttea.Command.Noop)
   else (
     match event with
