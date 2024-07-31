@@ -9,6 +9,7 @@ val get_updated_model_for_rename : t -> t
 val get_updated_model_for_change_dir : t -> t
 val get_updated_model_for_move : t -> t
 val get_updated_model_for_remove : t -> t
+val get_updated_model_for_shortcut : t -> key:string -> t
 val get_updated_model_for_right : t -> t
 val get_updated_model_for_left : t -> t
 val get_updated_model_for_up : t -> t

@@ -1,21 +1,24 @@
 #!/bin/bash
 tmp_path="/home/ubuntu/jsip-final-project/bin/path.txt"
-command="/home/ubuntu/jsip-final-project/_build/default/bin/main.exe ${1} ${2}"
-if [ "$2" = "dir" ]; then 
-    command="${command} -start ${4}"
-    if [[ "$6" =~ ^[0-9]+$ ]]; then
-        command="${command} -max-depth ${6}"
+command="/home/ubuntu/jsip-final-project/_build/default/bin/main.exe"
+for arg in "$@"
+do
+    if [[ $arg =~ ^-?[0-9]+$ ]]; then 
+        command="${command} -max-depth $arg"
     fi
-fi
-if [[ "$4" =~ ^[0-9]+$ ]]; then
-    command="${command} -max-depth ${4}"
-fi
+    if [[ $arg =~ ^[a-zA-Z/~_-]+$ ]]; then
+        if [[ $arg = "show-hidden" ]]; then
+            command="${command} -hidden true"
+        else
+            if [[ $arg = "sort-by-time" ]]; then
+                command="${command} -sort true"
+            else
+                command="${command} -start $arg"
+            fi
+        fi
+    fi
+done
 eval $command
-if [ "$1" = "navigate" ]; then
-    if [ $# -gt 1 ]; then
-        reset
-        new_dir="cd $(cat "${tmp_path}")"
-        bind '"\e[0n": "'"${new_dir}"'\n"'
-        printf '\e[5n'
-    fi
-fi
+reset
+new_dir="cd $(cat "${tmp_path}")"
+eval $new_dir

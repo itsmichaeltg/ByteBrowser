@@ -168,6 +168,36 @@ let get_updated_model_for_remove t =
   t
 ;;
 
+let get_idx t ~parent ~current_path =
+  if String.equal t.parent current_path |> not
+  then
+    Hashtbl.find_exn t.choices.matrix parent
+    |> List.foldi ~init:0 ~f:(fun idx acc elem ->
+      if String.equal elem current_path then idx else acc)
+  else 0
+;;
+
+let get_updated_model_for_shortcut t ~key =
+  let current_path =
+    Hashtbl.find_exn t.choices.matrix t.parent
+    |> List.fold_until
+         ~init:None
+         ~finish:(fun str -> str)
+         ~f:(fun str i ->
+           if String.equal
+                (String.get (Visualize_helper.get_name i) 0 |> String.of_char)
+                key
+              && String.equal t.current_path i |> not
+           then Stop (Some i)
+           else Continue None)
+  in
+  match current_path with
+  | Some current_path ->
+    let cursor = get_idx t ~parent:t.parent ~current_path in
+    { t with cursor; current_path }
+  | None -> t
+;;
+
 let handle_up_and_down t ~dir =
   let cursor = get_idx_by_dir t ~dir in
   let current_path =
@@ -180,8 +210,7 @@ let handle_up_and_down t ~dir =
 
 let get_updated_model_for_right t =
   let current_path =
-    try Hashtbl.find_exn t.choices.matrix t.current_path with
-    | _ -> [ t.current_path ]
+    try Hashtbl.find_exn t.choices.matrix t.current_path with _ -> []
   in
   if current_path |> List.is_empty
   then t
@@ -195,22 +224,17 @@ let get_updated_model_for_right t =
     { t with current_path; cursor = 0; parent })
 ;;
 
-let get_idx t ~parent ~current_path =
-  match Hashtbl.find t.choices.matrix parent with
-  | Some lst ->
-    List.foldi ~init:None lst ~f:(fun idx acc elem ->
-      if String.equal elem current_path then Some idx else acc)
-  | None -> None
-;;
-
 let get_updated_model_for_left t =
-  let current_path, parent =
+  let current_path, parent, cursor =
     match String.equal t.current_path t.origin with
-    | true -> t.current_path, t.parent
-    | false -> remove_last_path t.current_path, remove_last_path t.parent
+    | true -> t.current_path, t.parent, t.cursor
+    | false ->
+      let current_path, parent =
+        remove_last_path t.current_path, remove_last_path t.parent
+      in
+      current_path, parent, get_idx t ~parent ~current_path
   in
-  let tmp_model = { t with parent } in
-  { tmp_model with current_path }
+  { t with cursor; parent; current_path }
 ;;
 
 let get_updated_model_for_up t = handle_up_and_down t ~dir:UP

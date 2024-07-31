@@ -81,18 +81,21 @@ let update event (model : State.t) =
     | Event.KeyDown (Enter, _modifier) ->
       let model = State.get_updated_model_for_change_dir model in
       model, exit 0
-    | Event.KeyDown (Key "p", _modifier) ->
+    | Event.KeyDown (Escape, _modifier) -> model, exit 0
+    | Event.KeyDown (Key "p", Ctrl) ->
       State.get_updated_model_for_preview model, Command.Noop
     (* | Event.KeyDown (Key "v", _modifier) ->
        State.get_updated_model_for_reduced_tree model, Command.Noop *)
     | Event.KeyDown (Key "d", Ctrl) ->
       State.get_updated_model_for_remove model, Minttea.Command.Noop
-    | Event.KeyDown (Key "r", _modifier) ->
+    | Event.KeyDown (Key "r", Ctrl) ->
       State.get_updated_model_for_rename model, Command.Noop
-    | Event.KeyDown (Key "m", _modifier) ->
+    | Event.KeyDown (Key "m", Ctrl) ->
       print_endline
         (Format.sprintf "moivng %s" (State.get_current_path model));
       State.get_updated_model_for_move model, Command.Noop
+    | Event.KeyDown (Key key, _modifier) ->
+      State.get_updated_model_for_shortcut model ~key, Minttea.Command.Noop
     | _ -> model, Minttea.Command.Noop)
   else (
     match event with
@@ -123,7 +126,7 @@ let visualize_tree (model : State.t) ~origin ~max_depth =
       ~current_directory:origin
       ~path_to_be_underlined:(State.get_current_path model)
   in
-  "\n\n\x1b[0mPress ^C to quit\n"
+  "Press ^C to quit\n"
   ^ Format.sprintf {|%s|} tree
   ^
   if State.get_is_writing model
@@ -141,10 +144,14 @@ let get_view (model : State.t) ~origin ~max_depth =
   | false -> visualize_tree model ~origin ~max_depth
 ;;
 
-let get_initial_state ~origin ~max_depth : State.t =
+let get_initial_state ~origin ~max_depth ~show_hidden ~sort : State.t =
   let tree =
     Visualize.Adjacency_matrix.create ()
-    |> Visualize.Adjacency_matrix.get_adjacency_matrix ~origin ~max_depth
+    |> Visualize.Adjacency_matrix.get_adjacency_matrix
+         ~origin
+         ~max_depth
+         ~show_hidden
+         ~sort
   in
   let children =
     match Hashtbl.find tree.matrix origin with
@@ -178,44 +185,46 @@ let init _model =
   Command.Noop
 ;;
 
-let navigate ~max_depth ~origin =
+let format_origin origin =
+  String.substr_replace_first
+    ~pos:(String.length origin - 1)
+    origin
+    ~pattern:"/"
+    ~with_:""
+;;
+
+let navigate ~max_depth ~origin ~show_hidden ~sort =
+  let origin = format_origin origin in
   let app =
     Minttea.app ~init ~update ~view:(get_view ~origin ~max_depth) ()
   in
-  Minttea.start app ~initial_model:(get_initial_state ~origin ~max_depth)
-;;
-
-let pwd_navigate_command =
-  let open Core.Command.Let_syntax in
-  Core.Command.basic
-    ~summary:"starts at the current working directory"
-    [%map_open
-      let max_depth =
-        flag
-          "max-depth"
-          (optional_with_default 3 int)
-          ~doc:"INT maximum length of path to search for (default 3)"
-      in
-      fun () -> navigate ~max_depth ~origin:(Sys_unix.getcwd ())]
-;;
-
-let start_navigate_command =
-  let open Command.Let_syntax in
-  Command.basic
-    ~summary:"starts at a given path"
-    [%map_open
-      let origin = flag "start" (required string) ~doc:" the starting path"
-      and max_depth =
-        flag
-          "max-depth"
-          (optional_with_default 3 int)
-          ~doc:"INT maximum length of path to search for (default 10)"
-      in
-      fun () -> navigate ~max_depth ~origin]
+  Minttea.start
+    app
+    ~initial_model:(get_initial_state ~origin ~max_depth ~show_hidden ~sort)
 ;;
 
 let command =
-  Core.Command.group
+  let open Command.Let_syntax in
+  Command.basic
     ~summary:"file manager commands"
-    [ "pwd", pwd_navigate_command; "dir", start_navigate_command ]
+    [%map_open
+      let origin =
+        flag
+          "start"
+          (optional_with_default (Sys_unix.getcwd ()) string)
+          ~doc:" the starting path"
+      and max_depth =
+        flag
+          "max-depth"
+          (optional_with_default 2 int)
+          ~doc:"INT maximum length of path to search for (default 2)"
+      and show_hidden =
+        flag
+          "hidden"
+          (optional_with_default false bool)
+          ~doc:"(default false)"
+      and sort =
+        flag "sort" (optional_with_default false bool) ~doc:"(default false)"
+      in
+      fun () -> navigate ~max_depth ~origin ~show_hidden ~sort]
 ;;
