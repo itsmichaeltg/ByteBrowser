@@ -168,8 +168,6 @@ let get_updated_model_for_remove t =
   t
 ;;
 
-let final_func str = str
-
 let get_updated_model_for_search t ~key =
   let _first_path =
     Hashtbl.find_exn t.choices.matrix t.parent
