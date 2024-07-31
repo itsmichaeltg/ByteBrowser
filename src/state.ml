@@ -177,7 +177,7 @@ let get_idx t ~parent ~current_path =
   else 0
 ;;
 
-let get_updated_model_for_search t ~key =
+let get_updated_model_for_shortcut t ~key =
   let current_path =
     Hashtbl.find_exn t.choices.matrix t.parent
     |> List.fold_until

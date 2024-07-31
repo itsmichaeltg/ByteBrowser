@@ -95,7 +95,7 @@ let update event (model : State.t) =
         (Format.sprintf "moivng %s" (State.get_current_path model));
       State.get_updated_model_for_move model, Command.Noop
     | Event.KeyDown (Key key, _modifier) ->
-      State.get_updated_model_for_search model ~key, Minttea.Command.Noop
+      State.get_updated_model_for_shortcut model ~key, Minttea.Command.Noop
     | _ -> model, Minttea.Command.Noop)
   else (
     match event with
