@@ -141,10 +141,14 @@ let get_view (model : State.t) ~origin ~max_depth =
   | false -> visualize_tree model ~origin ~max_depth
 ;;
 
-let get_initial_state ~origin ~max_depth : State.t =
+let get_initial_state ~origin ~max_depth ~show_hidden ~sort : State.t =
   let tree =
     Visualize.Adjacency_matrix.create ()
-    |> Visualize.Adjacency_matrix.get_adjacency_matrix ~origin ~max_depth
+    |> Visualize.Adjacency_matrix.get_adjacency_matrix
+         ~origin
+         ~max_depth
+         ~show_hidden
+         ~sort
   in
   let children =
     match Hashtbl.find tree.matrix origin with
@@ -186,12 +190,14 @@ let format_origin origin =
     ~with_:""
 ;;
 
-let navigate ~max_depth ~origin =
+let navigate ~max_depth ~origin ~show_hidden ~sort =
   let origin = format_origin origin in
   let app =
     Minttea.app ~init ~update ~view:(get_view ~origin ~max_depth) ()
   in
-  Minttea.start app ~initial_model:(get_initial_state ~origin ~max_depth)
+  Minttea.start
+    app
+    ~initial_model:(get_initial_state ~origin ~max_depth ~show_hidden ~sort)
 ;;
 
 let command =
@@ -209,6 +215,13 @@ let command =
           "max-depth"
           (optional_with_default 2 int)
           ~doc:"INT maximum length of path to search for (default 2)"
+      and show_hidden =
+        flag
+          "hidden"
+          (optional_with_default false bool)
+          ~doc:"(default false)"
+      and sort =
+        flag "sort" (optional_with_default false bool) ~doc:"(default false)"
       in
-      fun () -> navigate ~max_depth ~origin]
+      fun () -> navigate ~max_depth ~origin ~show_hidden ~sort]
 ;;

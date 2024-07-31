@@ -1,19 +1,23 @@
 #!/bin/bash
 tmp_path="/home/ubuntu/jsip-final-project/bin/path.txt"
 command="/home/ubuntu/jsip-final-project/_build/default/bin/main.exe"
-if [ $# -gt 0 ]; then 
-    if [[ "$1" =~ ^[0-9]+$ ]]; then
-        command="${command} -max-depth ${1}"
-    else
-        command="${command} -start ${1}"
+for arg in "$@"
+do
+    if [[ $arg =~ ^-?[0-9]+$ ]]; then 
+        command="${command} -max-depth $arg"
     fi
-    if [[ "$2" =~ ^[0-9]+$ ]]; then
-        command="${command} -max-depth ${2}"
+    if [[ $arg =~ ^[a-zA-Z/~_-]+$ ]]; then
+        if [[ $arg = "show-hidden" ]]; then
+            command="${command} -hidden true"
+        else
+            if [[ $arg = "sort-by-time" ]]; then
+                command="${command} -sort true"
+            else
+                command="${command} -start $arg"
+            fi
+        fi
     fi
-fi
-if [[ "$4" =~ ^[0-9]+$ ]]; then
-    command="${command} -max-depth ${4}"
-fi
+done
 eval $command
 reset
 new_dir="cd $(cat "${tmp_path}")"
