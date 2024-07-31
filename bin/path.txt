@@ -1,1 +1,1 @@
-show-hidden
+/home/ubuntu/jsip-final-project/tests/navigate

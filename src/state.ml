@@ -181,18 +181,21 @@ let get_updated_model_for_shortcut t ~key =
   let current_path =
     Hashtbl.find_exn t.choices.matrix t.parent
     |> List.fold_until
-         ~init:""
+         ~init:None
          ~finish:(fun str -> str)
          ~f:(fun str i ->
            if String.equal
                 (String.get (Visualize_helper.get_name i) 0 |> String.of_char)
                 key
               && String.equal t.current_path i |> not
-           then Stop i
-           else Continue str)
+           then Stop (Some i)
+           else Continue None)
   in
-  let cursor = get_idx t ~parent:t.parent ~current_path in
-  { t with cursor; current_path }
+  match current_path with
+  | Some current_path ->
+    let cursor = get_idx t ~parent:t.parent ~current_path in
+    { t with cursor; current_path }
+  | None -> t
 ;;
 
 let handle_up_and_down t ~dir =

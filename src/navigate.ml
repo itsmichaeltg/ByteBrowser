@@ -126,7 +126,7 @@ let visualize_tree (model : State.t) ~origin ~max_depth =
       ~current_directory:origin
       ~path_to_be_underlined:(State.get_current_path model)
   in
-  "\n\n\x1b[0mPress ^C to quit\n"
+  "Press ^C to quit\n"
   ^ Format.sprintf {|%s|} tree
   ^
   if State.get_is_writing model
