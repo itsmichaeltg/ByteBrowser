@@ -178,7 +178,16 @@ let init _model =
   Command.Noop
 ;;
 
+let format_origin origin =
+  String.substr_replace_first
+    ~pos:(String.length origin - 1)
+    origin
+    ~pattern:"/"
+    ~with_:""
+;;
+
 let navigate ~max_depth ~origin =
+  let origin = format_origin origin in
   let app =
     Minttea.app ~init ~update ~view:(get_view ~origin ~max_depth) ()
   in
