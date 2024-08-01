@@ -48,6 +48,7 @@ let get_init_model ~choices ~current_path ~cursor =
     ~show_reduced_tree:false
     ~is_moving:false
     ~move_from:""
+    ~path_to_summarize:""
 ;;
 
 let%expect_test "navigate-left" =
