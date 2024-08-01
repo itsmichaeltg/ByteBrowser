@@ -139,6 +139,8 @@ let visualize_tree (model : State.t) ~origin ~max_depth =
 ;;
 
 let get_view (model : State.t) ~origin ~max_depth =
+  "\n\n"
+  ^
   match State.should_preview model with
   | true -> State.get_preview model
   | false ->
