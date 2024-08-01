@@ -26,5 +26,6 @@ if __name__ == "__main__":
         ]
     )
     file_to_write = open(path_to_write_to, "a")
+    file_to_write.write("")
     file_to_write.write(completion.choices[0].message.content)
     file_to_write.close()

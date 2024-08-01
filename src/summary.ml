@@ -31,6 +31,7 @@ let generate (tree : Visualize.Adjacency_matrix.tree) (origin : string) =
           "Contents of file: %s"
           (Preview.preview path ~num_lines:Int.max_value))
   in
+  Out_channel.write_all path_to_write_to ~data:"";
   Out_channel.write_all path_to_write_to ~data:contents_of_paths;
   let command = Printf.sprintf "python3 %s" path_to_script in
   let _ = Sys_unix.command command in
