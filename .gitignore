@@ -1,3 +1,5 @@
 _build/
 .vscode/
 .env
+bin/completion.txt
+bin/file_contents.txt

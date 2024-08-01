@@ -21,13 +21,13 @@ type t =
   ; origin : string
   ; parent : string
   ; cursor : int
-  ; path_to_preview : string
+  ; preview : string
   ; text : Text_input.t
   ; is_writing : bool
   ; show_reduced_tree : bool
   ; move_from : string
   ; is_moving : bool
-  ; path_to_summarize : string
+  ; summarization : string
   }
 
 type dir =
@@ -47,28 +47,29 @@ type action =
   | Summarize
 
 let should_preview t =
-  String.length t.path_to_preview > 0
+  String.length t.preview > 0
   && not
-       (Visualize.Adjacency_matrix.is_directory t.choices t.path_to_preview)
+       (Visualize.Adjacency_matrix.is_directory t.choices t.current_path)
 ;;
 
-let should_summarize t = String.length t.path_to_summarize > 0
-let get_path_to_summarize t = t.path_to_summarize
+let should_summarize t =
+  String.length t.summarization > 0
+
+let get_summarization t = t.summarization
 let get_is_moving t = t.is_moving
 let get_tree t = t.choices.matrix
 let get_current_path t = t.current_path
 let get_text t = t.text
 let get_parent t = t.parent
 let get_is_writing t = t.is_writing
-let get_path_to_preview t = t.path_to_preview
+let get_preview t = t.preview
 let get_model_after_writing t = { t with is_writing = false }
 let get_model_with_new_text t new_text = { t with text = new_text }
 
 let get_updated_model_for_summarize t =
-  match String.is_empty t.path_to_summarize with
-  | true -> { t with path_to_summarize = t.current_path }
-  | false -> { t with path_to_summarize = "" }
-;;
+  match String.is_empty t.summarization with
+  | true -> { t with summarization = Summary.generate (get_tree t) t.current_path }
+  | false -> { t with summarization = "" }
 
 let get_model_with_new_current_path t new_current_path =
   { t with current_path = new_current_path }
@@ -93,26 +94,26 @@ let init
   ~current_path
   ~parent
   ~cursor
-  ~path_to_preview
+  ~preview
   ~text
   ~is_writing
   ~show_reduced_tree
   ~is_moving
   ~move_from
-  ~path_to_summarize
+  ~summarization
   =
   { choices
   ; current_path
   ; origin
   ; parent
   ; cursor
-  ; path_to_preview
+  ; preview
   ; text
   ; is_writing
   ; show_reduced_tree
   ; is_moving
   ; move_from
-  ; path_to_summarize
+  ; summarization
   }
 ;;
 
@@ -134,9 +135,9 @@ let get_idx_by_dir t ~dir =
 ;;
 
 let get_updated_model_for_preview t =
-  match t.path_to_preview with
-  | "" -> { t with path_to_preview = t.current_path }
-  | _ -> { t with path_to_preview = "" }
+  match t.preview with
+  | "" -> { t with preview = Preview.preview t.current_path ~num_lines:Int.max_value }
+  | _ -> { t with preview = "" }
 ;;
 
 let get_updated_model_for_rename t =
