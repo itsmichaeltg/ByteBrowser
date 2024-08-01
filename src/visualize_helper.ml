@@ -96,13 +96,12 @@ let rec helper
       ~so_far
       ~path_to_be_underlined
   | Some current_children ->
-    let init =
-      get_formatted_tree_with_new_parent
-        tree
-        ~parent
-        ~depth
-        ~so_far
-        ~path_to_be_underlined
+    let init = get_formatted_tree_with_new_parent
+          tree
+          ~parent
+          ~depth
+          ~so_far
+          ~path_to_be_underlined
     in
     List.fold current_children ~init ~f:(fun acc child ->
       helper
@@ -113,35 +112,16 @@ let rec helper
         ~path_to_be_underlined)
 ;;
 
-type result = { count : int; so_far : string }
-
-let find_start_path
-  tree
-  path
-  limit =
-  let past_tokens = List.rev (String.split path ~on:'/') in
-  let final = List.fold past_tokens ~init:{count = 0; so_far = ""} ~f:(fun {count; so_far} token ->
-    match Visualize.Adjacency_matrix.get_children tree token with
-    | None -> {count = count + 1; so_far = token}
-    | Some children -> (List.length children)
-  ) in
-  final.so_far
-
 let visualize
   (tree : (string, string list) Hashtbl.t)
   ~(current_directory : string)
   ~(path_to_be_underlined : string)
   : string
   =
-  find_start_path tree path_to_be_underlined; ""
-  (* let start_from = find_start_path tree path_to_be_underlined in
-  (* let end_at = find *)
   helper
     tree
     ~depth:1
     ~so_far:"."
     ~parent:current_directory
     ~path_to_be_underlined
-    ~start_from
-    ~end_at *)
 ;;
