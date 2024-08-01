@@ -4,16 +4,15 @@ open! File_manager_lib
 let%expect_test "adjacency_matrix" =
   print_s
     [%sexp
-      (Visualize.Adjacency_matrix.get_adjacency_matrix
-         (Visualize.Adjacency_matrix.create ())
+      (Matrix.get_adjacency_matrix
+         (Matrix.create ())
          ~origin:"/home/ubuntu/jsip-final-project/test_dir"
          ~max_depth:10
          ~sort:false
          ~show_hidden:false
-       : Visualize.Adjacency_matrix.t)];
+       : Matrix.t)];
   [%expect
     {|
-    ((matrix
       ((/home/ubuntu/jsip-final-project/test_dir
         (/home/ubuntu/jsip-final-project/test_dir/dir0
          /home/ubuntu/jsip-final-project/test_dir/dir1
@@ -27,12 +26,12 @@ let%expect_test "adjacency_matrix" =
         (/home/ubuntu/jsip-final-project/test_dir/dir1/dir2/dir3/dir4))
        (/home/ubuntu/jsip-final-project/test_dir/dir1/dir2/dir3/dir4
         (/home/ubuntu/jsip-final-project/test_dir/dir1/dir2/dir3/dir4/tmp.txt))
-       (/home/ubuntu/jsip-final-project/test_dir/dir5 ()))))
+       (/home/ubuntu/jsip-final-project/test_dir/dir5 ()))
     |}]
 ;;
 
 let%expect_test "visualize" =
-  Visualize.visualize
+  Visualize_helper.matrix_visualize
     ~max_depth:10
     ~origin:"/home/ubuntu/jsip-final-project/test_dir"
     ~show_hidden:false
@@ -52,12 +51,12 @@ let%expect_test "visualize" =
 ;;
 
 let%expect_test "get limited children to tree" =
-  let initial_tree = Visualize.Adjacency_matrix.create () in
+  let initial_tree = Matrix.create () in
   let origin, num_to_show, max_depth =
     "/home/ubuntu/jsip-final-project", 3, 100
   in
   let result =
-    Visualize.Adjacency_matrix.get_limited_adjacency_matrix
+    Matrix.get_limited_adjacency_matrix
       initial_tree
       ~origin
       ~num_to_show
@@ -67,7 +66,7 @@ let%expect_test "get limited children to tree" =
   in
   print_endline
     (Visualize_helper.visualize
-       result.matrix
+       result
        ~current_directory:origin
        ~path_to_be_underlined:origin);
   [%expect

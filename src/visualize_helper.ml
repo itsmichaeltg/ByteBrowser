@@ -1,7 +1,5 @@
 open! Core
 
-(* TODO: add a way to highlight two places *)
-
 module Styling = struct
   type t = { mutable styles : string list }
 
@@ -25,10 +23,7 @@ let get_depth_space ~depth =
   ^ " "
 ;;
 
-let is_directory (tree : (string, string list) Hashtbl.t) (value : string) =
-  Hashtbl.mem tree value
-;;
-
+let is_directory (tree : Matrix.t) (value : string) = Matrix.mem tree value
 let is_hidden_file name = String.is_prefix name ~prefix:"."
 
 let get_name path =
@@ -81,13 +76,13 @@ let get_formatted_tree_with_new_parent
 
 let rec helper
   ~(so_far : string)
-  (tree : (string, string list) Hashtbl.t)
+  (tree : Matrix.t)
   ~(depth : int)
   ~(parent : string)
   ~(path_to_be_underlined : string)
   : string
   =
-  match Hashtbl.find tree parent with
+  match Matrix.find tree parent with
   | None ->
     get_formatted_tree_with_new_parent
       tree
@@ -114,7 +109,7 @@ let rec helper
 ;;
 
 let visualize
-  (tree : (string, string list) Hashtbl.t)
+  (tree : Matrix.t)
   ~(current_directory : string)
   ~(path_to_be_underlined : string)
   : string
@@ -125,4 +120,16 @@ let visualize
     ~so_far:"."
     ~parent:current_directory
     ~path_to_be_underlined
+;;
+
+let print_dir (t : Matrix.t) ~origin =
+  visualize t ~current_directory:origin ~path_to_be_underlined:""
+;;
+
+let matrix_visualize ~max_depth ~origin ~show_hidden ~sort =
+  let matrix =
+    Matrix.create ()
+    |> Matrix.get_adjacency_matrix ~origin ~max_depth ~show_hidden ~sort
+  in
+  print_dir ~origin matrix |> print_endline
 ;;

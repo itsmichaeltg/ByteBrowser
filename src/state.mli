@@ -22,7 +22,7 @@ type action =
 val get_updated_model : t -> action:action -> t
 val remove_last_path : string -> string
 val get_preview : t -> string
-val get_tree : t -> Visualize.Adjacency_matrix.tree
+val get_tree : t -> Matrix.t
 val get_current_path : t -> string
 val get_is_writing : t -> bool
 val get_text : t -> Text_input.t
@@ -36,7 +36,7 @@ val get_model_with_new_text : t -> Text_input.t -> t
 val get_model_with_new_current_path : t -> string -> t
 
 val init
-  :  choices:Visualize.Adjacency_matrix.t
+  :  choices:Matrix.t
   -> origin:string
   -> current_path:string
   -> parent:string

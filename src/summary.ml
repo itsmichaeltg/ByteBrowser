@@ -11,22 +11,20 @@ let path_to_write_to =
 ;;
 
 let rec find_paths_to_skim tree origin =
-  match Hashtbl.find tree origin with
+  match Matrix.find tree origin with
   | None -> [ origin ]
   | Some children ->
     List.fold children ~init:[] ~f:(fun acc child ->
       List.append acc (find_paths_to_skim tree child))
 ;;
 
-let generate (tree : Visualize.Adjacency_matrix.tree) (origin : string) =
+let generate (tree : Matrix.t) (origin : string) =
   let paths_to_skim = find_paths_to_skim tree origin in
   let contents_of_paths =
     List.fold paths_to_skim ~init:"" ~f:(fun acc path ->
       acc
       ^ "/n"
-      ^ Printf.sprintf
-          "File name: %s"
-          (Visualize.Adjacency_matrix.get_name path)
+      ^ Printf.sprintf "File name: %s" (Matrix.get_name path)
       ^ Printf.sprintf
           "Contents of file: %s"
           (Preview.preview path ~num_lines:Int.max_value))

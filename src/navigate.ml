@@ -20,7 +20,7 @@ let rename ~(model : State.t) new_name =
       ]
   in
   let siblings =
-    (match Hashtbl.find (State.get_tree model) (State.get_parent model) with
+    (match Matrix.find (State.get_tree model) (State.get_parent model) with
      | Some lst -> lst
      | None -> [])
     |> List.map ~f:(fun elem ->
@@ -32,7 +32,7 @@ let rename ~(model : State.t) new_name =
     match siblings with
     | [] -> ()
     | _ ->
-      Hashtbl.set
+      Matrix.set
         (State.get_tree model)
         ~key:(State.get_parent model)
         ~data:siblings
@@ -151,15 +151,11 @@ let get_view (model : State.t) ~origin ~max_depth =
 
 let get_initial_state ~origin ~max_depth ~show_hidden ~sort : State.t =
   let tree =
-    Visualize.Adjacency_matrix.create ()
-    |> Visualize.Adjacency_matrix.get_adjacency_matrix
-         ~origin
-         ~max_depth
-         ~show_hidden
-         ~sort
+    Matrix.create ()
+    |> Matrix.get_adjacency_matrix ~origin ~max_depth ~show_hidden ~sort
   in
   let children =
-    match Hashtbl.find tree.matrix origin with
+    match Matrix.find tree origin with
     | None -> []
     | Some children -> children
   in

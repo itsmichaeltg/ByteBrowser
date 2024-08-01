@@ -16,7 +16,7 @@ let cursor_func =
 ;;
 
 type t =
-  { choices : Visualize.Adjacency_matrix.t
+  { choices : Matrix.t
   ; current_path : string
   ; origin : string
   ; parent : string
@@ -48,16 +48,13 @@ type action =
 
 let should_preview t =
   String.length t.preview > 0
-  && not
-       (Visualize.Adjacency_matrix.is_directory t.choices t.current_path)
+  && not (Matrix.is_directory t.choices t.current_path)
 ;;
 
-let should_summarize t =
-  String.length t.summarization > 0
-
+let should_summarize t = String.length t.summarization > 0
 let get_summarization t = t.summarization
 let get_is_moving t = t.is_moving
-let get_tree t = t.choices.matrix
+let get_tree t = t.choices
 let get_current_path t = t.current_path
 let get_text t = t.text
 let get_parent t = t.parent
@@ -68,8 +65,10 @@ let get_model_with_new_text t new_text = { t with text = new_text }
 
 let get_updated_model_for_summarize t =
   match String.is_empty t.summarization with
-  | true -> { t with summarization = Summary.generate (get_tree t) t.current_path }
+  | true ->
+    { t with summarization = Summary.generate (get_tree t) t.current_path }
   | false -> { t with summarization = "" }
+;;
 
 let get_model_with_new_current_path t new_current_path =
   { t with current_path = new_current_path }
@@ -121,14 +120,12 @@ let get_idx_by_dir t ~dir =
   match dir with
   | Up ->
     (try
-       (t.cursor - 1)
-       % (Hashtbl.find_exn t.choices.matrix t.parent |> List.length)
+       (t.cursor - 1) % (Matrix.find_exn t.choices t.parent |> List.length)
      with
      | _ -> 0)
   | Down ->
     (try
-       (t.cursor + 1)
-       % (Hashtbl.find_exn t.choices.matrix t.parent |> List.length)
+       (t.cursor + 1) % (Matrix.find_exn t.choices t.parent |> List.length)
      with
      | _ -> 0)
   | _ -> 0
@@ -136,7 +133,10 @@ let get_idx_by_dir t ~dir =
 
 let get_updated_model_for_preview t =
   match t.preview with
-  | "" -> { t with preview = Preview.preview t.current_path ~num_lines:Int.max_value }
+  | "" ->
+    { t with
+      preview = Preview.preview t.current_path ~num_lines:Int.max_value
+    }
   | _ -> { t with preview = "" }
 ;;
 
@@ -150,14 +150,12 @@ let get_updated_model_for_rename t =
 
 let remove_helper t ~parent ~child =
   let siblings =
-    (match Hashtbl.find t.choices.matrix parent with
-     | Some lst -> lst
-     | None -> [])
+    (match Matrix.find t.choices parent with Some lst -> lst | None -> [])
     |> List.filter ~f:(fun elem -> String.equal child elem |> not)
   in
   match siblings with
   | [] -> ()
-  | _ -> Hashtbl.set t.choices.matrix ~key:parent ~data:siblings
+  | _ -> Matrix.set t.choices ~key:parent ~data:siblings
 ;;
 
 let get_updated_model_for_change_dir t =
@@ -166,14 +164,14 @@ let get_updated_model_for_change_dir t =
 ;;
 
 let get_updated_model_for_move t =
-  match Visualize.Adjacency_matrix.is_directory t.choices t.current_path with
+  match Matrix.is_directory t.choices t.current_path with
   | true ->
     remove_helper t ~parent:(remove_last_path t.move_from) ~child:t.move_from;
-    Hashtbl.set
-      t.choices.matrix
+    Matrix.set
+      t.choices
       ~key:t.current_path
       ~data:
-        (Hashtbl.find_exn t.choices.matrix t.current_path
+        (Matrix.find_exn t.choices t.current_path
          @ [ String.concat
                [ t.current_path; "/"; Visualize_helper.get_name t.move_from ]
            ]);
@@ -194,7 +192,7 @@ let get_updated_model_for_remove t =
 ;;
 
 let get_idx t ~parent ~current_path =
-  match Hashtbl.find t.choices.matrix parent with
+  match Matrix.find t.choices parent with
   | Some lst ->
     List.foldi lst ~init:0 ~f:(fun idx acc elem ->
       if String.equal elem current_path then idx else acc)
@@ -208,7 +206,7 @@ let starts_with str ~key =
 ;;
 
 let get_first_str t ~key =
-  Hashtbl.find_exn t.choices.matrix t.parent
+  Matrix.find_exn t.choices t.parent
   |> List.fold_until
        ~init:None
        ~finish:(fun str -> str)
@@ -221,7 +219,7 @@ let get_first_str t ~key =
 ;;
 
 let get_updated_model_for_shortcut t ~key =
-  let siblings = Hashtbl.find t.choices.matrix t.parent in
+  let siblings = Matrix.find t.choices t.parent in
   match siblings with
   | Some lst ->
     let current_path =
@@ -251,7 +249,7 @@ let get_updated_model_for_shortcut t ~key =
 let handle_up_and_down t ~dir =
   let cursor = get_idx_by_dir t ~dir in
   let current_path =
-    try List.nth_exn (Hashtbl.find_exn t.choices.matrix t.parent) cursor with
+    try List.nth_exn (Matrix.find_exn t.choices t.parent) cursor with
     | _ -> t.current_path
   in
   let tmp_model = { t with cursor } in
@@ -260,7 +258,7 @@ let handle_up_and_down t ~dir =
 
 let get_updated_model_for_right t =
   let current_path =
-    try Hashtbl.find_exn t.choices.matrix t.current_path with _ -> []
+    try Matrix.find_exn t.choices t.current_path with _ -> []
   in
   if current_path |> List.is_empty
   then t
