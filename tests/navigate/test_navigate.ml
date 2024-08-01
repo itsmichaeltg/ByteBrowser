@@ -49,6 +49,8 @@ let get_init_model ~choices ~current_path ~cursor =
     ~is_moving:false
     ~move_from:""
     ~summarization:""
+    ~query_chat:""
+    ~start_chatting:false
 ;;
 
 let%expect_test "navigate-left" =

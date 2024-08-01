@@ -28,6 +28,8 @@ type t =
   ; move_from : string
   ; is_moving : bool
   ; summarization : string
+  ; query_chat : string
+  ; start_chatting : bool
   }
 
 type dir =
@@ -45,17 +47,18 @@ type action =
   | Remove
   | Move
   | Summarize
+  | Query
+  | Save_query_chat of string
 
 let should_preview t =
   String.length t.preview > 0
-  && not
-       (Visualize.Adjacency_matrix.is_directory t.choices t.current_path)
+  && not (Visualize.Adjacency_matrix.is_directory t.choices t.current_path)
 ;;
 
-let should_summarize t =
-  String.length t.summarization > 0
-
+let should_summarize t = String.length t.summarization > 0
 let get_summarization t = t.summarization
+let get_query_chat t = t.query_chat
+let get_start_chatting t = t.start_chatting
 let get_is_moving t = t.is_moving
 let get_tree t = t.choices.matrix
 let get_current_path t = t.current_path
@@ -68,8 +71,25 @@ let get_model_with_new_text t new_text = { t with text = new_text }
 
 let get_updated_model_for_summarize t =
   match String.is_empty t.summarization with
-  | true -> { t with summarization = Summary.generate (get_tree t) t.current_path }
+  | true ->
+    { t with summarization = Summary.generate (get_tree t) t.current_path }
   | false -> { t with summarization = "" }
+;;
+
+let get_updated_model_for_query t =
+  let blank_text =
+    Leaves.Text_input.make "q: " ~placeholder:"" ~cursor:cursor_func ()
+  in
+  match t.is_writing with
+  | true ->
+    { t with is_writing = false; text = blank_text; start_chatting = false }
+  | false ->
+    { t with is_writing = true; text = blank_text; start_chatting = true }
+;;
+
+let get_updated_model_for_save_query_chat t ~chat =
+  { t with query_chat = chat }
+;;
 
 let get_model_with_new_current_path t new_current_path =
   { t with current_path = new_current_path }
@@ -101,6 +121,8 @@ let init
   ~is_moving
   ~move_from
   ~summarization
+  ~query_chat
+  ~start_chatting
   =
   { choices
   ; current_path
@@ -114,6 +136,8 @@ let init
   ; is_moving
   ; move_from
   ; summarization
+  ; query_chat
+  ; start_chatting
   }
 ;;
 
@@ -136,7 +160,10 @@ let get_idx_by_dir t ~dir =
 
 let get_updated_model_for_preview t =
   match t.preview with
-  | "" -> { t with preview = Preview.preview t.current_path ~num_lines:Int.max_value }
+  | "" ->
+    { t with
+      preview = Preview.preview t.current_path ~num_lines:Int.max_value
+    }
   | _ -> { t with preview = "" }
 ;;
 
@@ -308,6 +335,8 @@ let get_updated_model t ~(action : action) =
   | Remove -> get_updated_model_for_remove t
   | Shortcut key -> get_updated_model_for_shortcut t ~key
   | Summarize -> get_updated_model_for_summarize t
+  | Query -> get_updated_model_for_query t
+  | Save_query_chat chat -> get_updated_model_for_save_query_chat t ~chat
 ;;
 (* let get_updated_model_for_reduced_tree t = match t.show_reduced_tree with
    | true -> { t with show_reduced_tree = false; choices = t.full_choices } |

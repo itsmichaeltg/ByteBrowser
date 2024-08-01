@@ -18,6 +18,8 @@ type action =
   | Remove
   | Move
   | Summarize
+  | Query
+  | Save_query_chat of string
 
 val get_updated_model : t -> action:action -> t
 val remove_last_path : string -> string
@@ -29,6 +31,8 @@ val get_text : t -> Text_input.t
 val get_parent : t -> string
 val get_summarization : t -> string
 val get_is_moving : t -> bool
+val get_query_chat : t -> string
+val get_start_chatting : t -> bool
 val should_preview : t -> bool
 val should_summarize : t -> bool
 val get_model_after_writing : t -> t
@@ -48,4 +52,6 @@ val init
   -> is_moving:bool
   -> move_from:string
   -> summarization:string
+  -> query_chat:string
+  -> start_chatting:bool
   -> t
