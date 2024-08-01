@@ -28,7 +28,7 @@ if [[ len -gt 0 ]]; then
         eval "cd ${new_path}"
     else 
         if [[ $new_path == *.exe ]]; then
-            eval "${new_path}"
+            bind '"\e[0n": "'"${new_path}"'"'; printf '\e[5n'
         else
             eval "vim ${new_path}"
         fi
