@@ -3,18 +3,23 @@ open! Leaves
 
 type t
 
+type dir =
+  | Up
+  | Down
+  | Left
+  | Right
+
+type action =
+  | Cursor of dir
+  | Shortcut of string
+  | Preview
+  | Rename
+  | Cd
+  | Remove
+  | Move
+
+val get_updated_model : t -> action:action -> t
 val remove_last_path : string -> string
-val get_updated_model_for_preview : t -> t
-val get_updated_model_for_rename : t -> t
-val get_updated_model_for_change_dir : t -> t
-val get_updated_model_for_move : t -> t
-val get_updated_model_for_remove : t -> t
-val get_updated_model_for_shortcut : t -> key:string -> t
-val get_updated_model_for_right : t -> t
-val get_updated_model_for_left : t -> t
-val get_updated_model_for_up : t -> t
-val get_updated_model_for_down : t -> t
-val get_updated_model_for_move : t -> t
 val get_path_to_preview : t -> string
 val get_tree : t -> Visualize.Adjacency_matrix.tree
 val get_current_path : t -> string

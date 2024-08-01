@@ -14,7 +14,16 @@ let%expect_test "visualize" =
       ~path_to_be_underlined:"/home/home_dir1/child1/.gitignore"
   in
   print_endline res;
-  [%expect {||}]
+  [%expect {|
+    .
+    [0m[0m|__ 📁[;0;36mhome
+    [0m  [0m|__ 📁[;0;36mhome_dir1
+    [0m    [0m|__ 📁[;0;36mchild1
+    [0m      [0m|__ [;0;4;35m.gitignore
+    [0m      [0m|__ [;0mblah
+    [0m    [0m|__ [;0mchild2
+    [0m  [0m|__ 📁[;0;36mhome_dir2
+    |}]
 ;;
 
 (* let%expect_test "visualize" =
