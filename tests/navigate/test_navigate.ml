@@ -37,7 +37,7 @@ let get_init_model ~choices ~current_path ~cursor =
     ~origin:"/home"
     ~parent:"/home"
     ~cursor
-    ~path_to_preview:""
+    ~preview:""
     ~text:
       (Leaves.Text_input.make
          ""
@@ -48,7 +48,7 @@ let get_init_model ~choices ~current_path ~cursor =
     ~show_reduced_tree:false
     ~is_moving:false
     ~move_from:""
-    ~path_to_summarize:""
+    ~summarization:""
 ;;
 
 let%expect_test "navigate-left" =

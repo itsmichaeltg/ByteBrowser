@@ -140,16 +140,10 @@ let visualize_tree (model : State.t) ~origin ~max_depth =
 
 let get_view (model : State.t) ~origin ~max_depth =
   match State.should_preview model with
-  | true ->
-    Preview.preview
-      (State.get_path_to_preview model)
-      ~num_lines:Int.max_value
+  | true -> State.get_preview model
   | false ->
     (match State.should_summarize model with
-     | true ->
-       Summary.generate
-         (State.get_tree model)
-         (State.get_path_to_summarize model)
+     | true -> State.get_summarization model
      | false -> visualize_tree model ~origin ~max_depth)
 ;;
 
@@ -181,13 +175,13 @@ let get_initial_state ~origin ~max_depth ~show_hidden ~sort : State.t =
        | true -> State.remove_last_path origin
        | false -> origin)
     ~cursor:0
-    ~path_to_preview:""
+    ~preview:""
     ~text:(Leaves.Text_input.make "" ~placeholder:"" ~cursor:cursor_func ())
     ~is_writing:false
     ~show_reduced_tree:false
     ~is_moving:false
     ~move_from:""
-    ~path_to_summarize:""
+    ~summarization:""
 ;;
 
 let init _model =
