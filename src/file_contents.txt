@@ -1,1 +1,0 @@
-/nFile name: path.txtContents of file: /home/ubuntu/jsip-final-project/test_dir/dir0
