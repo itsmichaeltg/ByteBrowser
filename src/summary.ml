@@ -1,13 +1,13 @@
 open! Core
 
-let path_to_read_from = "/home/ubuntu/jsip-final-project/src/completion.txt"
+let path_to_read_from = "/home/ubuntu/jsip-final-project/bin/completion.txt"
 
 let path_to_script =
   "/home/ubuntu/jsip-final-project/src/summarization_script.py"
 ;;
 
 let path_to_write_to =
-  "/home/ubuntu/jsip-final-project/src/file_contents.txt"
+  "/home/ubuntu/jsip-final-project/bin/file_contents.txt"
 ;;
 
 let rec find_paths_to_skim tree origin =

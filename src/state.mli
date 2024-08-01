@@ -34,7 +34,6 @@ val should_summarize : t -> bool
 val get_model_after_writing : t -> t
 val get_model_with_new_text : t -> Text_input.t -> t
 val get_model_with_new_current_path : t -> string -> t
-val get_updated_model_for_summarize : t -> t
 
 val init
   :  choices:Visualize.Adjacency_matrix.t

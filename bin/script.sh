@@ -20,5 +20,8 @@ do
 done
 eval $command
 reset
-new_dir="cd $(cat "${tmp_path}")"
-eval $new_dir
+new_path=$(cat ${tmp_path})
+len=${#new_path}
+if [[ len -gt 0 ]]; then
+    echo $len
+fi

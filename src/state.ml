@@ -51,9 +51,8 @@ let should_preview t =
   && not
        (Visualize.Adjacency_matrix.is_directory t.choices t.path_to_preview)
 ;;
-let should_summarize t =
-  String.length t.path_to_summarize > 0
 
+let should_summarize t = String.length t.path_to_summarize > 0
 let get_path_to_summarize t = t.path_to_summarize
 let get_is_moving t = t.is_moving
 let get_tree t = t.choices.matrix
@@ -64,10 +63,12 @@ let get_is_writing t = t.is_writing
 let get_path_to_preview t = t.path_to_preview
 let get_model_after_writing t = { t with is_writing = false }
 let get_model_with_new_text t new_text = { t with text = new_text }
+
 let get_updated_model_for_summarize t =
   match String.is_empty t.path_to_summarize with
   | true -> { t with path_to_summarize = t.current_path }
   | false -> { t with path_to_summarize = "" }
+;;
 
 let get_model_with_new_current_path t new_current_path =
   { t with current_path = new_current_path }

@@ -1,19 +1,4 @@
-/nFile name: path.txtContents of file: /home/ubuntu/jsip-final-project/bb/nFile name: files.txtContents of file: Exercise09.mkd
-_build
-bin
-src
-Exercise08.mkd
-LIST_FUNCTIONS.mkd
-dune-project
-Exercise10.mkd
-Exercise07.mkd
-README.mkd/nFile name: duneContents of file: (executable
- (name main)
- (libraries file_manager_lib core core_unix.command_unix))
-
-; (executable
-;  (name navigate)
-;  (libraries file_manager_lib core minttea))/nFile name: script.shContents of file: #!/bin/bash
+/nFile name: bbContents of file: #!/bin/bash
 tmp_path="/home/ubuntu/jsip-final-project/bin/path.txt"
 command="/home/ubuntu/jsip-final-project/_build/default/bin/main.exe"
 for arg in "$@"
@@ -36,7 +21,4 @@ done
 eval $command
 reset
 new_dir="cd $(cat "${tmp_path}")"
-eval $new_dir/nFile name: main.mlContents of file: open! Core
-open! File_manager_lib
-
-let () = Command_unix.run Navigate.command
+eval $new_dir

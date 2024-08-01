@@ -108,13 +108,17 @@ let%expect_test "navigate-right" =
        (State.get_tree new_model)
        ~current_directory:"/home"
        ~path_to_be_underlined:(State.get_current_path new_model));
-  let newer_model = State.get_updated_model new_model ~action:(Cursor Right) in
+  let newer_model =
+    State.get_updated_model new_model ~action:(Cursor Right)
+  in
   print_endline
     (Visualize_helper.visualize
        (State.get_tree newer_model)
        ~current_directory:"/home"
        ~path_to_be_underlined:(State.get_current_path newer_model));
-  let newest_model = State.get_updated_model newer_model ~action:(Cursor Right) in
+  let newest_model =
+    State.get_updated_model newer_model ~action:(Cursor Right)
+  in
   print_endline
     (Visualize_helper.visualize
        (State.get_tree newest_model)
@@ -223,7 +227,9 @@ let%expect_test "navigate-down" =
        (State.get_tree new_model)
        ~current_directory:"/home"
        ~path_to_be_underlined:(State.get_current_path new_model));
-  let newer_model = State.get_updated_model new_model ~action:(Cursor Down) in
+  let newer_model =
+    State.get_updated_model new_model ~action:(Cursor Down)
+  in
   print_endline
     (Visualize_helper.visualize
        (State.get_tree newer_model)
