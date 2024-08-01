@@ -17,6 +17,7 @@ type action =
   | Cd
   | Remove
   | Move
+  | Summarize
 
 val get_updated_model : t -> action:action -> t
 val remove_last_path : string -> string

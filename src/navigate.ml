@@ -91,7 +91,7 @@ let update event (model : State.t) =
     | Event.KeyDown (Key "r", Ctrl) ->
       State.get_updated_model model ~action:Rename, Command.Noop
     | Event.KeyDown (Key "k", Ctrl) ->
-      State.get_updated_model_for_summarize model, Command.Noop
+      State.get_updated_model model ~action:Summarize, Command.Noop
     | Event.KeyDown (Key "m", Ctrl) ->
       print_endline
         (Format.sprintf "moivng %s" (State.get_current_path model));

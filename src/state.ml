@@ -44,6 +44,7 @@ type action =
   | Cd
   | Remove
   | Move
+  | Summarize
 
 let should_preview t =
   String.length t.path_to_preview > 0
@@ -304,6 +305,7 @@ let get_updated_model t ~(action : action) =
   | Cd -> get_updated_model_for_change_dir t
   | Remove -> get_updated_model_for_remove t
   | Shortcut key -> get_updated_model_for_shortcut t ~key
+  | Summarize -> get_updated_model_for_summarize t
 ;;
 (* let get_updated_model_for_reduced_tree t = match t.show_reduced_tree with
    | true -> { t with show_reduced_tree = false; choices = t.full_choices } |
