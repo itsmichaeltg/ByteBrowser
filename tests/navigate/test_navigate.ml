@@ -63,7 +63,7 @@ let%expect_test "navigate-left" =
       ~current_path:"/home/home_dir1/child1/.gitignore"
       ~cursor:0
   in
-  let new_model = State.get_updated_model_for_left model in
+  let new_model = State.get_updated_model model ~action:(Cursor Left) in
   print_endline
     (Visualize_helper.visualize
        (State.get_tree new_model)
@@ -101,19 +101,19 @@ let%expect_test "navigate-right" =
       ~current_path:"/home/home_dir1"
       ~cursor:0
   in
-  let new_model = State.get_updated_model_for_right model in
+  let new_model = State.get_updated_model model ~action:(Cursor Right) in
   print_endline
     (Visualize_helper.visualize
        (State.get_tree new_model)
        ~current_directory:"/home"
        ~path_to_be_underlined:(State.get_current_path new_model));
-  let newer_model = State.get_updated_model_for_right new_model in
+  let newer_model = State.get_updated_model new_model ~action:(Cursor Right) in
   print_endline
     (Visualize_helper.visualize
        (State.get_tree newer_model)
        ~current_directory:"/home"
        ~path_to_be_underlined:(State.get_current_path newer_model));
-  let newest_model = State.get_updated_model_for_right new_model in
+  let newest_model = State.get_updated_model newer_model ~action:(Cursor Right) in
   print_endline
     (Visualize_helper.visualize
        (State.get_tree newest_model)
@@ -165,13 +165,13 @@ let%expect_test "navigate-up" =
       ~current_path:"/home/home_dir2"
       ~cursor:1
   in
-  let new_model = State.get_updated_model_for_up model in
+  let new_model = State.get_updated_model model ~action:(Cursor Up) in
   print_endline
     (Visualize_helper.visualize
        (State.get_tree new_model)
        ~current_directory:"/home"
        ~path_to_be_underlined:(State.get_current_path new_model));
-  let newer_model = State.get_updated_model_for_up new_model in
+  let newer_model = State.get_updated_model new_model ~action:(Cursor Up) in
   print_endline
     (Visualize_helper.visualize
        (State.get_tree newer_model)
@@ -216,13 +216,13 @@ let%expect_test "navigate-down" =
       ~current_path:"/home/home_dir1"
       ~cursor:0
   in
-  let new_model = State.get_updated_model_for_down model in
+  let new_model = State.get_updated_model model ~action:(Cursor Down) in
   print_endline
     (Visualize_helper.visualize
        (State.get_tree new_model)
        ~current_directory:"/home"
        ~path_to_be_underlined:(State.get_current_path new_model));
-  let newer_model = State.get_updated_model_for_down new_model in
+  let newer_model = State.get_updated_model new_model ~action:(Cursor Down) in
   print_endline
     (Visualize_helper.visualize
        (State.get_tree newer_model)

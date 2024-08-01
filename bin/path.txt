@@ -1,1 +1,1 @@
-/home/ubuntu/jsip-final-project/tests/navigate
+/home/ubuntu/jsip-final-project/test_dir/dir0

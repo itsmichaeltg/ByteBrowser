@@ -53,16 +53,16 @@ let valid s =
 let move_arround event (model : State.t) =
   let open Minttea in
   match event with
-  | Event.KeyDown ((Left | Key "h"), _modifier) ->
-    State.get_updated_model_for_left model, Command.Noop
-  | Event.KeyDown ((Right | Key "l"), _modifier) ->
-    State.get_updated_model_for_right model, Command.Noop
-  | Event.KeyDown ((Up | Key "k"), _modifier) ->
-    State.get_updated_model_for_up model, Command.Noop
-  | Event.KeyDown ((Down | Key "j"), _modifier) ->
-    State.get_updated_model_for_down model, Command.Noop
+  | Event.KeyDown (Left, _modifier) ->
+    State.get_updated_model model ~action:(Cursor Left), Command.Noop
+  | Event.KeyDown (Right, _modifier) ->
+    State.get_updated_model model ~action:(Cursor Right), Command.Noop
+  | Event.KeyDown (Up, _modifier) ->
+    State.get_updated_model model ~action:(Cursor Up), Command.Noop
+  | Event.KeyDown (Down, _modifier) ->
+    State.get_updated_model model ~action:(Cursor Down), Command.Noop
   | Event.KeyDown (Enter, _modifier) ->
-    State.get_updated_model_for_move model, Command.Noop
+    State.get_updated_model model ~action:Move, Command.Noop
   | _ -> model, Command.Noop
 ;;
 
@@ -79,28 +79,29 @@ let update event (model : State.t) =
     | Event.KeyDown (Up, _modifier) ->
       move_arround event model
     | Event.KeyDown (Enter, _modifier) ->
-      let model = State.get_updated_model_for_change_dir model in
+      let model = State.get_updated_model model ~action:Cd in
       model, exit 0
     | Event.KeyDown (Escape, _modifier) -> model, exit 0
     | Event.KeyDown (Key "p", Ctrl) ->
-      State.get_updated_model_for_preview model, Command.Noop
+      State.get_updated_model model ~action:Preview, Command.Noop
     (* | Event.KeyDown (Key "v", _modifier) ->
        State.get_updated_model_for_reduced_tree model, Command.Noop *)
     | Event.KeyDown (Key "d", Ctrl) ->
-      State.get_updated_model_for_remove model, Minttea.Command.Noop
+      State.get_updated_model model ~action:Remove, Minttea.Command.Noop
     | Event.KeyDown (Key "r", Ctrl) ->
-      State.get_updated_model_for_rename model, Command.Noop
+      State.get_updated_model model ~action:Rename, Command.Noop
     | Event.KeyDown (Key "m", Ctrl) ->
       print_endline
         (Format.sprintf "moivng %s" (State.get_current_path model));
-      State.get_updated_model_for_move model, Command.Noop
+      State.get_updated_model model ~action:Move, Command.Noop
     | Event.KeyDown (Key key, _modifier) ->
-      State.get_updated_model_for_shortcut model ~key, Minttea.Command.Noop
+      ( State.get_updated_model model ~action:(Shortcut key)
+      , Minttea.Command.Noop )
     | _ -> model, Minttea.Command.Noop)
   else (
     match event with
     | Event.KeyDown (Escape, _modifier) ->
-      State.get_updated_model_for_rename model, Command.Noop
+      State.get_updated_model model ~action:Rename, Command.Noop
     | Event.KeyDown (Enter, _modifier) ->
       let com, model =
         Leaves.Text_input.current_text (State.get_text model)

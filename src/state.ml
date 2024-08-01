@@ -30,8 +30,19 @@ type t =
   }
 
 type dir =
-  | UP
-  | DOWN
+  | Up
+  | Down
+  | Left
+  | Right
+
+type action =
+  | Cursor of dir
+  | Shortcut of string
+  | Preview
+  | Rename
+  | Cd
+  | Remove
+  | Move
 
 let should_preview t =
   String.length t.path_to_preview > 0
@@ -95,18 +106,19 @@ let init
 
 let get_idx_by_dir t ~dir =
   match dir with
-  | UP ->
+  | Up ->
     (try
        (t.cursor - 1)
        % (Hashtbl.find_exn t.choices.matrix t.parent |> List.length)
      with
      | _ -> 0)
-  | DOWN ->
+  | Down ->
     (try
        (t.cursor + 1)
        % (Hashtbl.find_exn t.choices.matrix t.parent |> List.length)
      with
      | _ -> 0)
+  | _ -> 0
 ;;
 
 let get_updated_model_for_preview t =
@@ -169,12 +181,11 @@ let get_updated_model_for_remove t =
 ;;
 
 let get_idx t ~parent ~current_path =
-  if String.equal t.parent current_path |> not
-  then
-    Hashtbl.find_exn t.choices.matrix parent
-    |> List.foldi ~init:0 ~f:(fun idx acc elem ->
+  match Hashtbl.find t.choices.matrix parent with
+  | Some lst ->
+    List.foldi lst ~init:0 ~f:(fun idx acc elem ->
       if String.equal elem current_path then idx else acc)
-  else 0
+  | None -> 0
 ;;
 
 let starts_with str ~key =
@@ -263,8 +274,27 @@ let get_updated_model_for_left t =
   { t with cursor; parent; current_path }
 ;;
 
-let get_updated_model_for_up t = handle_up_and_down t ~dir:UP
-let get_updated_model_for_down t = handle_up_and_down t ~dir:DOWN
+let get_updated_model_for_up t = handle_up_and_down t ~dir:Up
+let get_updated_model_for_down t = handle_up_and_down t ~dir:Down
+
+let get_updated_model_for_dir t d =
+  match d with
+  | Left -> get_updated_model_for_left t
+  | Right -> get_updated_model_for_right t
+  | Up -> get_updated_model_for_up t
+  | Down -> get_updated_model_for_down t
+;;
+
+let get_updated_model t ~(action : action) =
+  match action with
+  | Preview -> get_updated_model_for_preview t
+  | Move -> get_updated_model_for_move t
+  | Cursor d -> get_updated_model_for_dir t d
+  | Rename -> get_updated_model_for_rename t
+  | Cd -> get_updated_model_for_change_dir t
+  | Remove -> get_updated_model_for_remove t
+  | Shortcut key -> get_updated_model_for_shortcut t ~key
+;;
 (* let get_updated_model_for_reduced_tree t = match t.show_reduced_tree with
    | true -> { t with show_reduced_tree = false; choices = t.full_choices } |
    false -> { t with show_reduced_tree = true ; choices = t.reduced_choices
