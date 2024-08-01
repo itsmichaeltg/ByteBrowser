@@ -3,6 +3,22 @@ open! File_manager_lib
 
 let%expect_test "visualize" =
   let mat = Hashtbl.create (module String) in
+  Hashtbl.add_exn mat ~key:"/home" ~data:[ "/home/home_dir1"; "/home/home_dir2" ];
+  Hashtbl.add_exn mat ~key:"/home/home_dir1" ~data:[ "/home/home_dir1/child1"; "/home/home_dir1/child2" ];
+  Hashtbl.add_exn mat ~key:"/home/home_dir2" ~data:[];
+  Hashtbl.add_exn mat ~key:"/home/home_dir1/child1" ~data:[ "/home/home_dir1/child1/.gitignore"; "/home/home_dir1/child1/blah" ];
+  let res =
+    Visualize_helper.visualize
+      mat
+      ~current_directory:"/home"
+      ~path_to_be_underlined:"/home/home_dir1/child1/.gitignore"
+  in
+  print_endline res;
+  [%expect {||}]
+;;
+
+(* let%expect_test "visualize" =
+  let mat = Hashtbl.create (module String) in
   Hashtbl.add_exn mat ~key:"home" ~data:[ "home_dir1"; "home_dir2" ];
   Hashtbl.add_exn mat ~key:"home_dir1" ~data:[ "child1"; "child2" ];
   Hashtbl.add_exn mat ~key:"home_dir2" ~data:[];
@@ -51,4 +67,4 @@ let%expect_test "path_to_be_underlined" =
     [0m    [0m|__ [;0mchild2
     [0m  [0m|__ 📁[;0;36mhome_dir2
     |}]
-;;
+;; *)

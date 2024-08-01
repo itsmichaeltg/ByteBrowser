@@ -8,6 +8,18 @@ module Adjacency_matrix = struct
   let is_directory t (value : string) = Hashtbl.mem t.matrix value
   let hidden str = Char.equal (String.nget str 0) '.'
 
+  let get_name path =
+    match String.contains path '/' with
+    | false -> path
+    | true -> List.last_exn (String.split path ~on:'/')
+  ;;
+
+  let is_directory t (value : string) =
+    Hashtbl.mem t.matrix value
+  ;;
+
+  let get_children (t : tree) path = Hashtbl.find t path
+
   let write_and_read origin =
     let write_path = "/home/ubuntu/jsip-final-project/bin/files.txt" in
     let _ =
