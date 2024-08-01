@@ -177,24 +177,50 @@ let get_idx t ~parent ~current_path =
   else 0
 ;;
 
+let starts_with str ~key =
+  String.equal
+    (String.get (Visualize_helper.get_name str) 0 |> String.of_char)
+    key
+;;
+
+let get_first_str t ~key =
+  Hashtbl.find_exn t.choices.matrix t.parent
+  |> List.fold_until
+       ~init:None
+       ~finish:(fun str -> str)
+       ~f:(fun str i ->
+         if String.equal
+              (String.get (Visualize_helper.get_name i) 0 |> String.of_char)
+              key
+         then Stop (Some i)
+         else Continue None)
+;;
+
 let get_updated_model_for_shortcut t ~key =
-  let current_path =
-    Hashtbl.find_exn t.choices.matrix t.parent
-    |> List.fold_until
-         ~init:None
-         ~finish:(fun str -> str)
-         ~f:(fun str i ->
-           if String.equal
-                (String.get (Visualize_helper.get_name i) 0 |> String.of_char)
-                key
-              && String.equal t.current_path i |> not
-           then Stop (Some i)
-           else Continue None)
-  in
-  match current_path with
-  | Some current_path ->
-    let cursor = get_idx t ~parent:t.parent ~current_path in
-    { t with cursor; current_path }
+  let siblings = Hashtbl.find t.choices.matrix t.parent in
+  match siblings with
+  | Some lst ->
+    let current_path =
+      lst
+      |> List.fold_until
+           ~init:(None, false)
+           ~finish:(fun (str, b) ->
+             match str, b with
+             | None, true -> get_first_str t ~key
+             | _ -> str)
+           ~f:(fun (str, old_path_seen) i ->
+             if String.equal t.current_path i
+                || starts_with t.current_path ~key |> not
+             then Continue (str, true)
+             else if starts_with i ~key && old_path_seen
+             then Stop (Some i)
+             else Continue (None, old_path_seen))
+    in
+    (match current_path with
+     | Some current_path ->
+       let cursor = get_idx t ~parent:t.parent ~current_path in
+       { t with cursor; current_path }
+     | None -> t)
   | None -> t
 ;;
 

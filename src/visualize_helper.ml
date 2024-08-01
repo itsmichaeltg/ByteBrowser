@@ -96,12 +96,13 @@ let rec helper
       ~so_far
       ~path_to_be_underlined
   | Some current_children ->
-    let init = get_formatted_tree_with_new_parent
-          tree
-          ~parent
-          ~depth
-          ~so_far
-          ~path_to_be_underlined
+    let init =
+      get_formatted_tree_with_new_parent
+        tree
+        ~parent
+        ~depth
+        ~so_far
+        ~path_to_be_underlined
     in
     List.fold current_children ~init ~f:(fun acc child ->
       helper
