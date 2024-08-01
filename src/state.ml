@@ -78,7 +78,7 @@ let get_updated_model_for_summarize t =
 
 let get_updated_model_for_query t =
   let blank_text =
-    Leaves.Text_input.make "q: " ~placeholder:"" ~cursor:cursor_func ()
+    Leaves.Text_input.make "q: " ~placeholder:"q: " ~cursor:cursor_func ()
   in
   match t.is_writing with
   | true ->
