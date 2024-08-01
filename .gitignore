@@ -3,3 +3,7 @@ _build/
 .env
 bin/completion.txt
 bin/file_contents.txt
+bin/query_answer.txt
+bin/query_prompt.txt
+bin/query_info.txt
+bin/files.txt
