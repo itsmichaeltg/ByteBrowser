@@ -4,6 +4,9 @@ a command line tool that manages and visualizes directories
 
 ## Setup
 ```
+$ sudo apt install xdg-utils
+```
+```
 $ echo "" >> /home/ubuntu/.bashrc && echo "alias bb='source /home/ubuntu/jsip-final-project/bb \$@'" >> /home/ubuntu/.bashrc
 ```
 ```

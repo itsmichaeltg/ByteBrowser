@@ -27,6 +27,10 @@ if [[ len -gt 0 ]]; then
     if test -d $new_path; then
         eval "cd ${new_path}"
     else 
-        eval "vim ${new_path}"
+        if [[ $new_path == *.exe ]]; then
+            eval "${new_path}"
+        else
+            eval "vim ${new_path}"
+        fi
     fi
 fi
