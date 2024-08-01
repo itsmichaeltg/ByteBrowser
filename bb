@@ -22,7 +22,15 @@ eval $command
 reset
 new_path=$(cat ${tmp_path})
 len=${#new_path}
+echo > $tmp_path
 if [[ len -gt 0 ]]; then
-    echo > $tmp_path
-    eval "cd ${new_path}"
+    if test -d $new_path; then
+        eval "cd ${new_path}"
+    else 
+        if [[ $new_path == *.exe ]]; then
+            bind '"\e[0n": "'"${new_path}"'"'; printf '\e[5n'
+        else
+            eval "vim ${new_path}"
+        fi
+    fi
 fi

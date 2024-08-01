@@ -2,11 +2,11 @@ open! Core
 open! File_manager_lib
 
 let%expect_test "visualize" =
-  let mat = Hashtbl.create (module String) in
-  Hashtbl.add_exn mat ~key:"/home" ~data:[ "/home/home_dir1"; "/home/home_dir2" ];
-  Hashtbl.add_exn mat ~key:"/home/home_dir1" ~data:[ "/home/home_dir1/child1"; "/home/home_dir1/child2" ];
-  Hashtbl.add_exn mat ~key:"/home/home_dir2" ~data:[];
-  Hashtbl.add_exn mat ~key:"/home/home_dir1/child1" ~data:[ "/home/home_dir1/child1/.gitignore"; "/home/home_dir1/child1/blah" ];
+  let mat = Matrix.create () in
+  Matrix.add_exn mat ~key:"/home" ~data:[ "/home/home_dir1"; "/home/home_dir2" ];
+  Matrix.add_exn mat ~key:"/home/home_dir1" ~data:[ "/home/home_dir1/child1"; "/home/home_dir1/child2" ];
+  Matrix.add_exn mat ~key:"/home/home_dir2" ~data:[];
+  Matrix.add_exn mat ~key:"/home/home_dir1/child1" ~data:[ "/home/home_dir1/child1/.gitignore"; "/home/home_dir1/child1/blah" ];
   let res =
     Visualize_helper.visualize
       mat

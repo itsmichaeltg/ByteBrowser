@@ -13,17 +13,17 @@ let cursor_func =
 ;;
 
 let get_tree () =
-  let mat = Hashtbl.create (module String) in
-  Hashtbl.add_exn
+  let mat = Matrix.create () in
+  Matrix.add_exn
     mat
     ~key:"/home"
     ~data:[ "/home/home_dir1"; "/home/home_dir2" ];
-  Hashtbl.add_exn
+  Matrix.add_exn
     mat
     ~key:"/home/home_dir1"
     ~data:[ "/home/home_dir1/child1"; "/home/home_dir1/child2" ];
-  Hashtbl.add_exn mat ~key:"/home/home_dir2" ~data:[];
-  Hashtbl.add_exn
+  Matrix.add_exn mat ~key:"/home/home_dir2" ~data:[];
+  Matrix.add_exn
     mat
     ~key:"/home/home_dir1/child1"
     ~data:[ "/home/home_dir1/child1/.gitignore" ];
@@ -62,7 +62,7 @@ let%expect_test "navigate-left" =
        ~path_to_be_underlined:"/home/home_dir1/child1/.gitignore");
   let model =
     get_init_model
-      ~choices:{ matrix = mat }
+      ~choices:mat
       ~current_path:"/home/home_dir1/child1/.gitignore"
       ~cursor:0
   in
@@ -100,7 +100,7 @@ let%expect_test "navigate-right" =
        ~path_to_be_underlined:"/home/home_dir1");
   let model =
     get_init_model
-      ~choices:{ matrix = mat }
+      ~choices:mat
       ~current_path:"/home/home_dir1"
       ~cursor:0
   in
@@ -168,7 +168,7 @@ let%expect_test "navigate-up" =
        ~path_to_be_underlined:"/home/home_dir2");
   let model =
     get_init_model
-      ~choices:{ matrix = mat }
+      ~choices:mat
       ~current_path:"/home/home_dir2"
       ~cursor:1
   in
@@ -219,7 +219,7 @@ let%expect_test "navigate-down" =
        ~path_to_be_underlined:"/home/home_dir1");
   let model =
     get_init_model
-      ~choices:{ matrix = mat }
+      ~choices:mat
       ~current_path:"/home/home_dir1"
       ~cursor:0
   in
