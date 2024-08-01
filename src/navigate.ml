@@ -90,6 +90,8 @@ let update event (model : State.t) =
       State.get_updated_model_for_remove model, Minttea.Command.Noop
     | Event.KeyDown (Key "r", Ctrl) ->
       State.get_updated_model_for_rename model, Command.Noop
+    | Event.KeyDown (Key "k", Ctrl) ->
+      State.get_updated_model_for_summarize model, Command.Noop
     | Event.KeyDown (Key "m", Ctrl) ->
       print_endline
         (Format.sprintf "moivng %s" (State.get_current_path model));
@@ -141,7 +143,13 @@ let get_view (model : State.t) ~origin ~max_depth =
     Preview.preview
       (State.get_path_to_preview model)
       ~num_lines:Int.max_value
-  | false -> visualize_tree model ~origin ~max_depth
+  | false ->
+    (match State.should_summarize model with
+     | true ->
+       Summary.generate
+         (State.get_tree model)
+         (State.get_path_to_summarize model)
+     | false -> visualize_tree model ~origin ~max_depth)
 ;;
 
 let get_initial_state ~origin ~max_depth ~show_hidden ~sort : State.t =
@@ -178,6 +186,7 @@ let get_initial_state ~origin ~max_depth ~show_hidden ~sort : State.t =
     ~show_reduced_tree:false
     ~is_moving:false
     ~move_from:""
+    ~path_to_summarize:""
 ;;
 
 let init _model =
