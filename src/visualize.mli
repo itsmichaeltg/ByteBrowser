@@ -17,6 +17,7 @@ module Adjacency_matrix : sig
   val is_directory : t -> string -> bool
   val get_children : tree -> string -> string list option
   val get_name : string -> string
+
   val get_limited_adjacency_matrix
     :  t
     -> sort:bool

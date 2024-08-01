@@ -14,10 +14,7 @@ module Adjacency_matrix = struct
     | true -> List.last_exn (String.split path ~on:'/')
   ;;
 
-  let is_directory t (value : string) =
-    Hashtbl.mem t.matrix value
-  ;;
-
+  let is_directory t (value : string) = Hashtbl.mem t.matrix value
   let get_children (t : tree) path = Hashtbl.find t path
 
   let write_and_read origin =
