@@ -1,5 +1,5 @@
 (library
- (name test_summary)
+ (name test_query)
  (libraries core file_manager_lib)
  (inline_tests)
  (preprocess

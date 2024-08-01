@@ -1,0 +1,1 @@
+The `visualize_helper.ml` file contains helper functions that assist in styling and formatting the visualization of file trees, making it easier to present directory structures in a more readable and visually appealing manner.
