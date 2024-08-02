@@ -106,24 +106,34 @@ let update event (model : State.t) =
       State.get_updated_model model ~action:Rename, Command.Noop
     | Event.KeyDown (Enter, _modifier) ->
       (match State.get_start_chatting model with
-      | true ->
-        let chat_so_far = Leaves.Text_input.current_text (State.get_text model) in
-        let summary = Summary.generate (State.get_tree model) (State.get_current_path model) in
-        let updated_chat = Querying.query chat_so_far ~info:summary in
-        State.get_updated_model model ~action:(Save_query_chat updated_chat), Command.Noop
-      | false ->
-        let com, model =
-        Leaves.Text_input.current_text (State.get_text model)
-        |> rename ~model
-      in
-      let _ = Sys_unix.command com in
-      State.get_model_after_writing model, Command.Noop)
-    | Event.KeyDown (Key s, _modifier) ->
-      (match valid s || State.get_start_chatting model with
-      | true -> 
-        let text = Leaves.Text_input.update (State.get_text model) event in
-        State.get_model_with_new_text model text, Command.Noop
-      | false -> model, Command.Noop)
+       | true ->
+         let chat_so_far =
+           Leaves.Text_input.current_text (State.get_text model)
+         in
+         let summary =
+           Summary.generate
+             (State.get_tree model)
+             (State.get_current_path model)
+         in
+         let updated_chat = Querying.query chat_so_far ~info:summary in
+         ( State.get_updated_model
+             model
+             ~action:(Save_query_chat updated_chat)
+         , Command.Noop )
+       | false ->
+         let com, model =
+           Leaves.Text_input.current_text (State.get_text model)
+           |> rename ~model
+         in
+         let _ = Sys_unix.command com in
+         State.get_model_after_writing model, Command.Noop)
+    | Event.KeyDown ((Key _ | Space), _modifier)
+      when State.get_start_chatting model ->
+      let text = Leaves.Text_input.update (State.get_text model) event in
+      State.get_model_with_new_text model text, Command.Noop
+    | Event.KeyDown (Key s, _modifier) when valid s ->
+      let text = Leaves.Text_input.update (State.get_text model) event in
+      State.get_model_with_new_text model text, Command.Noop
     | Event.KeyDown (Backspace, _modifier)
     | Event.KeyDown (Left, _modifier)
     | Event.KeyDown (Right, _modifier) ->
@@ -156,10 +166,10 @@ let get_view (model : State.t) ~origin ~max_depth =
   | false ->
     (match State.should_summarize model with
      | true -> State.get_summarization model
-     | false -> 
-      (match State.get_start_chatting model with
-      | true -> State.get_query_chat model
-      | false -> visualize_tree model ~origin ~max_depth))
+     | false ->
+       (match State.get_start_chatting model with
+        | true -> State.get_query_chat model
+        | false -> visualize_tree model ~origin ~max_depth))
 ;;
 
 let get_initial_state ~origin ~max_depth ~show_hidden ~sort : State.t =
