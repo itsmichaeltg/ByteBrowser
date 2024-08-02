@@ -163,11 +163,13 @@ let visualize_tree (model : State.t) ~origin ~max_depth =
 let get_view (model : State.t) ~origin ~max_depth =
   "\n\n"
   ^
+  match State.get_is_loading model with
+  | true -> 
   match State.should_preview model with
   | true -> State.get_preview model
   | false ->
     (match State.get_start_chatting model with
-     | true ->
+     | true -> 
        State.get_query_chat model
        ^ Leaves.Text_input.view (State.get_text model)
      | false ->

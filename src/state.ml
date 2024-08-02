@@ -2,6 +2,7 @@ open! Core
 open! Leaves
 open! Leaves.Cursor
 
+
 let write_path = "/home/ubuntu/jsip-final-project/bin/path.txt"
 
 let cursor_func =
@@ -31,6 +32,8 @@ type t =
   ; query_chat : string
   ; start_chatting : bool
   ; seen_summarizations : (string, string, String.comparator_witness) Map.t
+  ; is_loading : bool
+  ; loading_spinner : Sprite.t
   }
 
 type dir =
@@ -53,7 +56,11 @@ type action =
   | Reset
 
 let blank_text =
-  Leaves.Text_input.make "" ~placeholder:"type your question" ~cursor:cursor_func ()
+  Leaves.Text_input.make
+    ""
+    ~placeholder:"type your question"
+    ~cursor:cursor_func
+    ()
 ;;
 
 let should_preview t =
@@ -67,6 +74,7 @@ let get_query_chat t = t.query_chat
 let get_start_chatting t = t.start_chatting
 let get_is_moving t = t.is_moving
 let get_tree t = t.choices
+let get_is_loading t = t.is_loading
 let get_current_path t = t.current_path
 let get_text t = t.text
 let get_parent t = t.parent
@@ -79,13 +87,24 @@ let get_updated_model_for_summarize t =
   match String.is_empty t.summarization with
   | true ->
     (match Map.find t.seen_summarizations t.current_path with
-    | None ->
-      let new_summarization = Summary.generate (get_tree t) t.current_path in
-      let new_seen_summarizations = Map.add_exn t.seen_summarizations ~key:t.current_path ~data:new_summarization in
-      { t with summarization = new_summarization; seen_summarizations = new_seen_summarizations }
-    | Some existing_summarization ->
-      { t with summarization = existing_summarization })
-  | false -> { t with summarization = "" }
+     | None ->
+       let new_summarization =
+         Summary.generate (get_tree t) t.current_path
+       in
+       let new_seen_summarizations =
+         Map.add_exn
+           t.seen_summarizations
+           ~key:t.current_path
+           ~data:new_summarization
+       in
+       { t with
+         summarization = new_summarization
+       ; seen_summarizations = new_seen_summarizations
+       ; is_loading = false
+       }
+     | Some existing_summarization ->
+       { t with summarization = existing_summarization; is_loading = false })
+  | false -> { t with summarization = ""; is_loading = false }
 ;;
 
 let get_updated_model_for_query t =
@@ -149,6 +168,8 @@ let init
   ; query_chat
   ; start_chatting
   ; seen_summarizations
+  ; is_loading = false
+  (* ; loading_spinner =  *)
   }
 ;;
 
@@ -333,7 +354,13 @@ let get_updated_model_for_dir t d =
 ;;
 
 let get_updated_model_for_reset t =
-  { t with is_writing = false; start_chatting = false; summarization = ""; query_chat = "" }
+  { t with
+    is_writing = false
+  ; start_chatting = false
+  ; summarization = ""
+  ; query_chat = ""
+  }
+;;
 
 let get_updated_model t ~(action : action) =
   match action with

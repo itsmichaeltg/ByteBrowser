@@ -30,6 +30,7 @@ val get_current_path : t -> string
 val get_is_writing : t -> bool
 val get_text : t -> Text_input.t
 val get_parent : t -> string
+val get_is_loading : t -> bool
 val get_summarization : t -> string
 val get_is_moving : t -> bool
 val get_query_chat : t -> string
