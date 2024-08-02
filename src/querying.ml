@@ -23,5 +23,8 @@ let query chat_so_far ~info =
   let command = Printf.sprintf "python3 %s" path_to_script in
   let _ = Sys_unix.command command in
   let result = In_channel.read_all path_to_read_from in
+  Sys_unix.remove path_to_read_from;
+  Sys_unix.remove path_to_write_info_to;
+  Sys_unix.remove path_to_write_prompt_to;
   full_prompt ^ result ^ "\n\n"
 ;;

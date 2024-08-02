@@ -95,7 +95,11 @@ let update event (model : State.t) =
         (Format.sprintf "moivng %s" (State.get_current_path model));
       State.get_updated_model model ~action:Move, Command.Noop
     | Event.KeyDown (Key "w", Ctrl) ->
-      State.get_updated_model model ~action:Query, Command.Noop
+      let model_with_summarization =
+        State.get_updated_model model ~action:Summarize
+      in
+      ( State.get_updated_model model_with_summarization ~action:Query
+      , Command.Noop )
     | Event.KeyDown (Key key, _modifier) ->
       ( State.get_updated_model model ~action:(Shortcut key)
       , Minttea.Command.Noop )
@@ -110,12 +114,9 @@ let update event (model : State.t) =
          let chat_so_far =
            Leaves.Text_input.current_text (State.get_text model)
          in
-         let summary =
-           Summary.generate
-             (State.get_tree model)
-             (State.get_current_path model)
+         let updated_chat =
+           Querying.query chat_so_far ~info:(State.get_summarization model)
          in
-         let updated_chat = Querying.query chat_so_far ~info:summary in
          ( State.get_updated_model
              model
              ~action:(Save_query_chat updated_chat)
@@ -164,11 +165,13 @@ let get_view (model : State.t) ~origin ~max_depth =
   match State.should_preview model with
   | true -> State.get_preview model
   | false ->
-    (match State.should_summarize model with
-     | true -> State.get_summarization model
+    (match State.get_start_chatting model with
+     | true ->
+       State.get_query_chat model
+       ^ Leaves.Text_input.view (State.get_text model)
      | false ->
-       (match State.get_start_chatting model with
-        | true -> State.get_query_chat model ^ Leaves.Text_input.view (State.get_text model)
+       (match State.should_summarize model with
+        | true -> State.get_summarization model
         | false -> visualize_tree model ~origin ~max_depth))
 ;;
 

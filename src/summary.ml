@@ -34,5 +34,7 @@ let generate (tree : Matrix.t) (origin : string) =
   let command = Printf.sprintf "python3 %s" path_to_script in
   let _ = Sys_unix.command command in
   let result = In_channel.read_all path_to_read_from in
+  Sys_unix.remove path_to_read_from;
+  Sys_unix.remove path_to_write_to;
   result
 ;;

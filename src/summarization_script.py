@@ -17,13 +17,10 @@ if __name__ == "__main__":
         messages=[
             {
                 "role": "system",
-                "content": "you are an assitant file manager. succinctly summarize the contents of the file contents of a directory of files or a single file."
+                "content": "you are an assitant file manager. succinctly summarize the contents of the file contents of a directory of files or a single file.",
             },
-            {
-                "role": "user",
-                "content": file_contents
-            }
-        ]
+            {"role": "user", "content": file_contents},
+        ],
     )
     file_to_write = open(path_to_write_to, "a")
     file_to_write.write("")

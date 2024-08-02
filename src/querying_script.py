@@ -11,24 +11,20 @@ load_dotenv()
 
 if __name__ == "__main__":
     client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-    info_file, prompt_file = open(path_to_read_for_query_prompt, "r"), open(path_to_read_for_query_info, "r")
+    prompt_file, info_file = open(path_to_read_for_query_prompt, "r"), open(
+        path_to_read_for_query_info, "r"
+    )
     info, prompt = info_file.read(), prompt_file.read()
     completion = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
             {
                 "role": "system",
-                "content": "you are an assitant file manager. succinctly answer the questions of the user on the provided file contents of a directory or a single file content."
+                "content": "you are an assitant file manager. succinctly answer the questions of the user on the provided contents.\n"
+                + f"here is the information:\n{info}",
             },
-            {
-                "role": "system",
-                "content": f"here is the file information:\n{info}"
-            },
-            {
-                "role": "user",
-                "content": prompt
-            }
-        ]
+            {"role": "user", "content": prompt},
+        ],
     )
     file_to_write = open(path_to_write_to, "a")
     file_to_write.write("")
