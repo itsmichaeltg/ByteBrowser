@@ -1,7 +1,7 @@
 open! Core
 
 module Styling = struct
-  type t = { mutable styles : string list }
+  type t = { mutable styles : string list } [@@deriving sexp]
 
   let get_emoji_by_dir ~is_dir =
     match is_dir with true -> "📁" | false -> ""
@@ -44,7 +44,7 @@ let%expect_test "get_name" =
 let get_styles tree ~(path_to_be_underlined : string) ~(parent : string) =
   let (styles : Styling.t) = { styles = [ "0" ] } in
   (match String.equal path_to_be_underlined parent with
-   | true -> styles.styles <- List.append styles.styles [ "4" ]
+   | true -> styles.styles <- List.append styles.styles [ "2"; "4" ]
    | false -> ());
   (match is_directory tree parent with
    | true -> styles.styles <- List.append styles.styles [ "36" ]
