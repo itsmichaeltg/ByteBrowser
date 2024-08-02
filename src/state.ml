@@ -51,7 +51,7 @@ type action =
   | Save_query_chat of string
 
 let blank_text =
-  Leaves.Text_input.make "q: " ~placeholder:"q: " ~cursor:cursor_func ()
+  Leaves.Text_input.make "" ~placeholder:"type your question" ~cursor:cursor_func ()
 ;;
 
 let should_preview t =

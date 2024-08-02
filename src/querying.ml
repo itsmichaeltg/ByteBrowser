@@ -15,7 +15,7 @@ let path_to_read_from =
 ;;
 
 let query chat_so_far ~info =
-  let full_prompt = chat_so_far ^ "\n" ^ "a: " in
+  let full_prompt = chat_so_far ^ "\n\n" in
   Out_channel.write_all path_to_write_prompt_to ~data:"";
   Out_channel.write_all path_to_write_prompt_to ~data:full_prompt;
   Out_channel.write_all path_to_write_info_to ~data:"";
@@ -23,5 +23,5 @@ let query chat_so_far ~info =
   let command = Printf.sprintf "python3 %s" path_to_script in
   let _ = Sys_unix.command command in
   let result = In_channel.read_all path_to_read_from in
-  full_prompt ^ result
+  full_prompt ^ result ^ "\n\n"
 ;;

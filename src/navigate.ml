@@ -130,7 +130,7 @@ let update event (model : State.t) =
     | Event.KeyDown ((Key _ | Space), _modifier)
       when State.get_start_chatting model ->
       let text = Leaves.Text_input.update (State.get_text model) event in
-      State.get_model_with_new_text model text, Command.Noop
+      State.get_model_with_new_text model text, Command.Hide_cursor
     | Event.KeyDown (Key s, _modifier) when valid s ->
       let text = Leaves.Text_input.update (State.get_text model) event in
       State.get_model_with_new_text model text, Command.Noop
@@ -168,7 +168,7 @@ let get_view (model : State.t) ~origin ~max_depth =
      | true -> State.get_summarization model
      | false ->
        (match State.get_start_chatting model with
-        | true -> State.get_query_chat model
+        | true -> State.get_query_chat model ^ Leaves.Text_input.view (State.get_text model)
         | false -> visualize_tree model ~origin ~max_depth))
 ;;
 
@@ -207,9 +207,9 @@ let get_initial_state ~origin ~max_depth ~show_hidden ~sort : State.t =
     ~start_chatting:false
 ;;
 
-let init _model =
+let init _ =
   let open Minttea in
-  Command.Noop
+  Command.Hide_cursor
 ;;
 
 let format_origin origin =
