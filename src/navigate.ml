@@ -107,12 +107,13 @@ let update event (model : State.t) =
   else (
     match event with
     | Event.KeyDown (Escape, _modifier) ->
-      State.get_updated_model model ~action:Rename, Command.Noop
+      State.get_updated_model model ~action:Reset, Command.Noop
     | Event.KeyDown (Enter, _modifier) ->
       (match State.get_start_chatting model with
        | true ->
          let chat_so_far =
-           Leaves.Text_input.current_text (State.get_text model)
+           State.get_query_chat model
+           ^ Leaves.Text_input.current_text (State.get_text model)
          in
          let updated_chat =
            Querying.query chat_so_far ~info:(State.get_summarization model)

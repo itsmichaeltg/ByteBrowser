@@ -20,6 +20,7 @@ type action =
   | Summarize
   | Query
   | Save_query_chat of string
+  | Reset
 
 val get_updated_model : t -> action:action -> t
 val remove_last_path : string -> string

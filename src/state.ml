@@ -49,6 +49,7 @@ type action =
   | Summarize
   | Query
   | Save_query_chat of string
+  | Reset
 
 let blank_text =
   Leaves.Text_input.make "" ~placeholder:"type your question" ~cursor:cursor_func ()
@@ -322,6 +323,9 @@ let get_updated_model_for_dir t d =
   | Down -> get_updated_model_for_down t
 ;;
 
+let get_updated_model_for_reset t =
+  { t with is_writing = false; start_chatting = false; summarization = "" }
+
 let get_updated_model t ~(action : action) =
   match action with
   | Preview -> get_updated_model_for_preview t
@@ -334,6 +338,7 @@ let get_updated_model t ~(action : action) =
   | Summarize -> get_updated_model_for_summarize t
   | Query -> get_updated_model_for_query t
   | Save_query_chat chat -> get_updated_model_for_save_query_chat t ~chat
+  | Reset -> get_updated_model_for_reset t
 ;;
 (* let get_updated_model_for_reduced_tree t = match t.show_reduced_tree with
    | true -> { t with show_reduced_tree = false; choices = t.full_choices } |
