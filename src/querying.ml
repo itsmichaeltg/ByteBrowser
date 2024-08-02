@@ -1,8 +1,15 @@
 open! Core
 
-let path_to_write_prompt_to = "/home/ubuntu/jsip-final-project/bin/query_prompt.txt"
+let path_to_write_prompt_to =
+  "/home/ubuntu/jsip-final-project/bin/query_prompt.txt"
+;;
+
 let path_to_script = "/home/ubuntu/jsip-final-project/src/querying_script.py"
-let path_to_write_info_to = "/home/ubuntu/jsip-final-project/bin/query_info.txt"
+
+let path_to_write_info_to =
+  "/home/ubuntu/jsip-final-project/bin/query_info.txt"
+;;
+
 let path_to_read_from =
   "/home/ubuntu/jsip-final-project/bin/query_answer.txt"
 ;;
