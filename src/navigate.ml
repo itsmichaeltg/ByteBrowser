@@ -209,6 +209,7 @@ let get_initial_state ~origin ~max_depth ~show_hidden ~sort : State.t =
     ~summarization:""
     ~query_chat:""
     ~start_chatting:false
+    ~seen_summarizations:(Map.empty (module String))
 ;;
 
 let init _ =

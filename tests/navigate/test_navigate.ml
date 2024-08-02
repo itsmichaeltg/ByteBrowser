@@ -51,6 +51,7 @@ let get_init_model ~choices ~current_path ~cursor =
     ~summarization:""
     ~query_chat:""
     ~start_chatting:false
+    ~seen_summarizations:(Map.empty (module String))
 ;;
 
 let%expect_test "navigate-left" =

@@ -55,4 +55,5 @@ val init
   -> summarization:string
   -> query_chat:string
   -> start_chatting:bool
+  -> seen_summarizations:(string, string, String.comparator_witness) Map.t
   -> t

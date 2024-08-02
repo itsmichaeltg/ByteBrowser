@@ -30,6 +30,7 @@ type t =
   ; summarization : string
   ; query_chat : string
   ; start_chatting : bool
+  ; seen_summarizations : (string, string, String.comparator_witness) Map.t
   }
 
 type dir =
@@ -77,7 +78,13 @@ let get_model_with_new_text t new_text = { t with text = new_text }
 let get_updated_model_for_summarize t =
   match String.is_empty t.summarization with
   | true ->
-    { t with summarization = Summary.generate (get_tree t) t.current_path }
+    (match Map.find t.seen_summarizations t.current_path with
+    | None ->
+      let new_summarization = Summary.generate (get_tree t) t.current_path in
+      let new_seen_summarizations = Map.add_exn t.seen_summarizations ~key:t.current_path ~data:new_summarization in
+      { t with summarization = new_summarization; seen_summarizations = new_seen_summarizations }
+    | Some existing_summarization ->
+      { t with summarization = existing_summarization })
   | false -> { t with summarization = "" }
 ;;
 
@@ -125,6 +132,7 @@ let init
   ~summarization
   ~query_chat
   ~start_chatting
+  ~seen_summarizations
   =
   { choices
   ; current_path
@@ -140,6 +148,7 @@ let init
   ; summarization
   ; query_chat
   ; start_chatting
+  ; seen_summarizations
   }
 ;;
 
