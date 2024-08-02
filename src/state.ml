@@ -50,6 +50,10 @@ type action =
   | Query
   | Save_query_chat of string
 
+let blank_text =
+  Leaves.Text_input.make "q: " ~placeholder:"q: " ~cursor:cursor_func ()
+;;
+
 let should_preview t =
   String.length t.preview > 0
   && not (Matrix.is_directory t.choices t.current_path)
@@ -77,9 +81,6 @@ let get_updated_model_for_summarize t =
 ;;
 
 let get_updated_model_for_query t =
-  let blank_text =
-    Leaves.Text_input.make "q: " ~placeholder:"q: " ~cursor:cursor_func ()
-  in
   match t.is_writing with
   | true ->
     { t with is_writing = false; text = blank_text; start_chatting = false }
@@ -88,7 +89,7 @@ let get_updated_model_for_query t =
 ;;
 
 let get_updated_model_for_save_query_chat t ~chat =
-  { t with query_chat = chat }
+  { t with query_chat = chat; text = blank_text }
 ;;
 
 let get_model_with_new_current_path t new_current_path =
