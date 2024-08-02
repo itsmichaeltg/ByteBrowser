@@ -333,7 +333,7 @@ let get_updated_model_for_dir t d =
 ;;
 
 let get_updated_model_for_reset t =
-  { t with is_writing = false; start_chatting = false; summarization = "" }
+  { t with is_writing = false; start_chatting = false; summarization = ""; query_chat = "" }
 
 let get_updated_model t ~(action : action) =
   match action with
