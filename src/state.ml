@@ -169,7 +169,7 @@ let init
   ; start_chatting
   ; seen_summarizations
   ; is_loading = false
-  (* ; loading_spinner =  *)
+  ; loading_spinner = Spinner.dot
   }
 ;;
 
