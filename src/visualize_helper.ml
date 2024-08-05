@@ -21,8 +21,8 @@ end
 let get_depth_space ~depth =
   List.fold (List.init depth ~f:Fn.id) ~init:"\x1b[0m" ~f:(fun acc num ->
     match num = depth - 1 with
-    | true -> acc ^ "\x1b[0m|__"
-    | false -> acc ^ "  ")
+    | true -> acc ^ "\x1b[0;8;5;109m|__"
+    | false -> acc ^ "\x1b[0;8;5;109m  ")
   ^ " "
 ;;
 
@@ -55,7 +55,7 @@ let%expect_test "get_name" =
 ;;
 
 let get_styles tree ~(path_to_be_underlined : string) ~(parent : string) =
-  let (styles : Styling.t) = { styles = [ "0" ] } in
+  let (styles : Styling.t) = { styles = [ "0"; "48"; "5"; "109" ] } in
   (match String.equal path_to_be_underlined parent with
    | true -> styles.styles <- List.append styles.styles [ "2"; "4" ]
    | false -> ());
@@ -125,20 +125,16 @@ let rec helper
         ~path_to_be_underlined)
 ;;
 
-(* let normalize_lines lines = List.map lines ~f:(fun line -> let
-   chuncks_of_line = String.split line ~on:'|__' in print_s [%message
-   (chuncks_of_line : string list)]; let content = match chuncks_of_line with
-   | [] -> "" | content :: [] -> content | _ :: content_lst -> List.fold
-   content_lst ~init:"" ~f:(fun acc curr -> acc ^ "m" ^ curr) in let
-   spaces_to_add = List.init (100 - String.length content) ~f:Fn.id in let
-   space_needed = List.fold spaces_to_add ~init:"" ~f:(fun acc _ -> acc ^ "
-   ") in line ^ space_needed) *)
-let apply_outer_styles tree =
+let apply_borders tree =
   let lines_in_tree = String.split_lines tree in
   let bordered_tree =
-    List.map lines_in_tree ~f:(fun line -> "\x1b[0m>> " ^ line ^ "\x1b[0m<<")
+    List.map lines_in_tree ~f:(fun line -> "\x1b[0m>>" ^ line ^ "\x1b[0m<<")
   in
   List.fold bordered_tree ~init:"" ~f:(fun acc line -> acc ^ "\n" ^ line)
+;;
+
+let apply_outer_styles tree =
+  apply_borders tree
 ;;
 
 let visualize

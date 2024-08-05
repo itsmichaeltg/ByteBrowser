@@ -1,4 +1,5 @@
 open! Core
+open! Spices
 
 let cursor_func =
   Leaves.Cursor.make
@@ -151,12 +152,12 @@ let visualize_tree (model : State.t) ~origin ~max_depth =
       ~current_directory:origin
       ~path_to_be_underlined:(State.get_current_path model)
   in
-  "\x1b[0mPress ^C to quit\n"
-  ^ Format.sprintf {|%s|} tree
+  (* "\x1b[0mPress ^C to quit\n" *)
+  Format.asprintf "%s" tree
   ^
   if State.get_is_writing model
   then
-    Format.sprintf "\n%s\n" @@ Leaves.Text_input.view (State.get_text model)
+    Format.asprintf "\n%s\n" @@ Leaves.Text_input.view (State.get_text model)
   else ""
 ;;
 
@@ -173,7 +174,8 @@ let get_view (model : State.t) ~origin ~max_depth =
      | false ->
        (match State.should_summarize model with
         | true -> State.get_summarization model
-        | false -> visualize_tree model ~origin ~max_depth))
+        | false -> visualize_tree model ~origin ~max_depth
+          ))
 ;;
 
 let get_initial_state ~origin ~max_depth ~show_hidden ~sort : State.t =
