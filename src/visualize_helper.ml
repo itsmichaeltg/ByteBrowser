@@ -4,8 +4,11 @@ module Styling = struct
   type t = { mutable styles : string list } [@@deriving sexp]
 
   let get_emoji_by_dir ~is_dir =
-    match is_dir with true -> "📁" | false -> ""
+    ignore is_dir;
+    ""
   ;;
+
+  (* match is_dir with true -> "📁" | false -> "" *)
 
   let apply_style t ~apply_to ~is_dir =
     "\x1b["
@@ -18,13 +21,23 @@ end
 let get_depth_space ~depth =
   List.fold (List.init depth ~f:Fn.id) ~init:"\x1b[0m" ~f:(fun acc num ->
     match num = depth - 1 with
-    | true -> acc ^ "\x1b[0m|__"
-    | false -> acc ^ "  ")
+    | true -> acc ^ "\x1b[0;8;5;109m|__"
+    | false -> acc ^ "\x1b[0;8;5;109m  ")
   ^ " "
 ;;
 
 let is_directory (tree : Matrix.t) (value : string) = Matrix.mem tree value
 let is_hidden_file name = String.is_prefix name ~prefix:"."
+
+let normalize_string str ~depth ~is_dir =
+  let max = 100 - String.length str - ((depth - 1) * 2) in
+  (* let max = match is_dir with | true -> max + 4 | false -> max in *)
+  let space_needed =
+    List.fold (List.init max ~f:Fn.id) ~init:"" ~f:(fun acc curr ->
+      acc ^ " ")
+  in
+  str ^ space_needed
+;;
 
 let get_name path =
   match String.contains path '/' with
@@ -42,7 +55,7 @@ let%expect_test "get_name" =
 ;;
 
 let get_styles tree ~(path_to_be_underlined : string) ~(parent : string) =
-  let (styles : Styling.t) = { styles = [ "0" ] } in
+  let (styles : Styling.t) = { styles = [ "0"; "48"; "5"; "109" ] } in
   (match String.equal path_to_be_underlined parent with
    | true -> styles.styles <- List.append styles.styles [ "2"; "4" ]
    | false -> ());
@@ -70,7 +83,11 @@ let get_formatted_tree_with_new_parent
       "%s"
       (Styling.apply_style
          (get_styles tree ~path_to_be_underlined ~parent)
-         ~apply_to:(get_name parent)
+         ~apply_to:
+           (normalize_string
+              (get_name parent)
+              ~depth
+              ~is_dir:(is_directory tree parent))
          ~is_dir:(is_directory tree parent))
 ;;
 
@@ -108,18 +125,33 @@ let rec helper
         ~path_to_be_underlined)
 ;;
 
+let apply_borders tree =
+  let lines_in_tree = String.split_lines tree in
+  let bordered_tree =
+    List.map lines_in_tree ~f:(fun line -> "\x1b[0m>>" ^ line ^ "\x1b[0m<<")
+  in
+  List.fold bordered_tree ~init:"" ~f:(fun acc line -> acc ^ "\n" ^ line)
+;;
+
+let apply_outer_styles tree =
+  apply_borders tree
+;;
+
 let visualize
   (tree : Matrix.t)
   ~(current_directory : string)
   ~(path_to_be_underlined : string)
   : string
   =
-  helper
-    tree
-    ~depth:1
-    ~so_far:"."
-    ~parent:current_directory
-    ~path_to_be_underlined
+  let tree =
+    helper
+      tree
+      ~depth:1
+      ~so_far:(normalize_string "." ~depth:(-1) ~is_dir:false)
+      ~parent:current_directory
+      ~path_to_be_underlined
+  in
+  apply_outer_styles tree
 ;;
 
 let print_dir (t : Matrix.t) ~origin =

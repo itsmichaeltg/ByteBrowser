@@ -2,7 +2,6 @@ open! Core
 open! Leaves
 open! Leaves.Cursor
 
-
 let write_path = "/home/ubuntu/jsip-final-project/bin/path.txt"
 
 let cursor_func =
