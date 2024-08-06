@@ -1,6 +1,6 @@
 open! Core
 open! Terminal_size
-open! Yojson
+open! Yojson.Basic.Util
 
 module Styling = struct
   type t = { mutable styles : string list } [@@deriving sexp]
@@ -23,8 +23,8 @@ end
 let get_depth_space ~depth =
   List.fold (List.init depth ~f:Fn.id) ~init:"\x1b[0m" ~f:(fun acc num ->
     match num = depth - 1 with
-    | true -> acc ^ "\x1b[0;48;5;88m|__"
-    | false -> acc ^ "\x1b[0;48;5;88m  ")
+    | true -> acc ^ "\x1b[0;48;5;17m|__"
+    | false -> acc ^ "\x1b[0;48;5;17m  ")
   ^ " "
 ;;
 
@@ -58,19 +58,55 @@ let%expect_test "get_name" =
   |}]
 ;;
 
+let get_color_for_file name : string list =
+  let extension =
+    String.fold
+      (String.rev name)
+      ~init:("", true)
+      ~f:(fun (acc, should_add_char) char ->
+        match should_add_char with
+        | false -> acc, false
+        | true ->
+          (match Char.equal char '.' with
+           | true -> acc, false
+           | false -> acc ^ Char.to_string char, true))
+    |> fst
+    |> String.rev
+  in
+  let file_extension_to_color_json =
+    Yojson.Safe.from_file
+      "/home/ubuntu/jsip-final-project/src/file_extension_to_color.json"
+  in
+  let field_val_assoc =
+    file_extension_to_color_json |> Yojson.Safe.Util.to_assoc
+  in
+  let target_val =
+    List.Assoc.find field_val_assoc extension ~equal:String.equal
+  in
+  let colors_as_json_objs =
+    match target_val with
+    | None -> []
+    | Some json_obj -> Yojson.Safe.Util.to_list json_obj
+  in
+  let colors = List.map colors_as_json_objs ~f:Yojson.Safe.Util.to_string in
+  colors
+;;
+
 let get_styles tree ~(path_to_be_underlined : string) ~(parent : string) =
-  let (styles : Styling.t) = { styles = [ "0"; "48"; "5"; "88" ] } in
+  let (styles : Styling.t) = { styles = [ "0"; "48"; "5"; "17" ] } in
   (match String.equal path_to_be_underlined parent with
-   | true -> styles.styles <- List.append styles.styles [ "4" ]
+   | true -> styles.styles <- List.append styles.styles [ "4"; "2" ]
    | false -> ());
   (match is_directory tree parent with
    | true ->
-     styles.styles <- List.append styles.styles [ "38"; "5"; "232"; "1" ]
+     styles.styles <- List.append styles.styles [ "38"; "5"; "49"; "1" ]
    | false ->
      (match is_hidden_file (get_name parent) with
       | true ->
         styles.styles <- List.append styles.styles [ "38"; "5"; "40"; "1" ]
-      | false -> ()));
+      | false ->
+        styles.styles
+        <- List.append styles.styles (get_color_for_file (get_name parent))));
   styles
 ;;
 
@@ -152,12 +188,14 @@ let visualize
       tree
       ~depth:1
       ~so_far:
-        ("\x1b[48;5;88m" ^ normalize_string "." ~depth:(-1) ~is_dir:false)
+        ("\x1b[48;5;17m" ^ normalize_string "." ~depth:(-1) ~is_dir:false)
       ~parent:current_directory
       ~path_to_be_underlined
   in
   apply_outer_styles tree ^ "\n\x1b[0m"
 ;;
+
+(* apply_outer_styles tree ^ "\n\x1b[0m" *)
 
 let print_dir (t : Matrix.t) ~origin =
   visualize t ~current_directory:origin ~path_to_be_underlined:""
