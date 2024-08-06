@@ -17,6 +17,22 @@ let get_name path =
   | true -> List.last_exn (String.split path ~on:'/')
 ;;
 
+let get_extension_of_file path =
+  let file_name = get_name path in
+  String.fold
+    (String.rev file_name)
+    ~init:("", true)
+    ~f:(fun (acc, should_add_char) char ->
+      match should_add_char with
+      | false -> acc, false
+      | true ->
+        (match Char.equal char '.' with
+         | true -> acc, false
+         | false -> acc ^ Char.to_string char, true))
+  |> fst
+  |> String.rev
+;;
+
 let is_directory t (value : string) = mem t value
 let get_children t path = find t path
 

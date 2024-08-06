@@ -15,6 +15,7 @@ val get_adjacency_matrix
 val is_directory : t -> string -> bool
 val get_children : t -> string -> string list option
 val get_name : string -> string
+val get_extension_of_file : string -> string
 
 val get_limited_adjacency_matrix
   :  t

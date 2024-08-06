@@ -1,24 +1,5 @@
 open! Core
 open! Terminal_size
-open! Yojson.Basic.Util
-
-module Styling = struct
-  type t = { mutable styles : string list } [@@deriving sexp]
-
-  let get_emoji_by_dir ~is_dir =
-    ignore is_dir;
-    ""
-  ;;
-
-  (* match is_dir with true -> "📁" | false -> "" *)
-
-  let apply_style t ~apply_to ~is_dir =
-    "\x1b["
-    ^ List.fold t.styles ~init:"" ~f:(fun acc style -> acc ^ ";" ^ style)
-    ^ "m"
-    ^ apply_to
-  ;;
-end
 
 let get_depth_space ~depth =
   List.fold (List.init depth ~f:Fn.id) ~init:"\x1b[0m" ~f:(fun acc num ->
@@ -33,7 +14,7 @@ let is_hidden_file name = String.is_prefix name ~prefix:"."
 
 let normalize_string str ~depth ~is_dir =
   let max_rows =
-    match get_columns () with None -> 100 | Some size -> size - 10
+    match get_columns () with None -> 100 | Some size -> size - 12
   in
   let max = max_rows - String.length str - ((depth - 1) * 2) in
   let space_needed =
@@ -58,21 +39,8 @@ let%expect_test "get_name" =
   |}]
 ;;
 
-let get_color_for_file name : string list =
-  let extension =
-    String.fold
-      (String.rev name)
-      ~init:("", true)
-      ~f:(fun (acc, should_add_char) char ->
-        match should_add_char with
-        | false -> acc, false
-        | true ->
-          (match Char.equal char '.' with
-           | true -> acc, false
-           | false -> acc ^ Char.to_string char, true))
-    |> fst
-    |> String.rev
-  in
+let get_color_for_file path : string list =
+  let extension = Matrix.get_extension_of_file path in
   let file_extension_to_color_json =
     Yojson.Safe.from_file
       "/home/ubuntu/jsip-final-project/src/file_extension_to_color.json"
@@ -93,7 +61,7 @@ let get_color_for_file name : string list =
 ;;
 
 let get_styles tree ~(path_to_be_underlined : string) ~(parent : string) =
-  let (styles : Styling.t) = { styles = [ "0"; "48"; "5"; "17" ] } in
+  let (styles : Styles.t) = { styles = [ "0"; "48"; "5"; "17" ] } in
   (match String.equal path_to_be_underlined parent with
    | true -> styles.styles <- List.append styles.styles [ "4"; "2" ]
    | false -> ());
@@ -106,7 +74,7 @@ let get_styles tree ~(path_to_be_underlined : string) ~(parent : string) =
         styles.styles <- List.append styles.styles [ "38"; "5"; "40"; "1" ]
       | false ->
         styles.styles
-        <- List.append styles.styles (get_color_for_file (get_name parent))));
+        <- List.append styles.styles (get_color_for_file parent)));
   styles
 ;;
 
@@ -120,17 +88,16 @@ let get_formatted_tree_with_new_parent
   so_far
   ^ "\n"
   ^ get_depth_space ~depth
-  ^ Styling.get_emoji_by_dir ~is_dir:(is_directory tree parent)
+  ^ Styles.get_emoji_by_dir ~is_dir:(is_directory tree parent)
   ^ Printf.sprintf
       "%s"
-      (Styling.apply_style
+      (Styles.apply_style
          (get_styles tree ~path_to_be_underlined ~parent)
          ~apply_to:
            (normalize_string
               (get_name parent)
               ~depth
-              ~is_dir:(is_directory tree parent))
-         ~is_dir:(is_directory tree parent))
+              ~is_dir:(is_directory tree parent)))
 ;;
 
 let rec helper
@@ -167,15 +134,7 @@ let rec helper
         ~path_to_be_underlined)
 ;;
 
-let apply_borders tree =
-  let lines_in_tree = String.split_lines tree in
-  let bordered_tree =
-    List.map lines_in_tree ~f:(fun line -> "\x1b[0m>>" ^ line ^ "\x1b[0m<<")
-  in
-  List.fold bordered_tree ~init:"" ~f:(fun acc line -> acc ^ "\n" ^ line)
-;;
-
-let apply_outer_styles tree = apply_borders tree
+let apply_outer_styles tree = Styles.apply_borders tree
 
 let visualize
   (tree : Matrix.t)
