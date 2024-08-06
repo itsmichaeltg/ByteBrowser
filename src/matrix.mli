@@ -30,3 +30,5 @@ val find_exn : t -> string -> string list
 val mem : t -> string -> bool
 val set : t -> key:string -> data:string list -> unit
 val add_exn : t -> key:string -> data:string list -> unit
+val length : t -> int
+val to_list : t -> string list

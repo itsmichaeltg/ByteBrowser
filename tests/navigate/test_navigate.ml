@@ -79,13 +79,13 @@ let%expect_test "navigate-left" =
     [0m[0m|__ 📁[;0;36mhome
     [0m  [0m|__ 📁[;0;36mhome_dir1
     [0m    [0m|__ 📁[;0;36mchild1
-    [0m      [0m|__ [;0;4;35m.gitignore
+    [0m      [0m|__ [;0;2;4;35m.gitignore
     [0m    [0m|__ [;0mchild2
     [0m  [0m|__ 📁[;0;36mhome_dir2
     .
     [0m[0m|__ 📁[;0;36mhome
     [0m  [0m|__ 📁[;0;36mhome_dir1
-    [0m    [0m|__ 📁[;0;4;36mchild1
+    [0m    [0m|__ 📁[;0;2;4;36mchild1
     [0m      [0m|__ [;0;35m.gitignore
     [0m    [0m|__ [;0mchild2
     [0m  [0m|__ 📁[;0;36mhome_dir2
@@ -100,10 +100,7 @@ let%expect_test "navigate-right" =
        ~current_directory:"/home"
        ~path_to_be_underlined:"/home/home_dir1");
   let model =
-    get_init_model
-      ~choices:mat
-      ~current_path:"/home/home_dir1"
-      ~cursor:0
+    get_init_model ~choices:mat ~current_path:"/home/home_dir1" ~cursor:0
   in
   let new_model = State.get_updated_model model ~action:(Cursor Right) in
   print_endline
@@ -131,7 +128,7 @@ let%expect_test "navigate-right" =
     {|
     .
     [0m[0m|__ 📁[;0;36mhome
-    [0m  [0m|__ 📁[;0;4;36mhome_dir1
+    [0m  [0m|__ 📁[;0;2;4;36mhome_dir1
     [0m    [0m|__ 📁[;0;36mchild1
     [0m      [0m|__ [;0;35m.gitignore
     [0m    [0m|__ [;0mchild2
@@ -139,7 +136,7 @@ let%expect_test "navigate-right" =
     .
     [0m[0m|__ 📁[;0;36mhome
     [0m  [0m|__ 📁[;0;36mhome_dir1
-    [0m    [0m|__ 📁[;0;4;36mchild1
+    [0m    [0m|__ 📁[;0;2;4;36mchild1
     [0m      [0m|__ [;0;35m.gitignore
     [0m    [0m|__ [;0mchild2
     [0m  [0m|__ 📁[;0;36mhome_dir2
@@ -147,14 +144,14 @@ let%expect_test "navigate-right" =
     [0m[0m|__ 📁[;0;36mhome
     [0m  [0m|__ 📁[;0;36mhome_dir1
     [0m    [0m|__ 📁[;0;36mchild1
-    [0m      [0m|__ [;0;4;35m.gitignore
+    [0m      [0m|__ [;0;2;4;35m.gitignore
     [0m    [0m|__ [;0mchild2
     [0m  [0m|__ 📁[;0;36mhome_dir2
     .
     [0m[0m|__ 📁[;0;36mhome
     [0m  [0m|__ 📁[;0;36mhome_dir1
     [0m    [0m|__ 📁[;0;36mchild1
-    [0m      [0m|__ [;0;4;35m.gitignore
+    [0m      [0m|__ [;0;2;4;35m.gitignore
     [0m    [0m|__ [;0mchild2
     [0m  [0m|__ 📁[;0;36mhome_dir2
     |}]
@@ -168,10 +165,7 @@ let%expect_test "navigate-up" =
        ~current_directory:"/home"
        ~path_to_be_underlined:"/home/home_dir2");
   let model =
-    get_init_model
-      ~choices:mat
-      ~current_path:"/home/home_dir2"
-      ~cursor:1
+    get_init_model ~choices:mat ~current_path:"/home/home_dir2" ~cursor:1
   in
   let new_model = State.get_updated_model model ~action:(Cursor Up) in
   print_endline
@@ -193,10 +187,10 @@ let%expect_test "navigate-up" =
     [0m    [0m|__ 📁[;0;36mchild1
     [0m      [0m|__ [;0;35m.gitignore
     [0m    [0m|__ [;0mchild2
-    [0m  [0m|__ 📁[;0;4;36mhome_dir2
+    [0m  [0m|__ 📁[;0;2;4;36mhome_dir2
     .
     [0m[0m|__ 📁[;0;36mhome
-    [0m  [0m|__ 📁[;0;4;36mhome_dir1
+    [0m  [0m|__ 📁[;0;2;4;36mhome_dir1
     [0m    [0m|__ 📁[;0;36mchild1
     [0m      [0m|__ [;0;35m.gitignore
     [0m    [0m|__ [;0mchild2
@@ -207,7 +201,7 @@ let%expect_test "navigate-up" =
     [0m    [0m|__ 📁[;0;36mchild1
     [0m      [0m|__ [;0;35m.gitignore
     [0m    [0m|__ [;0mchild2
-    [0m  [0m|__ 📁[;0;4;36mhome_dir2
+    [0m  [0m|__ 📁[;0;2;4;36mhome_dir2
     |}]
 ;;
 
@@ -219,10 +213,7 @@ let%expect_test "navigate-down" =
        ~current_directory:"/home"
        ~path_to_be_underlined:"/home/home_dir1");
   let model =
-    get_init_model
-      ~choices:mat
-      ~current_path:"/home/home_dir1"
-      ~cursor:0
+    get_init_model ~choices:mat ~current_path:"/home/home_dir1" ~cursor:0
   in
   let new_model = State.get_updated_model model ~action:(Cursor Down) in
   print_endline
@@ -242,7 +233,7 @@ let%expect_test "navigate-down" =
     {|
     .
     [0m[0m|__ 📁[;0;36mhome
-    [0m  [0m|__ 📁[;0;4;36mhome_dir1
+    [0m  [0m|__ 📁[;0;2;4;36mhome_dir1
     [0m    [0m|__ 📁[;0;36mchild1
     [0m      [0m|__ [;0;35m.gitignore
     [0m    [0m|__ [;0mchild2
@@ -253,10 +244,10 @@ let%expect_test "navigate-down" =
     [0m    [0m|__ 📁[;0;36mchild1
     [0m      [0m|__ [;0;35m.gitignore
     [0m    [0m|__ [;0mchild2
-    [0m  [0m|__ 📁[;0;4;36mhome_dir2
+    [0m  [0m|__ 📁[;0;2;4;36mhome_dir2
     .
     [0m[0m|__ 📁[;0;36mhome
-    [0m  [0m|__ 📁[;0;4;36mhome_dir1
+    [0m  [0m|__ 📁[;0;2;4;36mhome_dir1
     [0m    [0m|__ 📁[;0;36mchild1
     [0m      [0m|__ [;0;35m.gitignore
     [0m    [0m|__ [;0mchild2

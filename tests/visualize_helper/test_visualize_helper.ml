@@ -19,7 +19,7 @@ let%expect_test "visualize" =
     [0m[0m|__ 📁[;0;36mhome
     [0m  [0m|__ 📁[;0;36mhome_dir1
     [0m    [0m|__ 📁[;0;36mchild1
-    [0m      [0m|__ [;0;4;35m.gitignore
+    [0m      [0m|__ [;0;2;4;35m.gitignore
     [0m      [0m|__ [;0mblah
     [0m    [0m|__ [;0mchild2
     [0m  [0m|__ 📁[;0;36mhome_dir2

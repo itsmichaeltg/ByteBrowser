@@ -2,7 +2,6 @@ open! Core
 open! Leaves
 open! Leaves.Cursor
 
-
 let write_path = "/home/ubuntu/jsip-final-project/bin/path.txt"
 
 let cursor_func =
@@ -34,6 +33,7 @@ type t =
   ; seen_summarizations : (string, string, String.comparator_witness) Map.t
   ; is_loading : bool
   ; loading_spinner : Sprite.t
+  ; fzf : Matrix.t
   }
 
 type dir =
@@ -170,6 +170,7 @@ let init
   ; seen_summarizations
   ; is_loading = false
   ; loading_spinner = Spinner.dot
+  ; fzf = Matrix.create ()
   }
 ;;
 
@@ -302,6 +303,26 @@ let get_updated_model_for_shortcut t ~key =
      | None -> t)
   | None -> t
 ;;
+
+let rec fzf_helper t parent ~key ~map =
+  if starts_with parent ~key then Matrix.add_exn t.fzf ~key:parent ~data:[];
+  let siblings = Matrix.find map parent in
+  match siblings with
+  | Some lst ->
+    let data = lst |> List.filter ~f:(fun i -> starts_with i ~key) in
+    (match data with [] -> () | _ -> Matrix.set t.fzf ~key:parent ~data);
+    List.iter lst ~f:(fun i -> fzf_helper t i ~key ~map)
+  | None -> ()
+;;
+
+let fzf t parent ~key =
+  match Matrix.length t.fzf with
+  | 0 -> fzf_helper t parent ~key ~map:t.choices
+  | _ -> fzf_helper t parent ~key ~map:t.fzf
+;;
+
+let get_origin t = t.origin
+let get_fzf t = t.fzf
 
 let handle_up_and_down t ~dir =
   let cursor = get_idx_by_dir t ~dir in

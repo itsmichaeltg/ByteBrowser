@@ -10,6 +10,7 @@ let create () = Hashtbl.create (module String)
 let is_directory t (value : string) = mem t value
 let hidden str = Char.equal (String.nget str 0) '.'
 let add_exn (t : t) ~key ~data = Hashtbl.add_exn t ~key ~data
+let length (t : t) = Hashtbl.length t
 
 let get_name path =
   match String.contains path '/' with
@@ -107,3 +108,6 @@ let rec get_limited_adjacency_matrix
           ~show_hidden
           ~sort)
 ;;
+
+let fold t ~f ~init = Hashtbl.fold t ~init ~f
+let to_list t = fold t ~init:[] ~f:(fun ~key:_ ~data acc -> acc @ data)
