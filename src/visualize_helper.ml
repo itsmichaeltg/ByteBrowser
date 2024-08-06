@@ -33,7 +33,7 @@ let is_hidden_file name = String.is_prefix name ~prefix:"."
 
 let normalize_string str ~depth ~is_dir =
   let max_rows =
-    match get_columns () with None -> 100 | Some size -> size - 5
+    match get_columns () with None -> 100 | Some size -> size - 10
   in
   let max = max_rows - String.length str - ((depth - 1) * 2) in
   let space_needed =
@@ -175,7 +175,7 @@ let apply_borders tree =
   List.fold bordered_tree ~init:"" ~f:(fun acc line -> acc ^ "\n" ^ line)
 ;;
 
-let apply_outer_styles tree = tree
+let apply_outer_styles tree = apply_borders tree
 
 let visualize
   (tree : Matrix.t)
