@@ -1,0 +1,90 @@
+{
+    "python": {
+        "extenstions": [
+            ".py"
+        ],
+        "color": [34]
+    },
+    "c++": {
+        "extenstions": [
+            ".cc",
+            ".cpp"
+        ],
+        "color": [35]
+    },
+    "c": {
+        "extenstions": [
+            ".c"
+        ],
+        "color": [38, 5, 105]
+    },
+    "ocaml": {
+        "extenstions": [
+            ".ml",
+            ".mli"
+        ],
+        "color": [33]
+    },
+    "javascript/typescript": {
+        "extenstions": [
+            ".js", ".ts"
+        ],
+        "color": [32]
+    },
+    "html": {
+        "extenstions": [
+            ".html"
+        ],
+        "color": [38, 5, 212]
+    },
+    "css": {
+        "extenstions": [
+            ".css", ".scss"
+        ],
+        "color": [36]
+    },
+    "images": {
+        "extenstions": [
+            ".png",
+            ".jpg",
+            ".jpeg"
+        ],
+        "color": [38, 5, 157]
+    },
+    "files": {
+        "extenstions": [
+            ".pdf",
+            ".doc",
+            ".docx",
+            ".docm",
+            ".pptx",
+            ".pptm",
+            ".potx",
+            ".txt",
+            ".md"
+        ],
+        "color": [38, 5, 124]
+    },
+    "spreadsheets": {
+        "extenstions": [
+            ".xls",
+            ".csv",
+            ".xlsx",
+            ".ods",
+            ".xltx"
+        ],
+        "color": [38, 5, 20]
+    },
+    "bash": {
+        "extenstions": [
+            ".sh"
+        ],
+        "color": [38, 5, 228]
+    },
+    "executables": {
+        "extenstions": [
+            ".exe"
+        ],
+        "color": [38, 5, 205]
+    }
+}
