@@ -1,21 +1,25 @@
 open! Core
 
 type t = (string, string list) Hashtbl.t [@@deriving sexp_of]
+type table =
+    { horizontal_depth : int
+    ; vertical_depth : int
+    }
+  [@@deriving sexp_of]
 
-type info_table =
-  { horizontal_depth : int
-  ; vertical_depth : int
-  }
-[@@deriving sexp_of]
+module Info = struct
+  type t = (string, table) Hashtbl.t [@@deriving sexp_of]
 
-type matrix_info = (string, info_table) Hashtbl.t [@@deriving sexp_of]
+  let create () = Hashtbl.create (module String)
+  let add_exn (t : t) ~key ~data = Hashtbl.add_exn t ~key ~data
+  let find (t : t) key = Hashtbl.find t key
+end
 
 let find (t : t) b = Hashtbl.find t b
 let find_exn (t : t) b = Hashtbl.find_exn t b
 let mem (t : t) a = Hashtbl.mem t a
 let set (t : t) ~key ~data = Hashtbl.set t ~key ~data
 let create () = Hashtbl.create (module String)
-let create_matrix_info () = Hashtbl.create (module String)
 let is_directory t (value : string) = mem t value
 let hidden str = Char.equal (String.nget str 0) '.'
 let add_exn (t : t) ~key ~data = Hashtbl.add_exn t ~key ~data
@@ -89,14 +93,14 @@ let rec get_adjacency_matrix t ~sort ~show_hidden ~origin ~max_depth =
       | _ -> get_adjacency_matrix t ~origin:i ~max_depth:0 ~show_hidden ~sort)
 ;;
 
-let rec add_matrix_info
+let rec fill_info_from_matrix
   t
-  ~(info_map : matrix_info)
+  ~(info_map : Info.t)
   ~current_path
   ~horizontal_depth
   ~vertical_depth
   =
-  Hashtbl.add_exn
+  Info.add_exn
     info_map
     ~key:current_path
     ~data:{ horizontal_depth; vertical_depth };
@@ -104,7 +108,7 @@ let rec add_matrix_info
   | None -> ()
   | Some children_paths ->
     List.iteri children_paths ~f:(fun idx child_path ->
-      add_matrix_info
+      fill_info_from_matrix
         t
         ~info_map
         ~current_path:child_path

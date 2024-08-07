@@ -1,10 +1,23 @@
 open! Core
 
 type t [@@deriving sexp_of]
-type matrix_info [@@deriving sexp_of]
+
+type table =
+  { horizontal_depth : int
+  ; vertical_depth : int
+  }
+[@@deriving sexp_of]
+
+module Info : sig
+  type t
+
+  val create : unit -> t
+  val add_exn : t -> key:string -> data:table -> unit
+  val find : t -> string -> table option
+end
+[@@deriving sexp_of]
 
 val create : unit -> t
-val create_matrix_info : unit -> matrix_info
 
 val get_adjacency_matrix
   :  t
@@ -19,9 +32,9 @@ val get_children : t -> string -> string list option
 val get_name : string -> string
 val get_extension_of_file : string -> string
 
-val add_matrix_info
+val fill_info_from_matrix
   :  t
-  -> info_map:matrix_info
+  -> info_map:Info.t
   -> current_path:string
   -> horizontal_depth:int
   -> vertical_depth:int

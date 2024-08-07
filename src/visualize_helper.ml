@@ -14,7 +14,7 @@ let is_hidden_file name = String.is_prefix name ~prefix:"."
 
 let normalize_string str ~depth ~is_dir =
   let max_rows =
-    match get_columns () with None -> 100 | Some size -> size - 12
+    match get_columns () with None -> 100 | Some size -> size - 20
   in
   let max = max_rows - String.length str - ((depth - 1) * 2) in
   let space_needed =
@@ -63,12 +63,39 @@ let get_styles tree ~(path_to_be_underlined : string) ~(parent : string) =
   styles
 ;;
 
+let get_relative_directions
+  ~path_to_be_underlined
+  ~parent
+  ~(matrix_info : Matrix.Info.t)
+  =
+  match String.equal path_to_be_underlined parent with
+  | true -> ""
+  | false ->
+    let table_opt1 = Matrix.Info.find matrix_info path_to_be_underlined in
+    let table_opt2 = Matrix.Info.find matrix_info parent in
+    (match table_opt1, table_opt2 with
+     | Some table1, Some table2 ->
+       let horizontal_diff =
+         Int.abs (table1.horizontal_depth - table2.horizontal_depth)
+       in
+       let vertical_diff =
+         Int.abs (table1.vertical_depth - table2.vertical_depth)
+       in
+       "\x1b[3m["
+       ^ Int.to_string horizontal_diff
+       ^ ","
+       ^ Int.to_string vertical_diff
+       ^ "] \x1b[23m"
+     | _ -> "")
+;;
+
 let get_formatted_tree_with_new_parent
   tree
   ~(path_to_be_underlined : string)
   ~(parent : string)
   ~(depth : int)
   ~(so_far : string)
+  ~(matrix_info : Matrix.Info.t)
   =
   so_far
   ^ "\n"
@@ -80,7 +107,11 @@ let get_formatted_tree_with_new_parent
          (get_styles tree ~path_to_be_underlined ~parent)
          ~apply_to:
            (normalize_string
-              (Matrix.get_name parent)
+              (get_relative_directions
+                 ~path_to_be_underlined
+                 ~parent
+                 ~matrix_info
+               ^ Matrix.get_name parent)
               ~depth
               ~is_dir:(is_directory tree parent)))
 ;;
@@ -91,6 +122,7 @@ let rec helper
   ~(depth : int)
   ~(parent : string)
   ~(path_to_be_underlined : string)
+  ~(matrix_info : Matrix.Info.t)
   : string
   =
   match Matrix.find tree parent with
@@ -101,6 +133,7 @@ let rec helper
       ~depth
       ~so_far
       ~path_to_be_underlined
+      ~matrix_info
   | Some current_children ->
     let init =
       get_formatted_tree_with_new_parent
@@ -109,6 +142,7 @@ let rec helper
         ~depth
         ~so_far
         ~path_to_be_underlined
+        ~matrix_info
     in
     List.fold current_children ~init ~f:(fun acc child ->
       helper
@@ -116,7 +150,8 @@ let rec helper
         tree
         ~depth:(depth + 1)
         ~parent:child
-        ~path_to_be_underlined)
+        ~path_to_be_underlined
+        ~matrix_info)
 ;;
 
 let apply_outer_styles tree = Styles.apply_borders tree
@@ -125,14 +160,15 @@ let visualize
   (tree : Matrix.t)
   ~(current_directory : string)
   ~(path_to_be_underlined : string)
+  ~(matrix_info : Matrix.Info.t)
   : string
   =
   let tree =
     helper
       tree
+      ~matrix_info
       ~depth:1
-      ~so_far:
-        ("\x1b[48;5;17m" ^ normalize_string "." ~depth:(-1) ~is_dir:false)
+      ~so_far:("\x1b[48;5;17m" ^ normalize_string ".." ~depth:3 ~is_dir:false)
       ~parent:current_directory
       ~path_to_be_underlined
   in
@@ -141,14 +177,9 @@ let visualize
 
 (* apply_outer_styles tree ^ "\n\x1b[0m" *)
 
-let print_dir (t : Matrix.t) ~origin =
-  visualize t ~current_directory:origin ~path_to_be_underlined:""
-;;
+(* let print_dir (t : Matrix.t) ~origin = visualize t
+   ~current_directory:origin ~path_to_be_underlined:"" ;;
 
-let matrix_visualize ~max_depth ~origin ~show_hidden ~sort =
-  let matrix =
-    Matrix.create ()
-    |> Matrix.get_adjacency_matrix ~origin ~max_depth ~show_hidden ~sort
-  in
-  print_dir ~origin matrix |> print_endline
-;;
+   let matrix_visualize ~max_depth ~origin ~show_hidden ~sort = let matrix =
+   Matrix.create () |> Matrix.get_adjacency_matrix ~origin ~max_depth
+   ~show_hidden ~sort in print_dir ~origin matrix |> print_endline ;; *)

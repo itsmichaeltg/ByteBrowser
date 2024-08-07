@@ -12,6 +12,7 @@ let%expect_test "visualize" =
       mat
       ~current_directory:"/home"
       ~path_to_be_underlined:"/home/home_dir1/child1/.gitignore"
+    ~matrix_info:(Matrix.Info.create ())
   in
   print_endline res;
   (* [%expect {|

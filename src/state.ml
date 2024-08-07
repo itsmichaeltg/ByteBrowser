@@ -17,7 +17,7 @@ let cursor_func =
 
 type t =
   { choices : Matrix.t
-  ; matrix_info : Matrix.matrix_info
+  ; matrix_info : Matrix.Info.t
   ; current_path : string
   ; origin : string
   ; parent : string
@@ -82,6 +82,7 @@ let get_is_writing t = t.is_writing
 let get_preview t = t.preview
 let get_model_after_writing t = { t with is_writing = false }
 let get_model_with_new_text t new_text = { t with text = new_text }
+let get_matrix_info t = t.matrix_info
 
 let get_updated_model_for_summarize t =
   match String.is_empty t.summarization with
