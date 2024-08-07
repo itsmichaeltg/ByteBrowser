@@ -10,6 +10,16 @@ let rec mini ?(tmp = Int.max_value) lst =
     else mini (List.tl_exn lst) ~tmp)
 ;;
 
+let rec maxi ?(tmp = Int.min_value) lst =
+  if List.is_empty lst
+  then tmp
+  else (
+    let curr_num = List.hd_exn lst in
+    if curr_num > tmp
+    then maxi (List.tl_exn lst) ~tmp:curr_num
+    else maxi (List.tl_exn lst) ~tmp)
+;;
+
 let indicator a b = if Char.equal a b then 0 else 1
 
 let osa_distance string_1 string_2 =
@@ -92,12 +102,98 @@ let%expect_test "dl" =
   [%expect {|2|}]
 ;;
 
-let fuzzy_find lst str = 
-  List.filter lst ~f:(fun i -> dl_distance i str < 4);
+let gap_penalty n = 2 * n
+let s a b = if Char.equal a b then 3 else -3
+
+let find_max_idx matrix =
+  let (x, y), _ =
+    Array.foldi
+      matrix
+      ~init:((0, 0), matrix.(0).(0))
+      ~f:(fun i ((max_x, max_y), max_elem) row ->
+        Array.foldi
+          row
+          ~init:((max_x, max_y), max_elem)
+          ~f:(fun j ((max_x, max_y), max_elem) elem ->
+            if max_elem < elem
+            then (i, j), elem
+            else (max_x, max_y), max_elem))
+  in
+  x, y
 ;;
 
-let%expect_test "dl" =
-  let i = fuzzy_find ["CA"; "ABC"; "CBA"; "FGHIK"] "ABC" in
-  print_s [%sexp (i : string list)];
-  [%expect {| (CA ABC CBA) |}]
+let get_neighbor_idx matrix ~x ~y =
+  [ x - 1, y - 1; x, y - 1; x - 1, y ]
+  |> List.filter ~f:(fun (x, y) -> x >= 0 && y >= 0)
+;;
+
+let zeros matrix ~x ~y =
+  get_neighbor_idx matrix ~x ~y
+  |> List.fold ~init:false ~f:(fun acc (i, j) ->
+    if acc then acc else matrix.(i).(j) = 0)
+;;
+
+let find_max_neighbor_idx matrix ~x ~y =
+  let _, coord =
+    get_neighbor_idx matrix ~x ~y
+    |> List.fold
+         ~init:(Int.min_value, (0, 0))
+         ~f:(fun (max_val, (max_x, max_y)) (i, j) ->
+           if max_val < matrix.(i).(j)
+           then matrix.(i).(j), (i, j)
+           else max_val, (max_x, max_y))
+  in
+  coord
+;;
+
+let rec traceback ?(acc = []) coord ~matrix =
+  let x, y = coord in
+  if zeros matrix ~x ~y
+  then (x, y) :: acc
+  else (
+    let x1, y1 = find_max_neighbor_idx matrix ~x ~y in
+    traceback ~acc:((x, y) :: acc) ~matrix (x1, y1))
+;;
+
+let sw_algo string_1 string_2 =
+  let n, m = String.length string_1, String.length string_2 in
+  let scoring_matrix = Array.make_matrix ~dimx:(n + 1) ~dimy:(m + 1) 0 in
+  String.iteri string_1 ~f:(fun i ai ->
+    let i = i + 1 in
+    String.iteri string_2 ~f:(fun j bj ->
+      let j = j + 1 in
+      scoring_matrix.(i).(j)
+      <- maxi
+           [ 0
+           ; scoring_matrix.(i - 1).(j - 1) + s ai bj
+           ; (if i > 0
+              then
+                maxi
+                  (List.init i ~f:(fun p ->
+                     scoring_matrix.(i - p).(j) - gap_penalty p))
+              else 0)
+           ; (if j > 0
+              then
+                maxi
+                  (List.init j ~f:(fun q ->
+                     scoring_matrix.(i).(j - q) - gap_penalty q))
+              else 0)
+           ]));
+  let alignmnet =
+    find_max_idx scoring_matrix |> traceback ~matrix:scoring_matrix
+  in
+  List.filter alignmnet ~f:(fun (i, j) ->
+    Char.equal (String.get string_1 (i - 1)) (String.get string_2 (j - 1)))
+;;
+
+let%expect_test "sw" =
+  let i = sw_algo "home_dir" "emoh" in
+  print_s [%sexp (i : (int * int) list)];
+  [%expect {| ((1 4)) |}]
+;;
+
+let fuzzy_find ?(distance = 1) str_1 str_2 =
+  let str_1, str_2 = String.lowercase str_1, String.lowercase str_2 in
+  let len = List.length (sw_algo str_1 str_2) in 
+  len >= String.length str_2
 ;;

@@ -31,4 +31,6 @@ val mem : t -> string -> bool
 val set : t -> key:string -> data:string list -> unit
 val add_exn : t -> key:string -> data:string list -> unit
 val length : t -> int
+val of_list : ?origin:string -> string list -> t
 val to_list : t -> string list
+val filter : ?origin:string -> t -> search:string -> t

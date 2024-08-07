@@ -18,6 +18,15 @@ let get_name path =
   | true -> List.last_exn (String.split path ~on:'/')
 ;;
 
+let remove_last_path current_path =
+  let str_lst = String.split current_path ~on:'/' in
+  List.foldi str_lst ~init:[] ~f:(fun idx new_lst elem ->
+    match idx = List.length str_lst - 1 with
+    | true -> new_lst
+    | false -> new_lst @ [ elem ])
+  |> String.concat ~sep:"/"
+;;
+
 let is_directory t (value : string) = mem t value
 let get_children t path = find t path
 
@@ -110,4 +119,49 @@ let rec get_limited_adjacency_matrix
 ;;
 
 let fold t ~f ~init = Hashtbl.fold t ~init ~f
-let to_list t = fold t ~init:[] ~f:(fun ~key:_ ~data acc -> acc @ data)
+
+let to_list t =
+  fold
+    t
+    ~init:(Set.empty (module String))
+    ~f:(fun ~key ~data acc ->
+      Set.union (String.Set.of_list data) (Set.add acc key))
+  |> Set.to_list
+;;
+
+let add_to_matrix map ~parent ~child =
+  let data = match find map parent with Some lst -> lst | None -> [] in
+  if List.exists data ~f:(fun i -> String.equal i child) |> not
+  then set map ~key:parent ~data:(child :: data);
+  match Sys_unix.is_directory child with
+  | `Yes ->
+    let child_data =
+      match find map child with Some lst -> lst | None -> []
+    in
+    set map ~key:parent ~data:child_data
+  | _ -> ()
+;;
+
+let rec add_parent_path ?(origin = "") map ~path =
+  let parent = remove_last_path path in
+  if String.equal origin parent || String.equal parent "/"
+  then add_to_matrix map ~parent ~child:path
+  else (
+    add_to_matrix map ~parent ~child:path;
+    add_parent_path map ~origin ~path:parent)
+;;
+
+let of_list ?origin lst =
+  let map = create () in
+  List.iter lst ~f:(fun path -> add_parent_path map ?origin ~path);
+  map
+;;
+
+let filter ?origin t ~search =
+  let t =
+    to_list t
+    |> List.filter ~f:(fun str -> Fuzzy.fuzzy_find (get_name str) search)
+  in
+  print_s [%sexp (t : string list)];
+  t |> of_list ?origin
+;;

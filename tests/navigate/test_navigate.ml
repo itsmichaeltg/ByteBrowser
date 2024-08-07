@@ -254,3 +254,19 @@ let%expect_test "navigate-down" =
     [0m  [0m|__ 📁[;0;36mhome_dir2
     |}]
 ;;
+
+let%expect_test "fuzzy" =
+  let mat = get_tree () in
+  print_endline
+    (Visualize_helper.visualize
+       mat
+       ~current_directory:"/home"
+       ~path_to_be_underlined:"/home/home_dir1");
+  let mat = mat |> Matrix.filter ~search:"home" in
+  print_endline
+    (Visualize_helper.visualize
+       mat
+       ~current_directory:"/home"
+       ~path_to_be_underlined:"/home/home_dir1");
+  [%expect {||}]
+;;
