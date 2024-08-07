@@ -15,6 +15,7 @@ if __name__ == "__main__":
         path_to_read_for_query_info, "r"
     )
     info, prompt = info_file.read(), prompt_file.read()
+    info_file.close(), prompt_file.close()
     completion = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
