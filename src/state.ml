@@ -233,7 +233,7 @@ let get_updated_model_for_move t =
       ~data:
         (Matrix.find_exn t.choices t.current_path
          @ [ String.concat
-               [ t.current_path; "/"; Visualize_helper.get_name t.move_from ]
+               [ t.current_path; "/"; Matrix.get_name t.move_from ]
            ]);
     let _ =
       Format.sprintf {|mv %s %s|} t.move_from t.current_path
@@ -261,7 +261,7 @@ let get_idx t ~parent ~current_path =
 
 let starts_with str ~key =
   String.equal
-    (String.get (Visualize_helper.get_name str) 0 |> String.of_char)
+    (String.get (Matrix.get_name str) 0 |> String.of_char)
     key
 ;;
 
@@ -272,7 +272,7 @@ let get_first_str t ~key =
        ~finish:(fun str -> str)
        ~f:(fun str i ->
          if String.equal
-              (String.get (Visualize_helper.get_name i) 0 |> String.of_char)
+              (String.get (Matrix.get_name i) 0 |> String.of_char)
               key
          then Stop (Some i)
          else Continue None)

@@ -24,21 +24,6 @@ let normalize_string str ~depth ~is_dir =
   str ^ space_needed
 ;;
 
-let get_name path =
-  match String.contains path '/' with
-  | false -> path
-  | true -> List.last_exn (String.split path ~on:'/')
-;;
-
-let%expect_test "get_name" =
-  print_endline (get_name "/home/ubuntu/jsip-final-project");
-  print_endline (get_name "dune-project");
-  [%expect {|
-  jsip-final-project
-  dune-project
-  |}]
-;;
-
 let get_color_for_file path : string list =
   let extension = Matrix.get_extension_of_file path in
   let file_extension_to_color_json =
@@ -69,7 +54,7 @@ let get_styles tree ~(path_to_be_underlined : string) ~(parent : string) =
    | true ->
      styles.styles <- List.append styles.styles [ "38"; "5"; "49"; "1" ]
    | false ->
-     (match is_hidden_file (get_name parent) with
+     (match is_hidden_file (Matrix.get_name parent) with
       | true ->
         styles.styles <- List.append styles.styles [ "38"; "5"; "40"; "1" ]
       | false ->
@@ -95,7 +80,7 @@ let get_formatted_tree_with_new_parent
          (get_styles tree ~path_to_be_underlined ~parent)
          ~apply_to:
            (normalize_string
-              (get_name parent)
+              (Matrix.get_name parent)
               ~depth
               ~is_dir:(is_directory tree parent)))
 ;;

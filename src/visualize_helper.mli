@@ -12,5 +12,3 @@ val matrix_visualize
   -> show_hidden:bool
   -> sort:bool
   -> unit
-
-val get_name : string -> string
