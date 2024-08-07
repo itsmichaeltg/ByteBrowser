@@ -21,10 +21,11 @@ if __name__ == "__main__":
     except:
         lexer = OcamlLexer()
     file_to_write_to = open(path_to_write_to, "w")
+    style = "one-dark" if file_path_contents == "" else "staroffice"
     highlight(
         code_file_contents,
         lexer,
-        Terminal256Formatter(style="staroffice"),
+        Terminal256Formatter(style=style),
         file_to_write_to,
     )
     file_to_write_to.close()
