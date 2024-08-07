@@ -57,4 +57,5 @@ val init
   -> query_chat:string
   -> start_chatting:bool
   -> seen_summarizations:(string, string, String.comparator_witness) Map.t
+  -> matrix_info:Matrix.matrix_info
   -> t

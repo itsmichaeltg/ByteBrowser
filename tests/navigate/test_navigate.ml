@@ -52,6 +52,7 @@ let get_init_model ~choices ~current_path ~cursor =
     ~query_chat:""
     ~start_chatting:false
     ~seen_summarizations:(Map.empty (module String))
+    ~matrix_info:(Matrix.create_matrix_info ())
 ;;
 
 let%expect_test "navigate-left" =
@@ -100,10 +101,7 @@ let%expect_test "navigate-right" =
        ~current_directory:"/home"
        ~path_to_be_underlined:"/home/home_dir1");
   let model =
-    get_init_model
-      ~choices:mat
-      ~current_path:"/home/home_dir1"
-      ~cursor:0
+    get_init_model ~choices:mat ~current_path:"/home/home_dir1" ~cursor:0
   in
   let new_model = State.get_updated_model model ~action:(Cursor Right) in
   print_endline
@@ -168,10 +166,7 @@ let%expect_test "navigate-up" =
        ~current_directory:"/home"
        ~path_to_be_underlined:"/home/home_dir2");
   let model =
-    get_init_model
-      ~choices:mat
-      ~current_path:"/home/home_dir2"
-      ~cursor:1
+    get_init_model ~choices:mat ~current_path:"/home/home_dir2" ~cursor:1
   in
   let new_model = State.get_updated_model model ~action:(Cursor Up) in
   print_endline
@@ -219,10 +214,7 @@ let%expect_test "navigate-down" =
        ~current_directory:"/home"
        ~path_to_be_underlined:"/home/home_dir1");
   let model =
-    get_init_model
-      ~choices:mat
-      ~current_path:"/home/home_dir1"
-      ~cursor:0
+    get_init_model ~choices:mat ~current_path:"/home/home_dir1" ~cursor:0
   in
   let new_model = State.get_updated_model model ~action:(Cursor Down) in
   print_endline

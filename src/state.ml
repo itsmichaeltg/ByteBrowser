@@ -17,6 +17,7 @@ let cursor_func =
 
 type t =
   { choices : Matrix.t
+  ; matrix_info : Matrix.matrix_info
   ; current_path : string
   ; origin : string
   ; parent : string
@@ -151,6 +152,7 @@ let init
   ~query_chat
   ~start_chatting
   ~seen_summarizations
+  ~matrix_info
   =
   { choices
   ; current_path
@@ -169,6 +171,7 @@ let init
   ; seen_summarizations
   ; is_loading = false
   ; loading_spinner = Spinner.dot
+  ; matrix_info
   }
 ;;
 
@@ -191,7 +194,8 @@ let get_updated_model_for_preview t =
   match t.preview with
   | "" ->
     { t with
-      preview = Preview.preview_with_styles t.current_path ~num_lines:Int.max_value
+      preview =
+        Preview.preview_with_styles t.current_path ~num_lines:Int.max_value
     }
   | _ -> { t with preview = "" }
 ;;
