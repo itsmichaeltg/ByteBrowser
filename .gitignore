@@ -7,3 +7,5 @@ bin/query_answer.txt
 bin/query_prompt.txt
 bin/query_info.txt
 bin/files.txt
+bin/code_to_be_highlighted.txt
+bin/highlighted_code.txt
