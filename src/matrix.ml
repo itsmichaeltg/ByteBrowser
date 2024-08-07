@@ -158,10 +158,7 @@ let of_list ?origin lst =
 ;;
 
 let filter ?origin t ~search =
-  let t =
-    to_list t
-    |> List.filter ~f:(fun str -> Fuzzy.fuzzy_find (get_name str) search)
-  in
-  print_s [%sexp (t : string list)];
-  t |> of_list ?origin
+  to_list t
+  |> List.filter ~f:(fun str -> Fuzzy.fuzzy_find (get_name str) search)
+  |> of_list ?origin
 ;;
