@@ -41,7 +41,7 @@ let osa_distance string_1 string_2 =
 let%expect_test "osa" =
   let i = osa_distance "CA" "ABC" in
   print_s [%sexp (i : int)];
-  [%expect {|1|}]
+  [%expect {|3|}]
 ;;
 
 let dl_distance string_1 string_2 =
@@ -61,34 +61,43 @@ let dl_distance string_1 string_2 =
     d.(1).(j + 1) <- j);
   d.(0).(strlen_2 + 1) <- maxdist;
   d.(1).(strlen_2 + 1) <- strlen_2;
-  String.iteri string_1 ~f:(fun i _ ->
+  String.iteri string_1 ~f:(fun i ai ->
+    let i = i + 1 in
     let db = ref 0 in
-    String.iteri string_2 ~f:(fun j _ ->
-      let key = String.get string_2 j in
+    String.iteri string_2 ~f:(fun j bj ->
+      let j = j + 1 in
       let k =
-        match Hashtbl.find da key with
-        | Some v -> v
+        match Hashtbl.find da bj with
+        | Some idx -> idx + 1
         | None ->
-          Hashtbl.set da ~key ~data:(-1);
-          -1
+          Hashtbl.set da ~key:bj ~data:(-1);
+          0
       in
       let l = db in
-      if Char.equal (String.get string_1 i) (String.get string_2 j)
-      then db := j;
+      if Char.equal ai bj then db := j;
       d.(i + 1).(j + 1)
       <- mini
            [ d.(i).(j + 1) + 1
            ; d.(i + 1).(j) + 1
-           ; d.(i + 1).(j + 1)
-             + indicator (String.get string_1 i) (String.get string_2 j)
-           ; d.(k - 1).(!l - 1) + (i - k + 1) + 1 + (j - !l)
+           ; d.(i).(j) + indicator ai bj
+           ; d.(k).(!l) + (i - k - 1) + 1 + (j - !l - 1)
            ]);
-    Hashtbl.set da ~key:(String.get string_1 i) ~data:i);
-  d.(String.length string_1).(String.length string_2)
+    Hashtbl.set da ~key:ai ~data:(i - 1));
+  d.(String.length string_1 + 1).(String.length string_2 + 1)
 ;;
 
 let%expect_test "dl" =
   let i = dl_distance "CA" "ABC" in
   print_s [%sexp (i : int)];
-  [%expect {|1|}]
+  [%expect {|2|}]
+;;
+
+let fuzzy_find lst str = 
+  List.filter lst ~f:(fun i -> dl_distance i str < 4);
+;;
+
+let%expect_test "dl" =
+  let i = fuzzy_find ["CA"; "ABC"; "CBA"; "FGHIK"] "ABC" in
+  print_s [%sexp (i : string list)];
+  [%expect {| (CA ABC CBA) |}]
 ;;
