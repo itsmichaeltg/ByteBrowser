@@ -191,7 +191,7 @@ let get_updated_model_for_preview t =
   match t.preview with
   | "" ->
     { t with
-      preview = Preview.preview t.current_path ~num_lines:Int.max_value
+      preview = Preview.preview_with_styles t.current_path ~num_lines:Int.max_value
     }
   | _ -> { t with preview = "" }
 ;;

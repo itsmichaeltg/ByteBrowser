@@ -4,7 +4,7 @@ open! File_manager_lib
 let%expect_test "preview" =
   let file = "/home/ubuntu/jsip-final-project/bin/main.ml" in
   let num_lines = 100 in
-  print_endline (Preview.preview file ~num_lines);
+  print_endline (Preview.preview_with_styles file ~num_lines);
   [%expect {|
     [0m>>  [0;22;3;4;48;5;23;38;5;118mviewing main.ml                                                                                     [0m  <<
     [0m>>  [38;5;15m                                                                                                    [39m[0m  <<

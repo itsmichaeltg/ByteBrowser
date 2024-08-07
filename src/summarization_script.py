@@ -12,7 +12,7 @@ if __name__ == "__main__":
     client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
     file = open(path_to_read_from, "r")
     file_contents = file.read()
-    file_contents.close()
+    file.close()
     completion = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[

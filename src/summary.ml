@@ -27,7 +27,7 @@ let generate (tree : Matrix.t) (origin : string) =
       ^ Printf.sprintf "File name: %s" (Matrix.get_name path)
       ^ Printf.sprintf
           "Contents of file: %s"
-          (Preview.preview path ~num_lines:Int.max_value))
+          (Preview.preview_without_styles path ~num_lines:Int.max_value))
   in
   Out_channel.write_all path_to_write_to ~data:"";
   Out_channel.write_all path_to_write_to ~data:contents_of_paths;

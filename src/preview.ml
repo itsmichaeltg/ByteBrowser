@@ -53,9 +53,14 @@ let apply_outer_styles path ~content =
 
 let concat_lines lines = String.concat lines ~sep:"\n"
 
-let preview path ~num_lines =
+let preview_with_styles path ~num_lines =
   let lines = get_lines path ~num_lines in
   let formatted_lines = apply_syntax_highlight lines path in
   let concatted_lines = concat_lines formatted_lines in
   apply_outer_styles path ~content:concatted_lines
 ;;
+
+let preview_without_styles path ~num_lines =
+  let lst = List.append [ "" ] (In_channel.read_lines path) in
+  List.slice lst 0 (min num_lines (List.length lst))
+  |> String.concat ~sep:"\n"
