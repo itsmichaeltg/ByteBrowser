@@ -266,7 +266,6 @@ let%expect_test "navigate-down" =
     [0m    [0m|__ [;0mchild2
     [0m  [0m|__ 📁[;0;36mhome_dir2
     |}]
-<<<<<<< HEAD
 ;;
 
 let%expect_test "fuzzy" =
@@ -284,6 +283,4 @@ let%expect_test "fuzzy" =
        ~path_to_be_underlined:"/home/home_dir1");
   [%expect {||}]
 ;;
-=======
-;; *)
->>>>>>> 20b2a3078370b96e8c8bde901e07696ebbaa6094
+*)

@@ -23,10 +23,15 @@ type action =
   | Reset
   | Reduce_tree
   | Collapse
+  | Update_box_dimension of string
+  | Toggle_show_relative_dirs
+  | Toggle_show_hidden_files
 
 val get_updated_model : t -> action:action -> t
 val remove_last_path : string -> string
 val get_preview : t -> string
+val get_show_relative_dirs : t -> bool
+val get_show_hidden_files : t -> bool
 val get_tree : t -> Matrix.t
 val get_show_reduced_tree : t -> bool
 val get_paths_to_collapse : t -> (string, String.comparator_witness) Set.t
@@ -37,6 +42,7 @@ val get_parent : t -> string
 val get_origin : t -> string
 val get_is_loading : t -> bool
 val get_summarization : t -> string
+val get_box_dimension : t -> int
 val get_is_moving : t -> bool
 val get_query_chat : t -> string
 val get_start_chatting : t -> bool

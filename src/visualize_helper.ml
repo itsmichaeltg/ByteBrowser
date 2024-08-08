@@ -65,10 +65,11 @@ let get_styles tree ~(path_to_be_underlined : string) ~(parent : string) =
 
 let get_relative_directions
   ~path_to_be_underlined
+  ~show_relative_dirs
   ~parent
   ~(matrix_info : Matrix.Info.t)
   =
-  match String.equal path_to_be_underlined parent with
+  match String.equal path_to_be_underlined parent || not show_relative_dirs with
   | true -> ""
   | false ->
     let table_opt1 = Matrix.Info.find matrix_info path_to_be_underlined in
@@ -94,6 +95,7 @@ let get_formatted_tree_with_new_parent
   ~(path_to_be_underlined : string)
   ~(parent : string)
   ~(depth : int)
+  ~(show_relative_dirs : bool)
   ~(so_far : string)
   ~(matrix_info : Matrix.Info.t)
   =
@@ -111,6 +113,7 @@ let get_formatted_tree_with_new_parent
                  ~path_to_be_underlined
                  ~parent
                  ~matrix_info
+                 ~show_relative_dirs
                ^ Matrix.get_name parent)
               ~depth
               ~is_dir:(is_directory tree parent)))
@@ -121,12 +124,12 @@ let can_show_parent
   ~path_to_be_underlined
   ~show_reduced_tree
   ~(matrix_info : Matrix.Info.t)
+  ~(box_dimension : int)
+  ~(show_hidden_files : bool)
   ~depth
   =
-  let vertical_threshold = 8 in
-  let horizontal_threshold = 8 in
   match show_reduced_tree with
-  | false -> true
+  | false -> not (is_hidden_file parent && (not show_hidden_files))
   | true ->
     let parent_table = Matrix.Info.find matrix_info parent in
     let user_location_table =
@@ -135,9 +138,9 @@ let can_show_parent
     (match parent_table, user_location_table with
      | Some table1, Some table2 ->
        Int.abs (table1.abs_vertical_loc - table2.abs_vertical_loc)
-       <= vertical_threshold
+       <= box_dimension
        && Int.abs (table1.horizontal_depth - table2.horizontal_depth)
-          <= horizontal_threshold
+          <= box_dimension
      | _ -> true)
 ;;
 
@@ -150,6 +153,9 @@ let rec helper
   ~(matrix_info : Matrix.Info.t)
   ~(show_reduced_tree : bool)
   ~(paths_to_collapse : (string, String.comparator_witness) Set.t)
+  ~(box_dimension : int)
+  ~(show_relative_dirs : bool)
+  ~(show_hidden_files : bool)
   : string
   =
   match
@@ -158,6 +164,8 @@ let rec helper
       ~path_to_be_underlined
       ~show_reduced_tree
       ~matrix_info
+      ~box_dimension
+      ~show_hidden_files
       ~depth
   with
   | false -> so_far
@@ -170,6 +178,7 @@ let rec helper
          ~depth
          ~so_far
          ~path_to_be_underlined
+         ~show_relative_dirs
          ~matrix_info
      | Some current_children ->
        (match Set.mem paths_to_collapse parent with
@@ -180,6 +189,7 @@ let rec helper
             ~depth
             ~so_far
             ~path_to_be_underlined
+            ~show_relative_dirs
             ~matrix_info
         | false ->
           let init =
@@ -189,6 +199,7 @@ let rec helper
               ~depth
               ~so_far
               ~path_to_be_underlined
+              ~show_relative_dirs
               ~matrix_info
           in
           List.fold current_children ~init ~f:(fun acc child ->
@@ -200,7 +211,10 @@ let rec helper
               ~path_to_be_underlined
               ~matrix_info
               ~show_reduced_tree
-              ~paths_to_collapse)))
+              ~paths_to_collapse
+              ~box_dimension
+              ~show_relative_dirs
+              ~show_hidden_files)))
 ;;
 
 let apply_outer_styles tree = Styles.apply_borders tree
@@ -212,6 +226,9 @@ let visualize
   ~(matrix_info : Matrix.Info.t)
   ~(show_reduced_tree : bool)
   ~(paths_to_collapse : (string, String.comparator_witness) Set.t)
+  ~(show_relative_dirs : bool)
+  ~(box_dimension : int)
+  ~(show_hidden_files : bool)
   : string
   =
   let tree =
@@ -227,6 +244,9 @@ let visualize
       ~path_to_be_underlined
       ~show_reduced_tree
       ~paths_to_collapse
+      ~box_dimension
+      ~show_relative_dirs
+      ~show_hidden_files
   in
   apply_outer_styles tree ^ "\n\x1b[0m"
 ;;

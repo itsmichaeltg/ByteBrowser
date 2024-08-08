@@ -7,6 +7,9 @@ val visualize
   -> matrix_info:Matrix.Info.t
   -> show_reduced_tree:bool
   -> paths_to_collapse : (string, String.comparator_witness) Set.t
+  -> show_relative_dirs : bool
+  -> box_dimension : int
+  -> show_hidden_files : bool
   -> string
 
 (* val matrix_visualize

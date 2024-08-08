@@ -36,6 +36,9 @@ type t =
   ; loading_spinner : Sprite.t
   ; fzf : Matrix.t
   ; paths_to_collapse : (string, String.comparator_witness) Set.t
+  ; box_dimention : int
+  ; show_relative_dirs : bool
+  ; show_hidden_files : bool
   }
 
 type dir =
@@ -58,6 +61,9 @@ type action =
   | Reset
   | Reduce_tree
   | Collapse
+  | Update_box_dimension of string
+  | Toggle_show_relative_dirs
+  | Toggle_show_hidden_files
 
 let blank_text =
   Leaves.Text_input.make
@@ -81,6 +87,9 @@ let get_is_moving t = t.is_moving
 let get_tree t = t.choices
 let get_is_loading t = t.is_loading
 let get_current_path t = t.current_path
+let get_box_dimension t = t.box_dimention
+let get_show_relative_dirs t = t.show_relative_dirs
+let get_show_hidden_files t = t.show_hidden_files
 let get_text t = t.text
 let get_parent t = t.parent
 let get_is_writing t = t.is_writing
@@ -89,6 +98,14 @@ let get_model_after_writing t = { t with is_writing = false }
 let get_model_with_new_text t new_text = { t with text = new_text }
 let get_matrix_info t = t.matrix_info
 let get_paths_to_collapse t = t.paths_to_collapse
+
+let get_updated_model_for_toggle_show_relative_dirs t =
+  { t with show_relative_dirs = not t.show_relative_dirs }
+;;
+
+let get_updated_model_for_toggle_show_hidden_files t =
+  { t with show_hidden_files = not t.show_hidden_files }
+;;
 
 let get_updated_model_for_summarize t =
   match String.is_empty t.summarization with
@@ -181,6 +198,9 @@ let init
   ; fzf = Matrix.create ()
   ; matrix_info
   ; paths_to_collapse = Set.empty (module String)
+  ; box_dimention = 5
+  ; show_relative_dirs = false
+  ; show_hidden_files = false
   }
 ;;
 
@@ -398,6 +418,25 @@ let get_updated_model_for_reduce_tree t =
 
 let get_updated_model_for_collapse t =
   { t with paths_to_collapse = Set.add t.paths_to_collapse t.current_path }
+;;
+
+let number_to_int number =
+  match number with
+  | "1" -> 1
+  | "2" -> 2
+  | "3" -> 3
+  | "4" -> 4
+  | "5" -> 5
+  | "6" -> 6
+  | "7" -> 7
+  | "8" -> 8
+  | "9" -> 9
+  | _ -> 5
+;;
+
+let get_updated_model_for_updating_box_dimensions t ~number =
+  { t with box_dimention = number_to_int number }
+;;
 
 let get_updated_model t ~(action : action) =
   match action with
@@ -414,5 +453,9 @@ let get_updated_model t ~(action : action) =
   | Reset -> get_updated_model_for_reset t
   | Reduce_tree -> get_updated_model_for_reduce_tree t
   | Collapse -> get_updated_model_for_collapse t
+  | Update_box_dimension number ->
+    get_updated_model_for_updating_box_dimensions t ~number
+  | Toggle_show_relative_dirs ->
+    get_updated_model_for_toggle_show_relative_dirs t
+  | Toggle_show_hidden_files -> get_updated_model_for_toggle_show_hidden_files t
 ;;
-

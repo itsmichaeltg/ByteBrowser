@@ -71,7 +71,6 @@ let%expect_test "get limited children to tree" =
        ~path_to_be_underlined:origin
        ~matrix_info:(Matrix.Info.create ()));
   [%expect
-<<<<<<< HEAD
     " 
  .
  \027[0m\027[0m|__ \240\159\147\129\027[;0;2;4;36mjsip-final-project
@@ -92,25 +91,4 @@ let%expect_test "get limited children to tree" =
  \027[0m      \027[0m|__ \027[;0mtest_query.ml
  "]
 ;;
-=======
-    " \n\
-    \ .\n\
-    \ \027[0m\027[0m|__ \240\159\147\129\027[;0;4;36mjsip-final-project\n\
-    \ \027[0m  \027[0m|__ \240\159\147\129\027[;0;36msrc\n\
-    \ \027[0m    \027[0m|__ \027[;0mpreview.ml\n\
-    \ \027[0m    \027[0m|__ \027[;0mvisualize_helper.mli\n\
-    \ \027[0m    \027[0m|__ \027[;0msummary.mli\n\
-    \ \027[0m  \027[0m|__ \240\159\147\129\027[;0;36mtests\n\
-    \ \027[0m    \027[0m|__ \240\159\147\129\027[;0;36mvisualize_helper\n\
-    \ \027[0m      \027[0m|__ \027[;0mtest_visualize_helper.ml\n\
-    \ \027[0m      \027[0m|__ \027[;0mdune\n\
-    \ \027[0m    \027[0m|__ \240\159\147\129\027[;0;36mpreview\n\
-    \ \027[0m      \027[0m|__ \027[;0mdune\n\
-    \ \027[0m      \027[0m|__ \027[;0mtest_preview.ml\n\
-    \ \027[0m    \027[0m|__ \240\159\147\129\027[;0;36mnavigate\n\
-    \ \027[0m      \027[0m|__ \027[;0mtest_navigate.ml\n\
-    \ \027[0m      \027[0m|__ \027[;0mdune\n\
-    \ \027[0m  \027[0m|__ \027[;0mREADME.md\n\
-    \ "]
-;; *)
->>>>>>> 20b2a3078370b96e8c8bde901e07696ebbaa6094
+*)

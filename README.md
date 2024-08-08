@@ -16,3 +16,5 @@ $ bb [path] [max-depth] [show-hidden] [sort-by-time]
 ```
 ## Demo
 [![asciicast](https://asciinema.org/a/H3m9Js4fkjJ4sHqlL37RVKhRq.svg)](https://asciinema.org/a/H3m9Js4fkjJ4sHqlL37RVKhRq) 
+
+## Features: 

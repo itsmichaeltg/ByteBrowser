@@ -78,11 +78,36 @@ let update event (model : State.t) =
     | Event.KeyDown (Down, _modifier)
     | Event.KeyDown (Right, _modifier)
     | Event.KeyDown (Up, _modifier) ->
-      print_endline "here";
       move_arround event model
-    | Event.KeyDown (Enter, _modifier) ->
-      let model = State.get_updated_model model ~action:Cd in
-      model, exit 0
+    | Event.KeyDown (Key "1", _modifier) ->
+      ( State.get_updated_model model ~action:(Update_box_dimension "1")
+      , Command.Noop )
+    | Event.KeyDown (Key "2", _modifier) ->
+      ( State.get_updated_model model ~action:(Update_box_dimension "2")
+      , Command.Noop )
+    | Event.KeyDown (Key "3", _modifier) ->
+      ( State.get_updated_model model ~action:(Update_box_dimension "3")
+      , Command.Noop )
+    | Event.KeyDown (Key "4", _modifier) ->
+      ( State.get_updated_model model ~action:(Update_box_dimension "4")
+      , Command.Noop )
+    | Event.KeyDown (Key "5", _modifier) ->
+      ( State.get_updated_model model ~action:(Update_box_dimension "5")
+      , Command.Noop )
+    | Event.KeyDown (Key "6", _modifier) ->
+      ( State.get_updated_model model ~action:(Update_box_dimension "6")
+      , Command.Noop )
+    | Event.KeyDown (Key "7", _modifier) ->
+      ( State.get_updated_model model ~action:(Update_box_dimension "7")
+      , Command.Noop )
+    | Event.KeyDown (Key "8", _modifier) ->
+      ( State.get_updated_model model ~action:(Update_box_dimension "8")
+      , Command.Noop )
+    | Event.KeyDown (Key "9", _modifier) ->
+      ( State.get_updated_model model ~action:(Update_box_dimension "9")
+      , Command.Noop )
+    | Event.KeyDown (Key "n", _modifier) ->
+      State.get_updated_model model ~action:Toggle_show_relative_dirs, Command.Noop 
     | Event.KeyDown (Escape, _modifier) -> model, exit 0
     | Event.KeyDown (Key "a", Ctrl) ->
       State.get_updated_model model ~action:Reduce_tree, Command.Noop
@@ -94,6 +119,8 @@ let update event (model : State.t) =
       State.get_updated_model model ~action:Rename, Command.Noop
     | Event.KeyDown (Key "k", Ctrl) ->
       State.get_updated_model model ~action:Summarize, Command.Noop
+    | Event.KeyDown (Key "i", Ctrl) ->
+      State.get_updated_model model ~action:Toggle_show_hidden_files, Command.Noop
     | Event.KeyDown (Key "h", Ctrl) ->
       State.get_updated_model model ~action:Collapse, Command.Noop
     | Event.KeyDown (Key "m", Ctrl) ->
@@ -159,6 +186,9 @@ let visualize_tree (model : State.t) ~origin ~max_depth =
       ~matrix_info:(State.get_matrix_info model)
       ~show_reduced_tree:(State.get_show_reduced_tree model)
       ~paths_to_collapse:(State.get_paths_to_collapse model)
+      ~box_dimension:(State.get_box_dimension model)
+      ~show_relative_dirs:(State.get_show_relative_dirs model)
+      ~show_hidden_files:(State.get_show_hidden_files model)
   in
   Format.asprintf "%s" tree
   ^
