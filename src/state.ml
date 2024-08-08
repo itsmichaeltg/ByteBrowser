@@ -38,7 +38,6 @@ type t =
   ; paths_to_collapse : (string, String.comparator_witness) Set.t
   ; box_dimention : int
   ; show_relative_dirs : bool
-  ; show_hidden_files : bool
   }
 
 type dir =
@@ -63,7 +62,6 @@ type action =
   | Collapse
   | Update_box_dimension of string
   | Toggle_show_relative_dirs
-  | Toggle_show_hidden_files
 
 let blank_text =
   Leaves.Text_input.make
@@ -89,7 +87,6 @@ let get_is_loading t = t.is_loading
 let get_current_path t = t.current_path
 let get_box_dimension t = t.box_dimention
 let get_show_relative_dirs t = t.show_relative_dirs
-let get_show_hidden_files t = t.show_hidden_files
 let get_text t = t.text
 let get_parent t = t.parent
 let get_is_writing t = t.is_writing
@@ -101,10 +98,6 @@ let get_paths_to_collapse t = t.paths_to_collapse
 
 let get_updated_model_for_toggle_show_relative_dirs t =
   { t with show_relative_dirs = not t.show_relative_dirs }
-;;
-
-let get_updated_model_for_toggle_show_hidden_files t =
-  { t with show_hidden_files = not t.show_hidden_files }
 ;;
 
 let get_updated_model_for_summarize t =
@@ -200,7 +193,6 @@ let init
   ; paths_to_collapse = Set.empty (module String)
   ; box_dimention = 5
   ; show_relative_dirs = false
-  ; show_hidden_files = false
   }
 ;;
 
@@ -444,6 +436,4 @@ let get_updated_model t ~(action : action) =
     get_updated_model_for_updating_box_dimensions t ~number
   | Toggle_show_relative_dirs ->
     get_updated_model_for_toggle_show_relative_dirs t
-  | Toggle_show_hidden_files ->
-    get_updated_model_for_toggle_show_hidden_files t
 ;;

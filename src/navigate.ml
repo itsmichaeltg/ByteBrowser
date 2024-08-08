@@ -120,9 +120,6 @@ let update event (model : State.t) =
       State.get_updated_model model ~action:Rename, Command.Noop
     | Event.KeyDown (Key "k", Ctrl) ->
       State.get_updated_model model ~action:Summarize, Command.Noop
-    | Event.KeyDown (Key "i", Ctrl) ->
-      ( State.get_updated_model model ~action:Toggle_show_hidden_files
-      , Command.Noop )
     | Event.KeyDown (Key "h", Ctrl) ->
       State.get_updated_model model ~action:Collapse, Command.Noop
     | Event.KeyDown (Key "m", Ctrl) ->
@@ -190,7 +187,6 @@ let visualize_tree (model : State.t) ~origin ~max_depth =
       ~paths_to_collapse:(State.get_paths_to_collapse model)
       ~box_dimension:(State.get_box_dimension model)
       ~show_relative_dirs:(State.get_show_relative_dirs model)
-      ~show_hidden_files:(State.get_show_hidden_files model)
   in
   Format.asprintf "%s" tree
   ^
@@ -221,8 +217,8 @@ let get_initial_state ~origin ~max_depth ~show_hidden ~sort : State.t =
     Matrix.create ()
     |> Matrix.get_adjacency_matrix
          ~origin
-         ~max_depth:2
-         ~show_hidden:true
+         ~max_depth
+         ~show_hidden
          ~sort:true
   in
   let children =
