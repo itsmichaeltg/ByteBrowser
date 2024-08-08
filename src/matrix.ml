@@ -2,6 +2,21 @@ open! Core
 
 type t = (string, string list) Hashtbl.t [@@deriving sexp_of]
 
+type table =
+  { horizontal_depth : int
+  ; vertical_depth : int
+  ; abs_vertical_loc : int
+  }
+[@@deriving sexp_of]
+
+module Info = struct
+  type t = (string, table) Hashtbl.t [@@deriving sexp_of]
+
+  let create () = Hashtbl.create (module String)
+  let add_exn (t : t) ~key ~data = Hashtbl.add_exn t ~key ~data
+  let find (t : t) key = Hashtbl.find t key
+end
+
 let find (t : t) b = Hashtbl.find t b
 let find_exn (t : t) b = Hashtbl.find_exn t b
 let mem (t : t) a = Hashtbl.mem t a
@@ -25,6 +40,20 @@ let remove_last_path current_path =
     | true -> new_lst
     | false -> new_lst @ [ elem ])
   |> String.concat ~sep:"/"
+let get_extension_of_file path =
+  let file_name = get_name path in
+  String.fold
+    (String.rev file_name)
+    ~init:("", true)
+    ~f:(fun (acc, should_add_char) char ->
+      match should_add_char with
+      | false -> acc, false
+      | true ->
+        (match Char.equal char '.' with
+         | true -> acc, false
+         | false -> acc ^ Char.to_string char, true))
+  |> fst
+  |> String.rev
 ;;
 
 let is_directory t (value : string) = mem t value
@@ -37,6 +66,15 @@ let write_and_read origin =
   in
   In_channel.read_lines write_path
 ;;
+
+let rec is_in_directory t path ~path_to_check =
+  match get_children t path with
+  | None -> String.equal path path_to_check
+  | Some children ->
+    List.fold children ~init:false ~f:(fun prev_primary_decision child_path ->
+      match prev_primary_decision with
+      | true -> true
+      | false -> is_in_directory t path ~path_to_check)
 
 let get_files_in_dir origin ~show_hidden ~sort =
   let data =
@@ -72,6 +110,49 @@ let rec get_adjacency_matrix t ~sort ~show_hidden ~origin ~max_depth =
           ~show_hidden
           ~sort
       | _ -> get_adjacency_matrix t ~origin:i ~max_depth:0 ~show_hidden ~sort)
+;;
+
+let rec helper
+  t
+  ~(info_map : Info.t)
+  ~current_path
+  ~horizontal_depth
+  ~vertical_depth
+  ~abs_vertical_loc
+  =
+  Info.add_exn
+    info_map
+    ~key:current_path
+    ~data:{ horizontal_depth; vertical_depth; abs_vertical_loc };
+  match get_children t current_path with
+  | None -> 1
+  | Some children_paths ->
+   1 + List.foldi children_paths ~init:0 ~f:(fun idx count_prev_sub_branches child_path ->
+    count_prev_sub_branches
+    + helper
+      t
+      ~info_map
+      ~current_path:child_path
+      ~horizontal_depth:(horizontal_depth + 1)
+      ~abs_vertical_loc:(abs_vertical_loc + count_prev_sub_branches + 1)
+      ~vertical_depth:(vertical_depth + idx + 1))
+;;
+
+let rec fill_info_from_matrix
+  t
+  ~(info_map : Info.t)
+  ~current_path
+  =
+  let _ =
+    helper
+      t
+      ~info_map:(info_map : Info.t)
+      ~current_path
+      ~horizontal_depth:0
+      ~vertical_depth:0
+      ~abs_vertical_loc:0
+  in
+  ()
 ;;
 
 let rec get_limited_adjacency_matrix

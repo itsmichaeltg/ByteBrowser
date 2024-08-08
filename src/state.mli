@@ -21,11 +21,15 @@ type action =
   | Query
   | Save_query_chat of string
   | Reset
+  | Reduce_tree
+  | Collapse
 
 val get_updated_model : t -> action:action -> t
 val remove_last_path : string -> string
 val get_preview : t -> string
 val get_tree : t -> Matrix.t
+val get_show_reduced_tree : t -> bool
+val get_paths_to_collapse : t -> (string, String.comparator_witness) Set.t
 val get_current_path : t -> string
 val get_is_writing : t -> bool
 val get_text : t -> Text_input.t
@@ -43,6 +47,7 @@ val get_model_with_new_text : t -> Text_input.t -> t
 val get_model_with_new_current_path : t -> string -> t
 val fzf : t -> string -> key:string -> unit
 val get_fzf : t -> Matrix.t
+val get_matrix_info : t -> Matrix.Info.t
 
 val init
   :  choices:Matrix.t
@@ -60,4 +65,5 @@ val init
   -> query_chat:string
   -> start_chatting:bool
   -> seen_summarizations:(string, string, String.comparator_witness) Map.t
+  -> matrix_info:Matrix.Info.t
   -> t

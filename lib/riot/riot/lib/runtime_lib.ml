@@ -4,16 +4,15 @@ let set_log_level = Riot_runtime.Log.set_log_level
 
 let syscalls () =
   let pool = _get_pool () in
-  ( pool.io_scheduler.calls_accept
-  , pool.io_scheduler.calls_receive
-  , pool.io_scheduler.calls_send
-  , pool.io_scheduler.calls_connect )
-;;
+  ( pool.io_scheduler.calls_accept,
+    pool.io_scheduler.calls_receive,
+    pool.io_scheduler.calls_send,
+    pool.io_scheduler.calls_connect )
 
 module Stats = struct
   open Logger.Make (struct
-      let namespace = [ "riot"; "runtime"; "stats" ]
-    end)
+    let namespace = [ "riot"; "runtime"; "stats" ]
+  end)
 
   type Message.t += Print_stats
 
@@ -28,34 +27,28 @@ module Stats = struct
     let breakdown =
       pool.schedulers
       |> List.map (fun (sch : Riot_runtime.Scheduler.t) ->
-        Format.asprintf
-          "  sch #%a [live_procs=%d; timers=%d]"
-          Riot_runtime.Core.Scheduler_uid.pp
-          sch.uid
-          (Riot_runtime.Core.Proc_queue.size sch.run_queue)
-          (Riot_runtime.Time.Timer_wheel.size sch.timers))
+             Format.asprintf "  sch #%a [live_procs=%d; timers=%d]"
+               Riot_runtime.Core.Scheduler_uid.pp sch.uid
+               (Riot_runtime.Core.Proc_queue.size sch.run_queue)
+               (Riot_runtime.Time.Timer_wheel.size sch.timers))
       |> String.concat "\n"
     in
     info (fun f ->
-      f
-        {|pool: 
+        f
+          {|pool: 
 
 live_processes: %d
 total_processes: %d
 total_schedulers: %d
 %s
 |}
-        live_process_count
-        total_processes
-        total_schedulers
-        breakdown)
-  ;;
+          live_process_count total_processes total_schedulers breakdown)
 
   let print_gc_stats () =
     let stat = Gc.stat () in
     info (fun f ->
-      f
-        {|gc_stats:
+        f
+          {|gc_stats:
 live_bytes=%f mb in %d blocks
 free_bytes=%f mb in %d blocks
 heap_bytes=%f mb in %d chunks
@@ -63,26 +56,22 @@ max_heap_size=%f mb
 fragments=%d
 compactions=%d
 |}
-        (stat.live_words * 8 |> mb)
-        stat.live_blocks
-        (stat.free_words * 8 |> mb)
-        stat.free_blocks
-        (stat.heap_words * 8 |> mb)
-        stat.heap_chunks
-        (stat.top_heap_words * 8 |> mb)
-        stat.fragments
-        stat.compactions)
-  ;;
+          (stat.live_words * 8 |> mb)
+          stat.live_blocks
+          (stat.free_words * 8 |> mb)
+          stat.free_blocks
+          (stat.heap_words * 8 |> mb)
+          stat.heap_chunks
+          (stat.top_heap_words * 8 |> mb)
+          stat.fragments stat.compactions)
 
   let rec loop () =
     print_scheduler_stats ();
     print_gc_stats ();
     receive_any () |> ignore;
     loop ()
-  ;;
 
   let start ?(every = 2_000_000L) () =
     let stats = spawn loop in
     Timer.send_interval stats Print_stats ~every |> ignore
-  ;;
 end

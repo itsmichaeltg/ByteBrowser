@@ -15,8 +15,5 @@ module Random = struct
   let string n = cstruct n |> Cstruct.to_string
   let bytestring n = string n |> Bytestring.of_string
   let alphanum () = Char.chr (48 + Randomconv.int ~bound:74 cstruct_to_string)
-
-  let seq n gen =
-    List.init n (fun _ -> gen ()) |> List.to_seq |> String.of_seq
-  ;;
+  let seq n gen = List.init n (fun _ -> gen ()) |> List.to_seq |> String.of_seq
 end

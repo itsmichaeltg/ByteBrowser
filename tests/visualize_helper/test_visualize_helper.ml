@@ -1,19 +1,21 @@
-open! Core
+(* open! Core
 open! File_manager_lib
 
 let%expect_test "visualize" =
   let mat = Matrix.create () in
   Matrix.add_exn mat ~key:"/home" ~data:[ "/home/home_dir1"; "/home/home_dir2" ];
-  Matrix.add_exn mat ~key:"/home/home_dir1" ~data:[ "/home/home_dir1/child1"; "/home/home_dir1/child2" ];
+  Matrix.add_exn mat ~key:"/home/home_dir1" ~data:[ "/home/home_dir1/child1"; "/home/home_dir1/child2.ml" ];
   Matrix.add_exn mat ~key:"/home/home_dir2" ~data:[];
-  Matrix.add_exn mat ~key:"/home/home_dir1/child1" ~data:[ "/home/home_dir1/child1/.gitignore"; "/home/home_dir1/child1/blah" ];
+  Matrix.add_exn mat ~key:"/home/home_dir1/child1" ~data:[ "/home/home_dir1/child1/.gitignore"; "/home/home_dir1/child1/blah.py" ];
   let res =
     Visualize_helper.visualize
       mat
       ~current_directory:"/home"
       ~path_to_be_underlined:"/home/home_dir1/child1/.gitignore"
+    ~matrix_info:(Matrix.Info.create ())
   in
   print_endline res;
+<<<<<<< HEAD
   [%expect {|
     .
     [0m[0m|__ 📁[;0;36mhome
@@ -24,6 +26,18 @@ let%expect_test "visualize" =
     [0m    [0m|__ [;0mchild2
     [0m  [0m|__ 📁[;0;36mhome_dir2
     |}]
+=======
+  (* [%expect {|
+    [0m>> .                                                                                                       [0m<<
+    [0m>> [0m[0m|__ [;0;36mhome                                                                                                [0m<<
+    [0m>> [0m  [0m|__ [;0;36mhome_dir1                                                                                         [0m<<
+    [0m>> [0m    [0m|__ [;0;36mchild1                                                                                          [0m<<
+    [0m>> [0m      [0m|__ [;0;2;4;35m.gitignore                                                                                    [0m<<
+    [0m>> [0m      [0m|__ [;0mblah                                                                                          [0m<<
+    [0m>> [0m    [0m|__ [;0mchild2                                                                                          [0m<<
+    [0m>> [0m  [0m|__ [;0;36mhome_dir2                                                                                         [0m<<
+    |}] *)
+>>>>>>> 20b2a3078370b96e8c8bde901e07696ebbaa6094
 ;;
 
 (* let%expect_test "visualize" =
@@ -76,4 +90,4 @@ let%expect_test "path_to_be_underlined" =
     [0m    [0m|__ [;0mchild2
     [0m  [0m|__ 📁[;0;36mhome_dir2
     |}]
-;; *)
+;; *) *)

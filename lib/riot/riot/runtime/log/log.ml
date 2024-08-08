@@ -1,15 +1,11 @@
-(** Low-level mutex-coordinated logs for the Riot engine.
+(** Low-level mutex-coordinated logs for the Riot engine. 
     These are super slow, and are intended for usage within the engine alone.
 
     If you're looking for logs for your application, look into
-    {!module:Riot.Logger} instead. *)
+    {!module:Riot.Logger} instead.
+*)
 
-type level =
-  | Debug
-  | Error
-  | Info
-  | Trace
-  | Warn
+type level = Debug | Error | Info | Trace | Warn
 
 let level_to_int = function
   | Trace -> 5
@@ -17,7 +13,6 @@ let level_to_int = function
   | Info -> 2
   | Warn -> 1
   | Error -> 0
-;;
 
 let level_to_color_string t =
   match t with
@@ -26,7 +21,6 @@ let level_to_color_string t =
   | Debug -> "\x1b[36m"
   | Info -> ""
   | Trace -> ""
-;;
 
 let log_level = Atomic.make (Some Error)
 let set_log_level x = Atomic.set log_level x
@@ -35,7 +29,6 @@ let should_log x =
   match Atomic.get log_level with
   | None -> false
   | Some log_level -> level_to_int x <= level_to_int log_level
-;;
 
 let pp_level ppf t =
   match t with
@@ -44,7 +37,6 @@ let pp_level ppf t =
   | Debug -> Format.fprintf ppf "DEBUG "
   | Info -> Format.fprintf ppf "INFO "
   | Trace -> Format.fprintf ppf "TRACE "
-;;
 
 type ('a, 'b) message_format =
   (('a, Format.formatter, unit, 'b) format4 -> 'a) -> 'b
@@ -53,12 +45,10 @@ let log_lock = Mutex.create ()
 
 let stdout =
   Format.make_formatter (output_substring stdout) (fun () -> flush stdout)
-;;
 
 let msg : type a. level -> (a, unit) message_format -> unit =
-  fun level msgf ->
-  msgf
-  @@ fun fmt ->
+ fun level msgf ->
+  msgf @@ fun fmt ->
   Mutex.lock log_lock;
   let domain = (Domain.self () :> int) in
   Format.kfprintf
@@ -67,11 +57,7 @@ let msg : type a. level -> (a, unit) message_format -> unit =
     ("%s%a %a[thread=%d] @[" ^^ fmt ^^ "@]@.\x1b[0m%!")
     (level_to_color_string level)
     (Ptime.pp_rfc3339 ~frac_s:5 ~space:true ~tz_offset_s:0 ())
-    (Ptime_clock.now ())
-    pp_level
-    level
-    domain
-;;
+    (Ptime_clock.now ()) pp_level level domain
 
 let trace msgf = if should_log Trace then msg Trace msgf
 let debug msgf = if should_log Debug then msg Debug msgf

@@ -1,4 +1,5 @@
 open! Core
+open! Spices
 
 let cursor_func =
   Leaves.Cursor.make
@@ -77,11 +78,14 @@ let update event (model : State.t) =
     | Event.KeyDown (Down, _modifier)
     | Event.KeyDown (Right, _modifier)
     | Event.KeyDown (Up, _modifier) ->
+      print_endline "here";
       move_arround event model
     | Event.KeyDown (Enter, _modifier) ->
       let model = State.get_updated_model model ~action:Cd in
       model, exit 0
     | Event.KeyDown (Escape, _modifier) -> model, exit 0
+    | Event.KeyDown (Key "a", Ctrl) ->
+      State.get_updated_model model ~action:Reduce_tree, Command.Noop
     | Event.KeyDown (Key "p", Ctrl) ->
       State.get_updated_model model ~action:Preview, Command.Noop
     | Event.KeyDown (Key "d", Ctrl) ->
@@ -90,6 +94,8 @@ let update event (model : State.t) =
       State.get_updated_model model ~action:Rename, Command.Noop
     | Event.KeyDown (Key "k", Ctrl) ->
       State.get_updated_model model ~action:Summarize, Command.Noop
+    | Event.KeyDown (Key "h", Ctrl) ->
+      State.get_updated_model model ~action:Collapse, Command.Noop
     | Event.KeyDown (Key "m", Ctrl) ->
       print_endline
         (Format.sprintf "moivng %s" (State.get_current_path model));
@@ -150,13 +156,15 @@ let visualize_tree (model : State.t) ~origin ~max_depth =
       (State.get_tree model)
       ~current_directory:origin
       ~path_to_be_underlined:(State.get_current_path model)
+      ~matrix_info:(State.get_matrix_info model)
+      ~show_reduced_tree:(State.get_show_reduced_tree model)
+      ~paths_to_collapse:(State.get_paths_to_collapse model)
   in
-  "\x1b[0mPress ^C to quit\n"
-  ^ Format.sprintf {|%s|} tree
+  Format.asprintf "%s" tree
   ^
   if State.get_is_writing model
   then
-    Format.sprintf "\n%s\n" @@ Leaves.Text_input.view (State.get_text model)
+    Format.asprintf "\n%s\n" @@ Leaves.Text_input.view (State.get_text model)
   else ""
 ;;
 
@@ -167,7 +175,7 @@ let get_view (model : State.t) ~origin ~max_depth =
   | true -> State.get_preview model
   | false ->
     (match State.get_start_chatting model with
-     | true -> 
+     | true ->
        State.get_query_chat model
        ^ Leaves.Text_input.view (State.get_text model)
      | false ->
@@ -179,7 +187,11 @@ let get_view (model : State.t) ~origin ~max_depth =
 let get_initial_state ~origin ~max_depth ~show_hidden ~sort : State.t =
   let tree =
     Matrix.create ()
-    |> Matrix.get_adjacency_matrix ~origin ~max_depth ~show_hidden ~sort
+    |> Matrix.get_adjacency_matrix
+         ~origin
+         ~max_depth:3
+         ~show_hidden:false
+         ~sort:true
   in
   let children =
     match Matrix.find tree origin with
@@ -191,8 +203,14 @@ let get_initial_state ~origin ~max_depth ~show_hidden ~sort : State.t =
     | None -> origin
     | Some first_child -> first_child
   in
+  let matrix_info = Matrix.Info.create () in
+  Matrix.fill_info_from_matrix
+    tree
+    ~info_map:matrix_info
+    ~current_path:origin;
   State.init
     ~choices:tree
+    ~matrix_info
     ~current_path:initial_path
     ~origin
     ~parent:

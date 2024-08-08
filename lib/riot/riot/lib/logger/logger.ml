@@ -2,23 +2,14 @@ module Scheduler_uid = Riot_runtime.Core.Scheduler_uid
 module Log = Riot_runtime.Log
 open Global
 
-type opts =
-  { print_source : bool
-  ; print_time : bool
-  ; color_output : bool
-  }
+type opts = { print_source : bool; print_time : bool; color_output : bool }
+type config = { opts : opts; started_by : Riot_runtime.Core.Pid.t }
 
 type ('a, 'b) logger_format =
   (('a, Format.formatter, unit, 'b) format4 -> 'a) -> 'b
 
 type namespace = string list
-
-type level = Log.level =
-  | Debug
-  | Error
-  | Info
-  | Trace
-  | Warn
+type level = Log.level = Debug | Error | Info | Trace | Warn
 
 module Level = struct
   let to_int = function
@@ -27,13 +18,11 @@ module Level = struct
     | Info -> 2
     | Warn -> 1
     | Error -> 0
-  ;;
 
   let should_log current x =
     match current with
     | None -> false
     | Some log_level -> to_int x <= to_int log_level
-  ;;
 
   let to_color_string t =
     match t with
@@ -42,7 +31,6 @@ module Level = struct
     | Debug -> "\x1b[36m"
     | Info -> ""
     | Trace -> "\x1b[35m"
-  ;;
 
   let pp ppf t =
     match t with
@@ -51,38 +39,37 @@ module Level = struct
     | Debug -> Format.fprintf ppf "debug"
     | Info -> Format.fprintf ppf "info"
     | Trace -> Format.fprintf ppf "trace"
-  ;;
 end
 
-type log =
-  { level : level
-  ; ts : Ptime.t
-  ; src : Scheduler_uid.t * Riot_runtime.Core.Pid.t
-  ; ns : namespace
-  ; message : string
-  }
+type log = {
+  level : level;
+  ts : Ptime.t;
+  src : Scheduler_uid.t * Riot_runtime.Core.Pid.t;
+  ns : namespace;
+  message : string;
+}
 
 let __on_log__ : (log -> unit) ref = ref (fun _ -> ())
 let set_on_log log = __on_log__ := log
 let on_log log = !__on_log__ log
 
 let write : type a. level -> namespace -> (a, unit) logger_format -> unit =
-  fun level ns msgf ->
+ fun level ns msgf ->
   let ts = Ptime_clock.now () in
   let sch = Riot_runtime.Scheduler.get_current_scheduler () in
   let pid = self () in
-  let src = sch.uid, pid in
+  let src = (sch.uid, pid) in
   let buf = Buffer.create 128 in
-  msgf
-  @@ fun fmt ->
+
+  msgf @@ fun fmt ->
   Format.kfprintf
     (fun _ ->
       let message = Buffer.contents buf in
       on_log { ts; level; ns; src; message };
+
       ())
     (Format.formatter_of_buffer buf)
     (fmt ^^ "%!")
-;;
 
 module type Intf = sig
   val set_log_level : level option -> unit
@@ -104,25 +91,20 @@ module Make (B : Namespace) : Intf = struct
 
   let debug msgf =
     if Level.should_log !log_level Debug then write Debug B.namespace msgf
-  ;;
 
   let info msgf =
     if Level.should_log !log_level Info then write Info B.namespace msgf
-  ;;
 
   let trace msgf =
     if Level.should_log !log_level Trace then write Trace B.namespace msgf
-  ;;
 
   let warn msgf =
     if Level.should_log !log_level Warn then write Warn B.namespace msgf
-  ;;
 
   let error msgf =
     if Level.should_log !log_level Error then write Error B.namespace msgf
-  ;;
 end
 
 include Make (struct
-    let namespace = []
-  end)
+  let namespace = []
+end)

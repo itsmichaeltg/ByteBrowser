@@ -9,5 +9,4 @@ let make ~name =
     | None -> raise (Uninitialized_thread_local name)
   in
   let set x = Domain.DLS.set key (Some x) in
-  get, set
-;;
+  (get, set)

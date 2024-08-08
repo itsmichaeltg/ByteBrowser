@@ -4,8 +4,7 @@ open IO
 exception Fail
 
 let () =
-  Riot.run
-  @@ fun () ->
+  Riot.run @@ fun () ->
   let _ = Logger.start () |> Result.get_ok in
   Logger.set_log_level (Some Info);
   let fd = File.open_read "fixtures/io_readv.txt" in
@@ -16,7 +15,7 @@ let () =
   match str with
   | "hello wo" -> Logger.info (fun f -> f "io_readv_test: OK")
   | _ ->
-    Logger.error (fun f -> f "io_readv_test: unexpected input %S" str);
-    sleep 0.1;
-    raise Fail
-;;
+      Logger.error (fun f -> f "io_readv_test: unexpected input %S" str);
+
+      sleep 0.1;
+      raise Fail
