@@ -442,5 +442,6 @@ let get_updated_model t ~(action : action) =
     get_updated_model_for_updating_box_dimensions t ~number
   | Toggle_show_relative_dirs ->
     get_updated_model_for_toggle_show_relative_dirs t
-  | Toggle_show_hidden_files -> get_updated_model_for_toggle_show_hidden_files t
+  | Toggle_show_hidden_files ->
+    get_updated_model_for_toggle_show_hidden_files t
 ;;

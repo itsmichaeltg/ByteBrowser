@@ -107,7 +107,8 @@ let update event (model : State.t) =
       ( State.get_updated_model model ~action:(Update_box_dimension "9")
       , Command.Noop )
     | Event.KeyDown (Key "n", _modifier) ->
-      State.get_updated_model model ~action:Toggle_show_relative_dirs, Command.Noop 
+      ( State.get_updated_model model ~action:Toggle_show_relative_dirs
+      , Command.Noop )
     | Event.KeyDown (Escape, _modifier) -> model, exit 0
     | Event.KeyDown (Key "a", Ctrl) ->
       State.get_updated_model model ~action:Reduce_tree, Command.Noop
@@ -120,7 +121,8 @@ let update event (model : State.t) =
     | Event.KeyDown (Key "k", Ctrl) ->
       State.get_updated_model model ~action:Summarize, Command.Noop
     | Event.KeyDown (Key "i", Ctrl) ->
-      State.get_updated_model model ~action:Toggle_show_hidden_files, Command.Noop
+      ( State.get_updated_model model ~action:Toggle_show_hidden_files
+      , Command.Noop )
     | Event.KeyDown (Key "h", Ctrl) ->
       State.get_updated_model model ~action:Collapse, Command.Noop
     | Event.KeyDown (Key "m", Ctrl) ->

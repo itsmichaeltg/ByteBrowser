@@ -69,7 +69,9 @@ let get_relative_directions
   ~parent
   ~(matrix_info : Matrix.Info.t)
   =
-  match String.equal path_to_be_underlined parent || not show_relative_dirs with
+  match
+    String.equal path_to_be_underlined parent || not show_relative_dirs
+  with
   | true -> ""
   | false ->
     let table_opt1 = Matrix.Info.find matrix_info path_to_be_underlined in
@@ -129,7 +131,7 @@ let can_show_parent
   ~depth
   =
   match show_reduced_tree with
-  | false -> not (is_hidden_file parent && (not show_hidden_files))
+  | false -> not (is_hidden_file parent && not show_hidden_files)
   | true ->
     let parent_table = Matrix.Info.find matrix_info parent in
     let user_location_table =
