@@ -1,11 +1,13 @@
 open! Core
 
 type t = (string, string list) Hashtbl.t [@@deriving sexp_of]
+
 type table =
-    { horizontal_depth : int
-    ; vertical_depth : int
-    }
-  [@@deriving sexp_of]
+  { horizontal_depth : int
+  ; vertical_depth : int
+  ; abs_vertical_loc : int
+  }
+[@@deriving sexp_of]
 
 module Info = struct
   type t = (string, table) Hashtbl.t [@@deriving sexp_of]
@@ -57,6 +59,15 @@ let write_and_read origin =
   In_channel.read_lines write_path
 ;;
 
+let rec is_in_directory t path ~path_to_check =
+  match get_children t path with
+  | None -> String.equal path path_to_check
+  | Some children ->
+    List.fold children ~init:false ~f:(fun prev_primary_decision child_path ->
+      match prev_primary_decision with
+      | true -> true
+      | false -> is_in_directory t path ~path_to_check)
+
 let get_files_in_dir origin ~show_hidden ~sort =
   let data =
     if not sort
@@ -93,27 +104,47 @@ let rec get_adjacency_matrix t ~sort ~show_hidden ~origin ~max_depth =
       | _ -> get_adjacency_matrix t ~origin:i ~max_depth:0 ~show_hidden ~sort)
 ;;
 
-let rec fill_info_from_matrix
+let rec helper
   t
   ~(info_map : Info.t)
   ~current_path
   ~horizontal_depth
   ~vertical_depth
+  ~abs_vertical_loc
   =
   Info.add_exn
     info_map
     ~key:current_path
-    ~data:{ horizontal_depth; vertical_depth };
+    ~data:{ horizontal_depth; vertical_depth; abs_vertical_loc };
   match get_children t current_path with
-  | None -> ()
+  | None -> 1
   | Some children_paths ->
-    List.iteri children_paths ~f:(fun idx child_path ->
-      fill_info_from_matrix
-        t
-        ~info_map
-        ~current_path:child_path
-        ~horizontal_depth:(horizontal_depth + 1)
-        ~vertical_depth:(vertical_depth + idx + 1))
+   1 + List.foldi children_paths ~init:0 ~f:(fun idx count_prev_sub_branches child_path ->
+    count_prev_sub_branches
+    + helper
+      t
+      ~info_map
+      ~current_path:child_path
+      ~horizontal_depth:(horizontal_depth + 1)
+      ~abs_vertical_loc:(abs_vertical_loc + count_prev_sub_branches + 1)
+      ~vertical_depth:(vertical_depth + idx + 1))
+;;
+
+let rec fill_info_from_matrix
+  t
+  ~(info_map : Info.t)
+  ~current_path
+  =
+  let _ =
+    helper
+      t
+      ~info_map:(info_map : Info.t)
+      ~current_path
+      ~horizontal_depth:0
+      ~vertical_depth:0
+      ~abs_vertical_loc:0
+  in
+  ()
 ;;
 
 let rec get_limited_adjacency_matrix

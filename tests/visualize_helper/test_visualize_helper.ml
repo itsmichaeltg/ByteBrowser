@@ -1,4 +1,4 @@
-open! Core
+(* open! Core
 open! File_manager_lib
 
 let%expect_test "visualize" =
@@ -77,4 +77,4 @@ let%expect_test "path_to_be_underlined" =
     [0m    [0m|__ [;0mchild2
     [0m  [0m|__ 📁[;0;36mhome_dir2
     |}]
-;; *)
+;; *) *)

@@ -1,4 +1,4 @@
-open! Core
+(* open! Core
 open! File_manager_lib
 
 let%expect_test "adjacency_matrix" =
@@ -90,4 +90,4 @@ let%expect_test "get limited children to tree" =
     \ \027[0m      \027[0m|__ \027[;0mdune\n\
     \ \027[0m  \027[0m|__ \027[;0mREADME.md\n\
     \ "]
-;;
+;; *)

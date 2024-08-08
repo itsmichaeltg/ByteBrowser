@@ -34,6 +34,7 @@ type t =
   ; seen_summarizations : (string, string, String.comparator_witness) Map.t
   ; is_loading : bool
   ; loading_spinner : Sprite.t
+  ; paths_to_collapse : (string, String.comparator_witness) Set.t
   }
 
 type dir =
@@ -54,6 +55,8 @@ type action =
   | Query
   | Save_query_chat of string
   | Reset
+  | Reduce_tree
+  | Collapse
 
 let blank_text =
   Leaves.Text_input.make
@@ -70,6 +73,7 @@ let should_preview t =
 
 let should_summarize t = String.length t.summarization > 0
 let get_summarization t = t.summarization
+let get_show_reduced_tree t = t.show_reduced_tree
 let get_query_chat t = t.query_chat
 let get_start_chatting t = t.start_chatting
 let get_is_moving t = t.is_moving
@@ -83,6 +87,7 @@ let get_preview t = t.preview
 let get_model_after_writing t = { t with is_writing = false }
 let get_model_with_new_text t new_text = { t with text = new_text }
 let get_matrix_info t = t.matrix_info
+let get_paths_to_collapse t = t.paths_to_collapse
 
 let get_updated_model_for_summarize t =
   match String.is_empty t.summarization with
@@ -173,6 +178,7 @@ let init
   ; is_loading = false
   ; loading_spinner = Spinner.dot
   ; matrix_info
+  ; paths_to_collapse = Set.empty (module String)
   }
 ;;
 
@@ -261,9 +267,7 @@ let get_idx t ~parent ~current_path =
 ;;
 
 let starts_with str ~key =
-  String.equal
-    (String.get (Matrix.get_name str) 0 |> String.of_char)
-    key
+  String.equal (String.get (Matrix.get_name str) 0 |> String.of_char) key
 ;;
 
 let get_first_str t ~key =
@@ -366,6 +370,13 @@ let get_updated_model_for_reset t =
   }
 ;;
 
+let get_updated_model_for_reduce_tree t =
+  { t with show_reduced_tree = not t.show_reduced_tree }
+;;
+
+let get_updated_model_for_collapse t =
+  { t with paths_to_collapse = Set.add t.paths_to_collapse t.current_path }
+
 let get_updated_model t ~(action : action) =
   match action with
   | Preview -> get_updated_model_for_preview t
@@ -379,8 +390,7 @@ let get_updated_model t ~(action : action) =
   | Query -> get_updated_model_for_query t
   | Save_query_chat chat -> get_updated_model_for_save_query_chat t ~chat
   | Reset -> get_updated_model_for_reset t
+  | Reduce_tree -> get_updated_model_for_reduce_tree t
+  | Collapse -> get_updated_model_for_collapse t
 ;;
-(* let get_updated_model_for_reduced_tree t = match t.show_reduced_tree with
-   | true -> { t with show_reduced_tree = false; choices = t.full_choices } |
-   false -> { t with show_reduced_tree = true ; choices = t.reduced_choices
-   (* ; current_path = t.origin *) } *)
+

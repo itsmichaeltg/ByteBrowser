@@ -21,11 +21,15 @@ type action =
   | Query
   | Save_query_chat of string
   | Reset
+  | Reduce_tree
+  | Collapse
 
 val get_updated_model : t -> action:action -> t
 val remove_last_path : string -> string
 val get_preview : t -> string
 val get_tree : t -> Matrix.t
+val get_show_reduced_tree : t -> bool
+val get_paths_to_collapse : t -> (string, String.comparator_witness) Set.t
 val get_current_path : t -> string
 val get_is_writing : t -> bool
 val get_text : t -> Text_input.t
