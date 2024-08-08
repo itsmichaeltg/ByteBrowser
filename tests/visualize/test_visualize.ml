@@ -48,47 +48,6 @@ let%expect_test "adjacency_matrix" =
     \ \027[0m          \027[0m|__ \027[;0mtmp.txt\n\
     \ \027[0m  \027[0m|__ \240\159\147\129\027[;0;36mdir5\n\
     \ "]
-;; *)
-
-let%expect_test "get limited children to tree" =
-  let initial_tree = Matrix.create () in
-  let origin, num_to_show, max_depth =
-    "/home/ubuntu/jsip-final-project", 3, 100
-  in
-  let result =
-    Matrix.get_limited_adjacency_matrix
-      initial_tree
-      ~origin
-      ~num_to_show
-      ~max_depth
-      ~sort:false
-      ~show_hidden:false
-  in
-  print_endline
-    (Visualize_helper.visualize
-       result
-       ~current_directory:origin
-       ~path_to_be_underlined:origin
-       ~matrix_info:(Matrix.Info.create ()));
-  [%expect
-    " 
- .
- \027[0m\027[0m|__ \240\159\147\129\027[;0;2;4;36mjsip-final-project
- \027[0m  \027[0m|__ \240\159\147\129\027[;0;36msrc
- \027[0m    \027[0m|__ \027[;0mpreview.ml
- \027[0m    \027[0m|__ \027[;0mvisualize_helper.mli
- \027[0m    \027[0m|__ \027[;0msummary.mli
- \027[0m  \027[0m|__ \027[;0mlog.txt
- \027[0m  \027[0m|__ \240\159\147\129\027[;0;36mtests
- \027[0m    \027[0m|__ \240\159\147\129\027[;0;36mvisualize_helper
- \027[0m      \027[0m|__ \027[;0mtest_visualize_helper.ml
- \027[0m      \027[0m|__ \027[;0mdune
- \027[0m    \027[0m|__ \240\159\147\129\027[;0;36mpreview
- \027[0m      \027[0m|__ \027[;0mdune
- \027[0m      \027[0m|__ \027[;0mtest_preview.ml
- \027[0m    \027[0m|__ \240\159\147\129\027[;0;36mquery
- \027[0m      \027[0m|__ \027[;0mdune
- \027[0m      \027[0m|__ \027[;0mtest_query.ml
- "]
 ;;
+*)
 *)

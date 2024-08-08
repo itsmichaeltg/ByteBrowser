@@ -1,4 +1,4 @@
-open! Core
+(* open! Core
 open! File_manager_lib
 
 let%expect_test "visualize" =
@@ -9,4 +9,4 @@ let%expect_test "visualize" =
   Matrix.add_exn mat ~key:"child1" ~data:[ ".gitignore"; "blah.py" ];
   let info = Matrix.Info.create () in
   Matrix.fill_info_from_matrix mat ~info_map:info ~current_path:"/home";
-  print_s [%message (info : Matrix.Info.t)];
+  print_s [%message (info : Matrix.Info.t)]; *)

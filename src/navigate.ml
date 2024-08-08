@@ -22,17 +22,17 @@ let rename ~(model : State.t) new_name =
   in
   let siblings =
     (match Matrix.find (State.get_tree model) (State.get_parent model) with
-     | Some lst -> lst
-     | None -> [])
-    |> List.map ~f:(fun elem ->
+     | Some s -> s
+     | None -> String.Set.empty)
+    |> String.Set.map ~f:(fun elem ->
       match String.equal (State.get_current_path model) elem with
       | true -> new_path
       | false -> elem)
   in
   let _ =
-    match siblings with
-    | [] -> ()
-    | _ ->
+    if Set.is_empty siblings
+    then ()
+    else
       Matrix.set
         (State.get_tree model)
         ~key:(State.get_parent model)
@@ -225,11 +225,11 @@ let get_initial_state ~origin ~max_depth ~show_hidden ~sort : State.t =
   in
   let children =
     match Matrix.find tree origin with
-    | None -> []
+    | None -> String.Set.empty
     | Some children -> children
   in
   let initial_path =
-    match List.hd children with
+    match List.hd (children |> Set.to_list) with
     | None -> origin
     | Some first_child -> first_child
   in

@@ -208,12 +208,12 @@ let get_idx_by_dir t ~dir =
   match dir with
   | Up ->
     (try
-       (t.cursor - 1) % (Matrix.find_exn t.choices t.parent |> List.length)
+       (t.cursor - 1) % (Matrix.find_exn t.choices t.parent |> Set.length)
      with
      | _ -> 0)
   | Down ->
     (try
-       (t.cursor + 1) % (Matrix.find_exn t.choices t.parent |> List.length)
+       (t.cursor + 1) % (Matrix.find_exn t.choices t.parent |> Set.length)
      with
      | _ -> 0)
   | _ -> 0
@@ -238,13 +238,16 @@ let get_updated_model_for_rename t =
 ;;
 
 let remove_helper t ~parent ~child =
-  let siblings =
-    (match Matrix.find t.choices parent with Some lst -> lst | None -> [])
-    |> List.filter ~f:(fun elem -> String.equal child elem |> not)
+  let siblings : String.Set.t =
+    Set.remove
+      (match Matrix.find t.choices parent with
+       | Some s -> s
+       | None -> String.Set.empty)
+      child
   in
-  match siblings with
-  | [] -> ()
-  | _ -> Matrix.set t.choices ~key:parent ~data:siblings
+  if Set.is_empty siblings
+  then ()
+  else Matrix.set t.choices ~key:parent ~data:siblings
 ;;
 
 let get_updated_model_for_change_dir t =
@@ -260,10 +263,10 @@ let get_updated_model_for_move t =
       t.choices
       ~key:t.current_path
       ~data:
-        (Matrix.find_exn t.choices t.current_path
-         @ [ String.concat
-               [ t.current_path; "/"; Matrix.get_name t.move_from ]
-           ]);
+        (Set.add
+           (Matrix.find_exn t.choices t.current_path)
+           (String.concat
+              [ t.current_path; "/"; Matrix.get_name t.move_from ]));
     let _ =
       Format.sprintf {|mv %s %s|} t.move_from t.current_path
       |> Sys_unix.command
@@ -283,7 +286,7 @@ let get_updated_model_for_remove t =
 let get_idx t ~parent ~current_path =
   match Matrix.find t.choices parent with
   | Some lst ->
-    List.foldi lst ~init:0 ~f:(fun idx acc elem ->
+    List.foldi (lst |> Set.to_list) ~init:0 ~f:(fun idx acc elem ->
       if String.equal elem current_path then idx else acc)
   | None -> 0
 ;;
@@ -294,7 +297,7 @@ let starts_with str ~key =
 
 let get_first_str t ~key =
   Matrix.find_exn t.choices t.parent
-  |> List.fold_until
+  |> Set.fold_until
        ~init:None
        ~finish:(fun str -> str)
        ~f:(fun str i ->
@@ -311,7 +314,7 @@ let get_updated_model_for_shortcut t ~key =
   | Some lst ->
     let current_path =
       lst
-      |> List.fold_until
+      |> Set.fold_until
            ~init:(None, false)
            ~finish:(fun (str, b) ->
              match str, b with
@@ -333,30 +336,12 @@ let get_updated_model_for_shortcut t ~key =
   | None -> t
 ;;
 
-let rec fzf_helper t parent ~key ~map =
-  if starts_with parent ~key then Matrix.add_exn t.fzf ~key:parent ~data:[];
-  let siblings = Matrix.find map parent in
-  match siblings with
-  | Some lst ->
-    let data = lst |> List.filter ~f:(fun i -> starts_with i ~key) in
-    (match data with [] -> () | _ -> Matrix.set t.fzf ~key:parent ~data);
-    List.iter lst ~f:(fun i -> fzf_helper t i ~key ~map)
-  | None -> ()
-;;
-
-let fzf t parent ~key =
-  match Matrix.length t.fzf with
-  | 0 -> fzf_helper t parent ~key ~map:t.choices
-  | _ -> fzf_helper t parent ~key ~map:t.fzf
-;;
-
-let get_origin t = t.origin
-let get_fzf t = t.fzf
-
 let handle_up_and_down t ~dir =
   let cursor = get_idx_by_dir t ~dir in
   let current_path =
-    try List.nth_exn (Matrix.find_exn t.choices t.parent) cursor with
+    try
+      List.nth_exn (Matrix.find_exn t.choices t.parent |> Set.to_list) cursor
+    with
     | _ -> t.current_path
   in
   let tmp_model = { t with cursor } in
@@ -365,12 +350,12 @@ let handle_up_and_down t ~dir =
 
 let get_updated_model_for_right t =
   let current_path =
-    try Matrix.find_exn t.choices t.current_path with _ -> []
+    try Matrix.find_exn t.choices t.current_path with _ -> String.Set.empty
   in
-  if current_path |> List.is_empty
+  if current_path |> Set.is_empty
   then t
   else (
-    let current_path = List.hd_exn current_path in
+    let current_path = List.hd_exn (current_path |> Set.to_list) in
     let parent =
       if String.equal t.current_path current_path
       then t.parent

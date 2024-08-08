@@ -30,7 +30,7 @@ let rec find_paths_to_skim tree origin =
   match Matrix.find tree origin with
   | None -> [ origin ]
   | Some children ->
-    List.fold children ~init:[] ~f:(fun acc child ->
+    Set.fold children ~init:[] ~f:(fun acc child ->
       List.append acc (find_paths_to_skim tree child))
 ;;
 

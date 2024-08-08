@@ -39,7 +39,6 @@ val get_current_path : t -> string
 val get_is_writing : t -> bool
 val get_text : t -> Text_input.t
 val get_parent : t -> string
-val get_origin : t -> string
 val get_is_loading : t -> bool
 val get_summarization : t -> string
 val get_box_dimension : t -> int
@@ -51,8 +50,6 @@ val should_summarize : t -> bool
 val get_model_after_writing : t -> t
 val get_model_with_new_text : t -> Text_input.t -> t
 val get_model_with_new_current_path : t -> string -> t
-val fzf : t -> string -> key:string -> unit
-val get_fzf : t -> Matrix.t
 val get_matrix_info : t -> Matrix.Info.t
 
 val init

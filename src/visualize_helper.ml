@@ -202,7 +202,7 @@ let rec helper
               ~show_relative_dirs
               ~matrix_info
           in
-          List.fold current_children ~init ~f:(fun acc child ->
+          Set.fold current_children ~init ~f:(fun acc child ->
             helper
               ~so_far:acc
               tree
