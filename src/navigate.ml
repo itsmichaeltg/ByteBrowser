@@ -219,8 +219,8 @@ let get_initial_state ~origin ~max_depth ~show_hidden ~sort : State.t =
     Matrix.create ()
     |> Matrix.get_adjacency_matrix
          ~origin
-         ~max_depth:3
-         ~show_hidden:false
+         ~max_depth:2
+         ~show_hidden:true
          ~sort:true
   in
   let children =
