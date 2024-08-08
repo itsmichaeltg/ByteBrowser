@@ -121,16 +121,16 @@ let update event (model : State.t) =
     | Event.KeyDown (Enter, _modifier) ->
       (match State.get_start_chatting model with
        | true ->
-         let chat_so_far =
-           State.get_query_chat model
-           ^ Leaves.Text_input.current_text (State.get_text model)
+         let question =
+           (* State.get_query_chat model *)
+            Leaves.Text_input.current_text (State.get_text model)
          in
-         let updated_chat =
-           Querying.query chat_so_far ~info:(State.get_summarization model)
+         let new_chat =
+          Querying.query question ~info:(State.get_summarization model)
          in
          ( State.get_updated_model
              model
-             ~action:(Save_query_chat updated_chat)
+             ~action:(Save_query_chat new_chat)
          , Command.Noop )
        | false ->
          let com, model =
@@ -193,11 +193,7 @@ let get_view (model : State.t) ~origin ~max_depth =
 let get_initial_state ~origin ~max_depth ~show_hidden ~sort : State.t =
   let tree =
     Matrix.create ()
-    |> Matrix.get_adjacency_matrix
-         ~origin
-         ~max_depth
-         ~show_hidden
-         ~sort
+    |> Matrix.get_adjacency_matrix ~origin ~max_depth ~show_hidden ~sort
   in
   let children =
     match Matrix.find tree origin with
@@ -231,7 +227,6 @@ let get_initial_state ~origin ~max_depth ~show_hidden ~sort : State.t =
     ~is_moving:false
     ~move_from:""
     ~summarization:""
-    ~query_chat:""
     ~start_chatting:false
     ~seen_summarizations:(Map.empty (module String))
 ;;

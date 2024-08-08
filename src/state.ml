@@ -132,8 +132,15 @@ let get_updated_model_for_query t =
     { t with is_writing = true; text = blank_text; start_chatting = true }
 ;;
 
+let apply_styles_to_title title =
+  "\x1b[0;22;3;4;48;5;23;38;5;118m" ^ title
+
+let get_title path =
+  apply_styles_to_title
+    (Styles.normalize_string ("querying " ^ Matrix.get_name path))
+
 let get_updated_model_for_save_query_chat t ~chat =
-  { t with query_chat = chat; text = blank_text }
+  { t with query_chat = get_title t.current_path ^ "\n\n\x1b[0m" ^ chat; text = blank_text }
 ;;
 
 let get_model_with_new_current_path t new_current_path =
@@ -166,7 +173,6 @@ let init
   ~is_moving
   ~move_from
   ~summarization
-  ~query_chat
   ~start_chatting
   ~seen_summarizations
   ~matrix_info
@@ -183,7 +189,7 @@ let init
   ; is_moving
   ; move_from
   ; summarization
-  ; query_chat
+  ; query_chat = get_title current_path ^ "\n\n\x1b[0m"
   ; start_chatting
   ; seen_summarizations
   ; is_loading = false
@@ -395,8 +401,12 @@ let get_updated_model_for_reduce_tree t =
 
 let get_updated_model_for_collapse t =
   match Set.mem t.paths_to_collapse t.current_path with
-  | true -> { t with paths_to_collapse = Set.remove t.paths_to_collapse t.current_path }
-  | false -> { t with paths_to_collapse = Set.add t.paths_to_collapse t.current_path }
+  | true ->
+    { t with
+      paths_to_collapse = Set.remove t.paths_to_collapse t.current_path
+    }
+  | false ->
+    { t with paths_to_collapse = Set.add t.paths_to_collapse t.current_path }
 ;;
 
 let number_to_int number =

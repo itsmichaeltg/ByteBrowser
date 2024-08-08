@@ -63,7 +63,6 @@ val init
   -> is_moving:bool
   -> move_from:string
   -> summarization:string
-  -> query_chat:string
   -> start_chatting:bool
   -> seen_summarizations:(string, string, String.comparator_witness) Map.t
   -> matrix_info:Matrix.Info.t
