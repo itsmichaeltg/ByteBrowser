@@ -7,10 +7,7 @@
 open Riot
 module Gadt = Gadt
 
-type reason =
-  | Normal
-  | Shutdown
-
+type reason = Normal | Shutdown
 type timeout = int
 
 type 'continue continue =
@@ -20,30 +17,13 @@ type 'continue continue =
   | Continue of 'continue
 
 type ('res, 'state, 'continue) call_reply =
-  | Reply of
-      { reply : 'res
-      ; state : 'state
-      ; mode : 'continue continue
-      }
-  | No_reply of
-      { state : 'state
-      ; mode : 'continue continue
-      }
-  | Stop of
-      { reason : reason
-      ; reply : 'res option
-      ; state : 'state
-      }
+  | Reply of { reply : 'res; state : 'state; mode : 'continue continue }
+  | No_reply of { state : 'state; mode : 'continue continue }
+  | Stop of { reason : reason; reply : 'res option; state : 'state }
 
 type ('state, 'continue) cast_reply =
-  | No_reply of
-      { state : 'state
-      ; mode : 'continue continue
-      }
-  | Stop of
-      { reason : reason
-      ; state : 'state
-      }
+  | No_reply of { state : 'state; mode : 'continue continue }
+  | Stop of { reason : reason; state : 'state }
 
 type ('state, 'continue) init_result =
   | Init_ok of 'state * 'continue continue
@@ -61,11 +41,8 @@ module type Base_server = sig
   val init : args -> (state, continue) init_result
   val terminate : reason -> state -> unit
 
-  val handle_call
-    :  call_req
-    -> Pid.t
-    -> state
-    -> (response, state, continue) call_reply
+  val handle_call :
+    call_req -> Pid.t -> state -> (response, state, continue) call_reply
 
   val handle_cast : cast_req -> state -> (state, continue) cast_reply
 end
@@ -81,18 +58,15 @@ module Gen_server (B : Base_server) = struct
   let rec loop state =
     yield ();
     loop state
-  ;;
 
   let init args =
     match B.init args with
     | Init_ok (state, _continue) -> loop state
     | Init_error | Ignore -> ()
-  ;;
 
   let start_link args =
     let pid = spawn_link (fun () -> init args) in
     Ok (Pid pid)
-  ;;
 
   let call (Pid pid) req =
     let uref = Uid.next () in
@@ -104,7 +78,6 @@ module Gen_server (B : Base_server) = struct
     match receive ~select () with
     | Res (_, res) -> res
     | _ -> failwith "wrong message!"
-  ;;
 
   let cast (Pid pid) req = send pid (Cast (Uid.next (), req))
 end
@@ -133,7 +106,6 @@ end = struct
 
     let handle_call _req _from state =
       Reply { reply = Response; state; mode = Yield }
-    ;;
 
     let handle_cast _req state = No_reply { state; mode = Yield }
   end
@@ -148,6 +120,5 @@ let main () =
   let (Ok pid) = Twitch.(start_link { verbose = true }) in
   let _ = Twitch.is_connected pid in
   Logger.info (fun f -> f "started")
-;;
 
 let () = Riot.run @@ main
