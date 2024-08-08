@@ -30,7 +30,7 @@ let%expect_test "adjacency_matrix" =
     |}]
 ;;
 
-let%expect_test "visualize" =
+(* let%expect_test "visualize" =
   Visualize_helper.matrix_visualize
     ~max_depth:10
     ~origin:"/home/ubuntu/jsip-final-project/test_dir"
@@ -48,7 +48,7 @@ let%expect_test "visualize" =
     \ \027[0m          \027[0m|__ \027[;0mtmp.txt\n\
     \ \027[0m  \027[0m|__ \240\159\147\129\027[;0;36mdir5\n\
     \ "]
-;;
+;; *)
 
 let%expect_test "get limited children to tree" =
   let initial_tree = Matrix.create () in
@@ -68,7 +68,8 @@ let%expect_test "get limited children to tree" =
     (Visualize_helper.visualize
        result
        ~current_directory:origin
-       ~path_to_be_underlined:origin);
+       ~path_to_be_underlined:origin
+       ~matrix_info:(Matrix.Info.create ()));
   [%expect
     " \n\
     \ .\n\

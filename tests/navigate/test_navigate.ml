@@ -52,6 +52,7 @@ let get_init_model ~choices ~current_path ~cursor =
     ~query_chat:""
     ~start_chatting:false
     ~seen_summarizations:(Map.empty (module String))
+    ~matrix_info:(Matrix.Info.create ())
 ;;
 
 let%expect_test "navigate-left" =
@@ -60,7 +61,8 @@ let%expect_test "navigate-left" =
     (Visualize_helper.visualize
        mat
        ~current_directory:"/home"
-       ~path_to_be_underlined:"/home/home_dir1/child1/.gitignore");
+       ~path_to_be_underlined:"/home/home_dir1/child1/.gitignore"
+       ~matrix_info:(Matrix.Info.create ()));
   let model =
     get_init_model
       ~choices:mat
@@ -72,7 +74,8 @@ let%expect_test "navigate-left" =
     (Visualize_helper.visualize
        (State.get_tree new_model)
        ~current_directory:"/home"
-       ~path_to_be_underlined:(State.get_current_path new_model));
+       ~path_to_be_underlined:(State.get_current_path new_model)
+       ~matrix_info:(Matrix.Info.create ()));
   [%expect
     {|
     .
@@ -98,19 +101,18 @@ let%expect_test "navigate-right" =
     (Visualize_helper.visualize
        mat
        ~current_directory:"/home"
-       ~path_to_be_underlined:"/home/home_dir1");
+       ~path_to_be_underlined:"/home/home_dir1"
+       ~matrix_info:(Matrix.Info.create ()));
   let model =
-    get_init_model
-      ~choices:mat
-      ~current_path:"/home/home_dir1"
-      ~cursor:0
+    get_init_model ~choices:mat ~current_path:"/home/home_dir1" ~cursor:0
   in
   let new_model = State.get_updated_model model ~action:(Cursor Right) in
   print_endline
     (Visualize_helper.visualize
        (State.get_tree new_model)
        ~current_directory:"/home"
-       ~path_to_be_underlined:(State.get_current_path new_model));
+       ~path_to_be_underlined:(State.get_current_path new_model)
+       ~matrix_info:(Matrix.Info.create ()));
   let newer_model =
     State.get_updated_model new_model ~action:(Cursor Right)
   in
@@ -118,7 +120,8 @@ let%expect_test "navigate-right" =
     (Visualize_helper.visualize
        (State.get_tree newer_model)
        ~current_directory:"/home"
-       ~path_to_be_underlined:(State.get_current_path newer_model));
+       ~path_to_be_underlined:(State.get_current_path newer_model)
+       ~matrix_info:(Matrix.Info.create ()));
   let newest_model =
     State.get_updated_model newer_model ~action:(Cursor Right)
   in
@@ -126,7 +129,8 @@ let%expect_test "navigate-right" =
     (Visualize_helper.visualize
        (State.get_tree newest_model)
        ~current_directory:"/home"
-       ~path_to_be_underlined:(State.get_current_path newest_model));
+       ~path_to_be_underlined:(State.get_current_path newest_model)
+       ~matrix_info:(Matrix.Info.create ()));
   [%expect
     {|
     .
@@ -166,25 +170,25 @@ let%expect_test "navigate-up" =
     (Visualize_helper.visualize
        mat
        ~current_directory:"/home"
-       ~path_to_be_underlined:"/home/home_dir2");
+       ~path_to_be_underlined:"/home/home_dir2"
+       ~matrix_info:(Matrix.Info.create ()));
   let model =
-    get_init_model
-      ~choices:mat
-      ~current_path:"/home/home_dir2"
-      ~cursor:1
+    get_init_model ~choices:mat ~current_path:"/home/home_dir2" ~cursor:1
   in
   let new_model = State.get_updated_model model ~action:(Cursor Up) in
   print_endline
     (Visualize_helper.visualize
        (State.get_tree new_model)
        ~current_directory:"/home"
-       ~path_to_be_underlined:(State.get_current_path new_model));
+       ~path_to_be_underlined:(State.get_current_path new_model)
+       ~matrix_info:(Matrix.Info.create ()));
   let newer_model = State.get_updated_model new_model ~action:(Cursor Up) in
   print_endline
     (Visualize_helper.visualize
        (State.get_tree newer_model)
        ~current_directory:"/home"
-       ~path_to_be_underlined:(State.get_current_path newer_model));
+       ~path_to_be_underlined:(State.get_current_path newer_model)
+       ~matrix_info:(Matrix.Info.create ()));
   [%expect
     {|
     .
@@ -217,19 +221,18 @@ let%expect_test "navigate-down" =
     (Visualize_helper.visualize
        mat
        ~current_directory:"/home"
-       ~path_to_be_underlined:"/home/home_dir1");
+       ~path_to_be_underlined:"/home/home_dir1"
+       ~matrix_info:(Matrix.Info.create ()));
   let model =
-    get_init_model
-      ~choices:mat
-      ~current_path:"/home/home_dir1"
-      ~cursor:0
+    get_init_model ~choices:mat ~current_path:"/home/home_dir1" ~cursor:0
   in
   let new_model = State.get_updated_model model ~action:(Cursor Down) in
   print_endline
     (Visualize_helper.visualize
        (State.get_tree new_model)
        ~current_directory:"/home"
-       ~path_to_be_underlined:(State.get_current_path new_model));
+       ~path_to_be_underlined:(State.get_current_path new_model)
+       ~matrix_info:(Matrix.Info.create ()));
   let newer_model =
     State.get_updated_model new_model ~action:(Cursor Down)
   in
@@ -237,7 +240,8 @@ let%expect_test "navigate-down" =
     (Visualize_helper.visualize
        (State.get_tree newer_model)
        ~current_directory:"/home"
-       ~path_to_be_underlined:(State.get_current_path newer_model));
+       ~path_to_be_underlined:(State.get_current_path newer_model)
+       ~matrix_info:(Matrix.Info.create ()));
   [%expect
     {|
     .

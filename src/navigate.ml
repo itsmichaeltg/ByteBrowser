@@ -151,6 +151,7 @@ let visualize_tree (model : State.t) ~origin ~max_depth =
       (State.get_tree model)
       ~current_directory:origin
       ~path_to_be_underlined:(State.get_current_path model)
+      ~matrix_info:(State.get_matrix_info model)
   in
   (* "\x1b[0mPress ^C to quit\n" *)
   Format.asprintf "%s" tree
@@ -168,14 +169,13 @@ let get_view (model : State.t) ~origin ~max_depth =
   | true -> State.get_preview model
   | false ->
     (match State.get_start_chatting model with
-     | true -> 
+     | true ->
        State.get_query_chat model
        ^ Leaves.Text_input.view (State.get_text model)
      | false ->
        (match State.should_summarize model with
         | true -> State.get_summarization model
-        | false -> visualize_tree model ~origin ~max_depth
-          ))
+        | false -> visualize_tree model ~origin ~max_depth))
 ;;
 
 let get_initial_state ~origin ~max_depth ~show_hidden ~sort : State.t =
@@ -193,8 +193,16 @@ let get_initial_state ~origin ~max_depth ~show_hidden ~sort : State.t =
     | None -> origin
     | Some first_child -> first_child
   in
+  let matrix_info = Matrix.Info.create () in
+  Matrix.fill_info_from_matrix
+    tree
+    ~info_map:matrix_info
+    ~current_path:origin
+    ~horizontal_depth:0
+    ~vertical_depth:0;
   State.init
     ~choices:tree
+    ~matrix_info
     ~current_path:initial_path
     ~origin
     ~parent:

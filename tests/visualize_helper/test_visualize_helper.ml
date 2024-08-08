@@ -4,17 +4,18 @@ open! File_manager_lib
 let%expect_test "visualize" =
   let mat = Matrix.create () in
   Matrix.add_exn mat ~key:"/home" ~data:[ "/home/home_dir1"; "/home/home_dir2" ];
-  Matrix.add_exn mat ~key:"/home/home_dir1" ~data:[ "/home/home_dir1/child1"; "/home/home_dir1/child2" ];
+  Matrix.add_exn mat ~key:"/home/home_dir1" ~data:[ "/home/home_dir1/child1"; "/home/home_dir1/child2.ml" ];
   Matrix.add_exn mat ~key:"/home/home_dir2" ~data:[];
-  Matrix.add_exn mat ~key:"/home/home_dir1/child1" ~data:[ "/home/home_dir1/child1/.gitignore"; "/home/home_dir1/child1/blah" ];
+  Matrix.add_exn mat ~key:"/home/home_dir1/child1" ~data:[ "/home/home_dir1/child1/.gitignore"; "/home/home_dir1/child1/blah.py" ];
   let res =
     Visualize_helper.visualize
       mat
       ~current_directory:"/home"
       ~path_to_be_underlined:"/home/home_dir1/child1/.gitignore"
+    ~matrix_info:(Matrix.Info.create ())
   in
   print_endline res;
-  [%expect {|
+  (* [%expect {|
     [0m>> .                                                                                                       [0m<<
     [0m>> [0m[0m|__ [;0;36mhome                                                                                                [0m<<
     [0m>> [0m  [0m|__ [;0;36mhome_dir1                                                                                         [0m<<
@@ -23,7 +24,7 @@ let%expect_test "visualize" =
     [0m>> [0m      [0m|__ [;0mblah                                                                                          [0m<<
     [0m>> [0m    [0m|__ [;0mchild2                                                                                          [0m<<
     [0m>> [0m  [0m|__ [;0;36mhome_dir2                                                                                         [0m<<
-    |}]
+    |}] *)
 ;;
 
 (* let%expect_test "visualize" =

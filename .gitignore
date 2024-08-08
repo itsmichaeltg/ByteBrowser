@@ -9,3 +9,6 @@ bin/query_info.txt
 bin/files.txt
 .snapshots/
 log.txt
+bin/code_to_be_highlighted.txt
+bin/highlighted_code.txt
+bin/path_to_preview.txt

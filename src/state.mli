@@ -40,6 +40,7 @@ val should_summarize : t -> bool
 val get_model_after_writing : t -> t
 val get_model_with_new_text : t -> Text_input.t -> t
 val get_model_with_new_current_path : t -> string -> t
+val get_matrix_info : t -> Matrix.Info.t
 
 val init
   :  choices:Matrix.t
@@ -57,4 +58,5 @@ val init
   -> query_chat:string
   -> start_chatting:bool
   -> seen_summarizations:(string, string, String.comparator_witness) Map.t
+  -> matrix_info:Matrix.Info.t
   -> t
