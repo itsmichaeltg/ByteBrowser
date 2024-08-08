@@ -402,7 +402,9 @@ let get_updated_model_for_reduce_tree t =
 ;;
 
 let get_updated_model_for_collapse t =
-  { t with paths_to_collapse = Set.add t.paths_to_collapse t.current_path }
+  match Set.mem t.paths_to_collapse t.current_path with
+  | true -> { t with paths_to_collapse = Set.remove t.paths_to_collapse t.current_path }
+  | false -> { t with paths_to_collapse = Set.add t.paths_to_collapse t.current_path }
 ;;
 
 let number_to_int number =
@@ -442,5 +444,6 @@ let get_updated_model t ~(action : action) =
     get_updated_model_for_updating_box_dimensions t ~number
   | Toggle_show_relative_dirs ->
     get_updated_model_for_toggle_show_relative_dirs t
-  | Toggle_show_hidden_files -> get_updated_model_for_toggle_show_hidden_files t
+  | Toggle_show_hidden_files ->
+    get_updated_model_for_toggle_show_hidden_files t
 ;;

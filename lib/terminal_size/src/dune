@@ -1,0 +1,7 @@
+(library
+  (public_name terminal_size)
+  (foreign_stubs
+    (language c)
+    (names terminal_size_stubs)
+  )
+)
