@@ -67,6 +67,8 @@ let move_arround event (model : State.t) =
   | _ -> model, Command.Noop
 ;;
 
+let is_num k = Char.is_digit (Char.of_string k)
+
 let update event (model : State.t) =
   let open Minttea in
   if State.get_is_moving model
@@ -79,34 +81,10 @@ let update event (model : State.t) =
     | Event.KeyDown (Right, _modifier)
     | Event.KeyDown (Up, _modifier) ->
       move_arround event model
-    | Event.KeyDown (Key "1", _modifier) ->
-      ( State.get_updated_model model ~action:(Update_box_dimension "1")
+    | Event.KeyDown (Key k, Ctrl) when is_num k ->
+      ( State.get_updated_model model ~action:(Update_box_dimension k)
       , Command.Noop )
-    | Event.KeyDown (Key "2", _modifier) ->
-      ( State.get_updated_model model ~action:(Update_box_dimension "2")
-      , Command.Noop )
-    | Event.KeyDown (Key "3", _modifier) ->
-      ( State.get_updated_model model ~action:(Update_box_dimension "3")
-      , Command.Noop )
-    | Event.KeyDown (Key "4", _modifier) ->
-      ( State.get_updated_model model ~action:(Update_box_dimension "4")
-      , Command.Noop )
-    | Event.KeyDown (Key "5", _modifier) ->
-      ( State.get_updated_model model ~action:(Update_box_dimension "5")
-      , Command.Noop )
-    | Event.KeyDown (Key "6", _modifier) ->
-      ( State.get_updated_model model ~action:(Update_box_dimension "6")
-      , Command.Noop )
-    | Event.KeyDown (Key "7", _modifier) ->
-      ( State.get_updated_model model ~action:(Update_box_dimension "7")
-      , Command.Noop )
-    | Event.KeyDown (Key "8", _modifier) ->
-      ( State.get_updated_model model ~action:(Update_box_dimension "8")
-      , Command.Noop )
-    | Event.KeyDown (Key "9", _modifier) ->
-      ( State.get_updated_model model ~action:(Update_box_dimension "9")
-      , Command.Noop )
-    | Event.KeyDown (Key "n", _modifier) ->
+    | Event.KeyDown (Key "n", Ctrl) ->
       ( State.get_updated_model model ~action:Toggle_show_relative_dirs
       , Command.Noop )
     | Event.KeyDown (Escape, _modifier) -> model, exit 0
@@ -221,9 +199,9 @@ let get_initial_state ~origin ~max_depth ~show_hidden ~sort : State.t =
     Matrix.create ()
     |> Matrix.get_adjacency_matrix
          ~origin
-         ~max_depth:3
-         ~show_hidden:false
-         ~sort:true
+         ~max_depth
+         ~show_hidden
+         ~sort
   in
   let children =
     match Matrix.find tree origin with
