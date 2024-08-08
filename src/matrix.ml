@@ -1,6 +1,6 @@
 open! Core
 
-type t = (string, string list) Hashtbl.t [@@deriving sexp_of]
+type t = (string, String.Set.t) Hashtbl.t [@@deriving sexp_of]
 
 let find (t : t) b = Hashtbl.find t b
 let find_exn (t : t) b = Hashtbl.find_exn t b
@@ -44,25 +44,25 @@ let get_files_in_dir origin ~show_hidden ~sort =
     then (try Sys_unix.ls_dir origin with _ -> [])
     else write_and_read origin
   in
-  if show_hidden
-  then data
-  else List.filter data ~f:(fun i -> hidden i |> not)
+  let data = data |> String.Set.of_list in
+  if show_hidden then data else Set.filter data ~f:(fun i -> hidden i |> not)
 ;;
 
 let rec get_adjacency_matrix t ~sort ~show_hidden ~origin ~max_depth =
   match max_depth with
   | 0 ->
     (match Sys_unix.is_directory origin with
-     | `Yes -> add_exn t ~key:origin ~data:[]
+     | `Yes -> add_exn t ~key:origin ~data:String.Set.empty
      | _ -> ());
     t
   | _ ->
     let data =
-      List.map (get_files_in_dir origin ~show_hidden ~sort) ~f:(fun i ->
-        String.concat [ origin; "/"; i ])
+      String.Set.map
+        (get_files_in_dir origin ~show_hidden ~sort)
+        ~f:(fun i -> String.concat [ origin; "/"; i ])
     in
     add_exn t ~key:origin ~data;
-    List.fold ~init:t data ~f:(fun _ i ->
+    Set.fold ~init:t data ~f:(fun _ i ->
       match Sys_unix.is_directory i with
       | `Yes ->
         get_adjacency_matrix
@@ -74,69 +74,25 @@ let rec get_adjacency_matrix t ~sort ~show_hidden ~origin ~max_depth =
       | _ -> get_adjacency_matrix t ~origin:i ~max_depth:0 ~show_hidden ~sort)
 ;;
 
-let rec get_limited_adjacency_matrix
-  t
-  ~sort
-  ~show_hidden
-  ~origin
-  ~max_depth
-  ~num_to_show
-  =
-  match max_depth with
-  | 0 ->
-    (match Sys_unix.is_directory origin with
-     | `Yes -> add_exn t ~key:origin ~data:[]
-     | _ -> ());
-    t
-  | _ ->
-    let children = get_files_in_dir origin ~show_hidden ~sort in
-    let limited_children =
-      List.slice children 0 (Int.min num_to_show (List.length children))
-    in
-    let data =
-      List.map limited_children ~f:(fun i ->
-        String.concat [ origin; "/"; i ])
-    in
-    add_exn t ~key:origin ~data;
-    List.fold ~init:t data ~f:(fun _ i ->
-      match Sys_unix.is_directory i with
-      | `Yes ->
-        get_limited_adjacency_matrix
-          t
-          ~origin:i
-          ~max_depth:(max_depth - 1)
-          ~num_to_show
-          ~show_hidden
-          ~sort
-      | _ ->
-        get_limited_adjacency_matrix
-          t
-          ~origin:i
-          ~max_depth:0
-          ~num_to_show
-          ~show_hidden
-          ~sort)
-;;
-
 let fold t ~f ~init = Hashtbl.fold t ~init ~f
 
-let to_list t =
+let to_set t =
   fold
     t
     ~init:(Set.empty (module String))
     ~f:(fun ~key ~data acc ->
-      Set.union (String.Set.of_list data) (Set.add acc key))
-  |> Set.to_list
+      Set.union data (Set.add acc key))
 ;;
 
 let add_to_matrix map ~parent ~child =
-  let data = match find map parent with Some lst -> lst | None -> [] in
-  if List.exists data ~f:(fun i -> String.equal i child) |> not
-  then set map ~key:parent ~data:(child :: data);
+  let data =
+    match find map parent with Some s -> s | None -> String.Set.empty
+  in
+  set map ~key:parent ~data:(Set.add data child);
   match Sys_unix.is_directory child with
   | `Yes ->
     let child_data =
-      match find map child with Some lst -> lst | None -> []
+      match find map child with Some s -> s | None -> String.Set.empty
     in
     set map ~key:parent ~data:child_data
   | _ -> ()
@@ -158,7 +114,7 @@ let of_list ?origin lst =
 ;;
 
 let filter ?origin t ~search =
-  to_list t
-  |> List.filter ~f:(fun str -> Fuzzy.fuzzy_find (get_name str) search)
-  |> of_list ?origin
+  to_set t
+  |> Set.filter ~f:(fun str -> Fuzzy.fuzzy_find (get_name str) search)
+  |> Set.to_list |> of_list ?origin
 ;;

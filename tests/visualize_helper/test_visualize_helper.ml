@@ -3,10 +3,10 @@ open! File_manager_lib
 
 let%expect_test "visualize" =
   let mat = Matrix.create () in
-  Matrix.add_exn mat ~key:"/home" ~data:[ "/home/home_dir1"; "/home/home_dir2" ];
-  Matrix.add_exn mat ~key:"/home/home_dir1" ~data:[ "/home/home_dir1/child1"; "/home/home_dir1/child2" ];
-  Matrix.add_exn mat ~key:"/home/home_dir2" ~data:[];
-  Matrix.add_exn mat ~key:"/home/home_dir1/child1" ~data:[ "/home/home_dir1/child1/.gitignore"; "/home/home_dir1/child1/blah" ];
+  Matrix.add_exn mat ~key:"/home" ~data:([ "/home/home_dir1"; "/home/home_dir2" ] |> String.Set.of_list);
+  Matrix.add_exn mat ~key:"/home/home_dir1" ~data:([ "/home/home_dir1/child1"; "/home/home_dir1/child2" ] |> String.Set.of_list);
+  Matrix.add_exn mat ~key:"/home/home_dir2" ~data:String.Set.empty;
+  Matrix.add_exn mat ~key:"/home/home_dir1/child1" ~data:([ "/home/home_dir1/child1/.gitignore"; "/home/home_dir1/child1/blah" ] |> String.Set.of_list);
   let res =
     Visualize_helper.visualize
       mat

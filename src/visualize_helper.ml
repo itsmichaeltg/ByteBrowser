@@ -99,7 +99,7 @@ let rec helper
         ~so_far
         ~path_to_be_underlined
     in
-    List.fold current_children ~init ~f:(fun acc child ->
+    Set.fold current_children ~init ~f:(fun acc child ->
       helper
         ~so_far:acc
         tree
