@@ -13,16 +13,13 @@ let cursor_func =
 ;;
 
 let search ~(model : State.t) search =
-  let new_matrix = Matrix.filter
-       ~origin:(State.get_origin model)
-       (State.get_full_options model)
-       ~search in
-       print_endline search;
-
-  print_s [%sexp (new_matrix:Matrix.t)];
-  State.get_updated_choices
-    model
-    new_matrix
+  let new_matrix =
+    Matrix.filter
+      ~origin:(State.get_origin model)
+      (State.get_full_options model)
+      ~search
+  in
+  State.get_updated_choices model new_matrix
 ;;
 
 let rename ~(model : State.t) new_name =
@@ -34,7 +31,9 @@ let rename ~(model : State.t) new_name =
       ]
   in
   let siblings =
-    (match Matrix.find (State.get_tree model) (State.get_parent model) with
+    (match
+       Matrix.find (State.get_curr_choices model) (State.get_parent model)
+     with
      | Some s -> s
      | None -> String.Set.empty)
     |> String.Set.map ~f:(fun elem ->
@@ -47,7 +46,7 @@ let rename ~(model : State.t) new_name =
     then ()
     else
       Matrix.set
-        (State.get_tree model)
+        (State.get_curr_choices model)
         ~key:(State.get_parent model)
         ~data:siblings
   in
@@ -95,6 +94,9 @@ let update event (model : State.t) =
     | Event.KeyDown (Right, _modifier)
     | Event.KeyDown (Up, _modifier) ->
       move_arround event model
+    | Event.KeyDown (Enter, _modifier) ->
+      let model = State.get_updated_model model ~action:Cd in
+      model, exit 0
     | Event.KeyDown (Key k, Ctrl) when is_num k ->
       ( State.get_updated_model model ~action:(Update_box_dimension k)
       , Command.Noop )
@@ -115,6 +117,8 @@ let update event (model : State.t) =
     | Event.KeyDown (Key "i", Ctrl) ->
       ( State.get_updated_model model ~action:Toggle_show_hidden_files
       , Command.Noop )
+    | Event.KeyDown (Key "b", Ctrl) ->
+      State.get_updated_model model ~action:Original, Command.Noop
     | Event.KeyDown (Key "o", Ctrl) ->
       State.get_updated_model model ~action:Search, Command.Noop
     | Event.KeyDown (Key "h", Ctrl) ->
@@ -164,6 +168,13 @@ let update event (model : State.t) =
              Leaves.Text_input.current_text (State.get_text model)
              |> search ~model
            in
+           Out_channel.write_all
+             "./tmp"
+             ~data:
+               (Sexp.to_string
+                  [%message
+                    (State.get_curr_choices model : Matrix.t)
+                      (State.get_origin model : string)]);
            State.get_model_after_writing model, Command.Noop))
     | Event.KeyDown ((Key _ | Space), _modifier)
       when State.get_start_chatting model ->
@@ -183,7 +194,7 @@ let update event (model : State.t) =
 let visualize_tree (model : State.t) ~origin ~max_depth =
   let tree =
     Visualize_helper.visualize
-      (State.get_tree model)
+      (State.get_curr_choices model)
       ~current_directory:origin
       ~path_to_be_underlined:(State.get_current_path model)
       ~matrix_info:(State.get_matrix_info model)

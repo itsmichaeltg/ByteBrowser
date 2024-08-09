@@ -1,6 +1,6 @@
 open! Core
 
-type t = (string, String.Set.t) Hashtbl.t [@@deriving sexp_of]
+type t = (String.Set.t) String.Table.t [@@deriving sexp, of_sexp, sexp_of]
 
 type table =
   { horizontal_depth : int
@@ -179,7 +179,7 @@ let add_to_matrix map ~parent ~child =
     let child_data =
       match find map child with Some s -> s | None -> String.Set.empty
     in
-    set map ~key:parent ~data:child_data
+    set map ~key:child ~data:child_data
   | _ -> ()
 ;;
 
@@ -192,16 +192,14 @@ let rec add_parent_path ?(origin = "") map ~path =
     add_parent_path map ~origin ~path:parent)
 ;;
 
-let of_list ?origin lst =
+let of_set ?origin set =
   let map = create () in
-  List.iter lst ~f:(fun path -> add_parent_path map ?origin ~path);
+  Set.iter set ~f:(fun path -> add_parent_path map ?origin ~path);
   map
 ;;
 
 let filter ?origin t ~search =
-  let s =
-    to_set t |> Set.to_list
-    |> List.filter ~f:(fun str -> Fuzzy.fuzzy_find (get_name str) search)
-  in
-  s |> of_list ?origin
+  to_set t
+  |> Set.filter ~f:(fun str -> Fuzzy.fuzzy_find str search)
+  |> of_set ?origin
 ;;

@@ -10,6 +10,7 @@ type dir =
   | Right
 
 type action =
+  | Original
   | Search
   | Cursor of dir
   | Shortcut of string
@@ -33,7 +34,7 @@ val remove_last_path : string -> string
 val get_preview : t -> string
 val get_show_relative_dirs : t -> bool
 val get_show_hidden_files : t -> bool
-val get_tree : t -> Matrix.t
+val get_curr_choices : t -> Matrix.t
 val get_show_reduced_tree : t -> bool
 val get_paths_to_collapse : t -> (string, String.comparator_witness) Set.t
 val get_current_path : t -> string

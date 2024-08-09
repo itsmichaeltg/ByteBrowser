@@ -1,6 +1,6 @@
 open! Core
 
-type t [@@deriving sexp_of]
+type t [@@deriving sexp, of_sexp, sexp_of]
 
 type table =
   { horizontal_depth : int
@@ -45,6 +45,6 @@ val mem : t -> string -> bool
 val set : t -> key:string -> data:Core.String.Set.t -> unit
 val add_exn : t -> key:string -> data:Core.String.Set.t -> unit
 val length : t -> int
-val of_list : ?origin:string -> string list -> t
+val of_set : ?origin:string -> Core.String.Set.t -> t
 val to_set : t -> Core.String.Set.t
 val filter : ?origin:string -> t -> search:string -> t

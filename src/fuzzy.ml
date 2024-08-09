@@ -182,8 +182,9 @@ let sw_algo string_1 string_2 =
   let alignmnet =
     find_max_idx scoring_matrix |> traceback ~matrix:scoring_matrix
   in
-  List.filter alignmnet ~f:(fun (i, j) ->
-    Char.equal (String.get string_1 (i - 1)) (String.get string_2 (j - 1)))
+  alignmnet
+  (* List.filter alignmnet ~f:(fun (i, j) ->
+    Char.equal (String.get string_1 (i - 1)) (String.get string_2 (j - 1))) *)
 ;;
 
 let%expect_test "sw" =
@@ -196,4 +197,31 @@ let fuzzy_find str_1 str_2 =
   let str_1, str_2 = String.lowercase str_1, String.lowercase str_2 in
   let len = List.length (sw_algo str_1 str_2) in 
   len >= String.length str_2
+;;
+
+let%expect_test "fzf" = 
+let my_files = [
+  ".ocamlformat";
+  "src";
+  ".git";
+  "log.txt";
+  ".vscode";
+  "tests";
+  "README.md";
+  "test_dir";
+  "lib";
+  "tmp";
+  "_build";
+  ".snapshots";
+  ".gitignore";
+  ".env";
+  "demos";
+  "file_manager_lib.opam";
+  "demo.cast";
+  "bb";
+  "bin"
+] in
+  let filtered = List.filter my_files ~f:(fun str -> fuzzy_find str "tmp") in
+  print_s [%sexp (filtered : string list)];
+  [%expect {| ["home_tmp] |}]
 ;;

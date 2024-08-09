@@ -33,11 +33,10 @@ type t =
   ; summarization : string
   ; query_chat : string
   ; start_chatting : bool
-  ; seen_summarizations : (string, string, String.comparator_witness) Map.t
+  ; seen_summarizations : string String.Map.t
   ; is_loading : bool
   ; loading_spinner : Sprite.t
-  ; fzf : Matrix.t
-  ; paths_to_collapse : (string, String.comparator_witness) Set.t
+  ; paths_to_collapse : String.Set.t
   ; box_dimention : int
   ; show_relative_dirs : bool
   ; show_hidden_files : bool
@@ -50,6 +49,7 @@ type dir =
   | Right
 
 type action =
+  | Original
   | Search
   | Cursor of dir
   | Shortcut of string
@@ -87,7 +87,7 @@ let get_show_reduced_tree t = t.show_reduced_tree
 let get_query_chat t = t.query_chat
 let get_start_chatting t = t.start_chatting
 let get_is_moving t = t.is_moving
-let get_tree t = t.choices
+let get_curr_choices t = t.choices
 let get_is_loading t = t.is_loading
 let get_current_path t = t.current_path
 let get_box_dimension t = t.box_dimention
@@ -98,7 +98,11 @@ let get_is_renaming t = t.is_renaming
 let get_parent t = t.parent
 let get_is_writing t = t.is_writing
 let get_preview t = t.preview
-let get_model_after_writing t = { t with is_writing = false }
+
+let get_model_after_writing t =
+  { t with is_writing = false; is_renaming = false }
+;;
+
 let get_model_with_new_text t new_text = { t with text = new_text }
 let get_matrix_info t = t.matrix_info
 let get_paths_to_collapse t = t.paths_to_collapse
@@ -117,7 +121,7 @@ let get_updated_model_for_summarize t =
     (match Map.find t.seen_summarizations t.current_path with
      | None ->
        let new_summarization =
-         Summary.generate (get_tree t) t.current_path
+         Summary.generate (get_curr_choices t) t.current_path
        in
        let new_seen_summarizations =
          Map.add_exn
@@ -205,7 +209,6 @@ let init
   ; is_renaming = false
   ; is_loading = false
   ; loading_spinner = Spinner.dot
-  ; fzf = Matrix.create ()
   ; matrix_info
   ; paths_to_collapse = Set.empty (module String)
   ; box_dimention = 5
@@ -242,7 +245,7 @@ let get_updated_model_for_preview t =
 let get_updated_model_for_search t =
   let is_writing = true in
   let text =
-    Leaves.Text_input.make "" ~placeholder:"" ~cursor:cursor_func ()
+    Leaves.Text_input.make "" ~placeholder:"Search" ~cursor:cursor_func ()
   in
   { t with is_writing; text }
 ;;
@@ -267,6 +270,11 @@ let remove_helper t ~parent ~child =
   if Set.is_empty siblings
   then ()
   else Matrix.set t.choices ~key:parent ~data:siblings
+;;
+
+let get_updated_model_for_original t =
+  let choices = t.full_options in
+  { t with choices }
 ;;
 
 let get_updated_model_for_change_dir t =
@@ -464,4 +472,5 @@ let get_updated_model t ~(action : action) =
     get_updated_model_for_toggle_show_relative_dirs t
   | Toggle_show_hidden_files ->
     get_updated_model_for_toggle_show_hidden_files t
+  | Original -> get_updated_model_for_original t
 ;;
