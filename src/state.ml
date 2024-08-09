@@ -140,23 +140,22 @@ let get_updated_model_for_query t =
     { t with is_writing = true; text = blank_text; start_chatting = true }
 ;;
 
-let apply_styles_to_title title =
-  "\x1b[0;22;3;4;48;5;23;38;5;118m" ^ title
+let apply_styles_to_title title = "\x1b[0;22;3;4;48;5;23;38;5;118m" ^ title
 
 let get_title path =
   apply_styles_to_title
     (Styles.normalize_string ("querying " ^ Matrix.get_name path))
+;;
 
 let get_updated_model_for_save_query_chat t ~chat =
-  { t with query_chat = get_title t.current_path ^ "\n\n\x1b[0m" ^ chat; text = blank_text }
+  { t with
+    query_chat = get_title t.current_path ^ "\n\n\x1b[0m" ^ chat
+  ; text = blank_text
+  }
 ;;
 
 let get_model_with_new_current_path t new_current_path =
   { t with current_path = new_current_path }
-;;
-
-let get_updated_model_for_move t =
-  { t with is_moving = true; move_from = t.current_path }
 ;;
 
 let get_origin t = t.origin
@@ -281,25 +280,31 @@ let get_updated_model_for_change_dir t =
 ;;
 
 let get_updated_model_for_move t =
-  match Matrix.is_directory t.choices t.current_path with
-  | true ->
-    remove_helper t ~parent:(remove_last_path t.move_from) ~child:t.move_from;
-    Matrix.set
-      t.choices
-      ~key:t.current_path
-      ~data:
-        (Set.add
-           (Matrix.find_exn t.choices t.current_path)
-           (String.concat
-              [ t.current_path; "/"; Matrix.get_name t.move_from ]));
-    let _ =
-      Format.sprintf {|mv %s %s|} t.move_from t.current_path
-      |> Sys_unix.command
-    in
-    let move_from = "" in
-    let is_moving = false in
-    { t with move_from; is_moving }
-  | false -> t
+  if t.is_moving
+  then (
+    match Matrix.is_directory t.choices t.current_path with
+    | true ->
+      remove_helper
+        t
+        ~parent:(remove_last_path t.move_from)
+        ~child:t.move_from;
+      Matrix.set
+        t.choices
+        ~key:t.current_path
+        ~data:
+          (Set.add
+             (Matrix.find_exn t.choices t.current_path)
+             (String.concat
+                [ t.current_path; "/"; Matrix.get_name t.move_from ]));
+      let _ =
+        Format.sprintf {|mv %s %s|} t.move_from t.current_path
+        |> Sys_unix.command
+      in
+      let move_from = "" in
+      let is_moving = false in
+      { t with move_from; is_moving }
+    | false -> t)
+  else { t with is_moving = true; move_from = t.current_path }
 ;;
 
 let get_updated_model_for_remove t =

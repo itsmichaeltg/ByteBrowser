@@ -16,7 +16,7 @@ let search ~(model : State.t) search =
   let new_matrix =
     Matrix.filter
       ~origin:(State.get_origin model)
-      (State.get_full_options model)
+      (State.get_curr_choices model)
       ~search
   in
   State.get_updated_choices model new_matrix
@@ -116,11 +116,11 @@ let update event (model : State.t) =
       State.get_updated_model model ~action:Summarize, Command.Noop
     | Event.KeyDown (Key "b", Ctrl) ->
       State.get_updated_model model ~action:Original, Command.Noop
-    | Event.KeyDown (Key "o", Ctrl) ->
+    | Event.KeyDown (Key "f", Ctrl) ->
       State.get_updated_model model ~action:Search, Command.Noop
     | Event.KeyDown (Key "h", Ctrl) ->
       State.get_updated_model model ~action:Collapse, Command.Noop
-    | Event.KeyDown (Key "m", Ctrl) ->
+    | Event.KeyDown (Key "o", Ctrl) ->
       print_endline
         (Format.sprintf "moivng %s" (State.get_current_path model));
       State.get_updated_model model ~action:Move, Command.Noop
