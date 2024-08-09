@@ -72,7 +72,7 @@ Users will not have to press anything to initially visualize the tree.
 
 ## Demos
 # Collapse
-<script src="https://asciinema.org/a/lJTPrRJOzzk0AEdoskOjNyGgS.js" id="asciicast-lJTPrRJOzzk0AEdoskOjNyGgS" async="true"></script>
+[![asciicast](https://asciinema.org/a/3P36gnW8l9bQkD9FfcUcndhpI.svg)](https://asciinema.org/a/3P36gnW8l9bQkD9FfcUcndhpI)
 
 # Demo
 <script src="https://asciinema.org/a/HPjIIxW14dDIN3w9BFKiRkBtG.js" id="asciicast-HPjIIxW14dDIN3w9BFKiRkBtG" async="true"></script>
