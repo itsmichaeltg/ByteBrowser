@@ -11,7 +11,6 @@ t
 ~paths_to_collapse:String.Set.empty
 ~show_relative_dirs:false
 ~box_dimension:5
-~show_hidden_files:false
 |> print_endline;;
 let%expect_test "fzf" =
   let t =
@@ -64,8 +63,7 @@ let%expect_test "vt" =
        ~show_reduced_tree:false
         ~paths_to_collapse:String.Set.empty
         ~show_relative_dirs:false
-        ~box_dimension:5
-        ~show_hidden_files:false |> print_endline;
+        ~box_dimension:5 |> print_endline;
   [%expect {|
     [0m>>  [48;5;17m[3m.[23m                                                                                               [0m  <<
     [0m>>  [0m[0;48;5;17m|__ [;0;48;5;17;4;2;38;5;49;1mjsip-final-project                                                                                  [0m  <<
