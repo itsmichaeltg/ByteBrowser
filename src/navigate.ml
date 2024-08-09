@@ -120,7 +120,7 @@ let update event (model : State.t) =
       State.get_updated_model model ~action:Search, Command.Noop
     | Event.KeyDown (Key "h", Ctrl) ->
       State.get_updated_model model ~action:Collapse, Command.Noop
-    | Event.KeyDown (Key "m", Ctrl) ->
+    | Event.KeyDown (Key "o", Ctrl) ->
       print_endline
         (Format.sprintf "moivng %s" (State.get_current_path model));
       State.get_updated_model model ~action:Move, Command.Noop
