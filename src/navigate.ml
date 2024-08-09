@@ -123,14 +123,12 @@ let update event (model : State.t) =
        | true ->
          let question =
            (* State.get_query_chat model *)
-            Leaves.Text_input.current_text (State.get_text model)
+           Leaves.Text_input.current_text (State.get_text model)
          in
          let new_chat =
-          Querying.query question ~info:(State.get_summarization model)
+           Querying.query question ~info:(State.get_summarization model)
          in
-         ( State.get_updated_model
-             model
-             ~action:(Save_query_chat new_chat)
+         ( State.get_updated_model model ~action:(Save_query_chat new_chat)
          , Command.Noop )
        | false ->
          let com, model =
