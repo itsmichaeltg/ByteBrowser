@@ -40,6 +40,8 @@ let remove_last_path current_path =
     | true -> new_lst
     | false -> new_lst @ [ elem ])
   |> String.concat ~sep:"/"
+;;
+
 let get_extension_of_file path =
   let file_name = get_name path in
   String.fold
@@ -75,6 +77,7 @@ let rec is_in_directory t path ~path_to_check =
       match prev_primary_decision with
       | true -> true
       | false -> is_in_directory t path ~path_to_check)
+;;
 
 let get_files_in_dir origin ~show_hidden ~sort =
   let data =
@@ -128,22 +131,23 @@ let rec helper
   | None -> 1
   | Some children_paths ->
     let list_of_children_paths = Set.to_list children_paths in
-   1 + List.foldi list_of_children_paths ~init:0 ~f:(fun idx count_prev_sub_branches child_path ->
-    count_prev_sub_branches
-    + helper
-      t
-      ~info_map
-      ~current_path:child_path
-      ~horizontal_depth:(horizontal_depth + 1)
-      ~abs_vertical_loc:(abs_vertical_loc + count_prev_sub_branches + 1)
-      ~vertical_depth:(vertical_depth + idx + 1))
+    1
+    + List.foldi
+        list_of_children_paths
+        ~init:0
+        ~f:(fun idx count_prev_sub_branches child_path ->
+          count_prev_sub_branches
+          + helper
+              t
+              ~info_map
+              ~current_path:child_path
+              ~horizontal_depth:(horizontal_depth + 1)
+              ~abs_vertical_loc:
+                (abs_vertical_loc + count_prev_sub_branches + 1)
+              ~vertical_depth:(vertical_depth + idx + 1))
 ;;
 
-let rec fill_info_from_matrix
-  t
-  ~(info_map : Info.t)
-  ~current_path
-  =
+let rec fill_info_from_matrix t ~(info_map : Info.t) ~current_path =
   let _ =
     helper
       t
@@ -162,8 +166,7 @@ let to_set t =
   fold
     t
     ~init:(Set.empty (module String))
-    ~f:(fun ~key ~data acc ->
-      Set.union data (Set.add acc key))
+    ~f:(fun ~key ~data acc -> Set.union data (Set.add acc key))
 ;;
 
 let add_to_matrix map ~parent ~child =
@@ -196,7 +199,9 @@ let of_list ?origin lst =
 ;;
 
 let filter ?origin t ~search =
-  to_set t
-  |> Set.filter ~f:(fun str -> Fuzzy.fuzzy_find (get_name str) search)
-  |> Set.to_list |> of_list ?origin
+  let s =
+    to_set t |> Set.to_list
+    |> List.filter ~f:(fun str -> Fuzzy.fuzzy_find (get_name str) search)
+  in
+  s |> of_list ?origin
 ;;

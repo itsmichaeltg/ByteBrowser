@@ -1,3 +1,3 @@
 open! Core
 
-val fuzzy_find : ?distance:int -> string -> string -> bool
+val fuzzy_find : string -> string -> bool

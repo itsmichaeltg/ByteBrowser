@@ -17,6 +17,7 @@ let cursor_func =
 
 type t =
   { choices : Matrix.t
+  ; full_options : Matrix.t
   ; matrix_info : Matrix.Info.t
   ; current_path : string
   ; origin : string
@@ -28,6 +29,7 @@ type t =
   ; show_reduced_tree : bool
   ; move_from : string
   ; is_moving : bool
+  ; is_renaming : bool
   ; summarization : string
   ; query_chat : string
   ; start_chatting : bool
@@ -48,6 +50,7 @@ type dir =
   | Right
 
 type action =
+  | Search
   | Cursor of dir
   | Shortcut of string
   | Preview
@@ -91,6 +94,7 @@ let get_box_dimension t = t.box_dimention
 let get_show_relative_dirs t = t.show_relative_dirs
 let get_show_hidden_files t = t.show_hidden_files
 let get_text t = t.text
+let get_is_renaming t = t.is_renaming
 let get_parent t = t.parent
 let get_is_writing t = t.is_writing
 let get_preview t = t.preview
@@ -151,6 +155,10 @@ let get_updated_model_for_move t =
   { t with is_moving = true; move_from = t.current_path }
 ;;
 
+let get_origin t = t.origin
+let get_full_options t = t.full_options
+let get_updated_choices t choices = { t with choices }
+
 let remove_last_path current_path =
   let str_lst = String.split current_path ~on:'/' in
   List.foldi str_lst ~init:[] ~f:(fun idx new_lst elem ->
@@ -179,6 +187,7 @@ let init
   ~matrix_info
   =
   { choices
+  ; full_options = choices
   ; current_path
   ; origin
   ; parent
@@ -193,6 +202,7 @@ let init
   ; query_chat
   ; start_chatting
   ; seen_summarizations
+  ; is_renaming = false
   ; is_loading = false
   ; loading_spinner = Spinner.dot
   ; fzf = Matrix.create ()
@@ -229,12 +239,21 @@ let get_updated_model_for_preview t =
   | _ -> { t with preview = "" }
 ;;
 
-let get_updated_model_for_rename t =
+let get_updated_model_for_search t =
   let is_writing = true in
   let text =
     Leaves.Text_input.make "" ~placeholder:"" ~cursor:cursor_func ()
   in
   { t with is_writing; text }
+;;
+
+let get_updated_model_for_rename t =
+  let is_writing = true in
+  let is_renaming = true in
+  let text =
+    Leaves.Text_input.make "" ~placeholder:"" ~cursor:cursor_func ()
+  in
+  { t with is_writing; is_renaming; text }
 ;;
 
 let remove_helper t ~parent ~child =
@@ -438,6 +457,7 @@ let get_updated_model t ~(action : action) =
   | Reset -> get_updated_model_for_reset t
   | Reduce_tree -> get_updated_model_for_reduce_tree t
   | Collapse -> get_updated_model_for_collapse t
+  | Search -> get_updated_model_for_search t
   | Update_box_dimension number ->
     get_updated_model_for_updating_box_dimensions t ~number
   | Toggle_show_relative_dirs ->

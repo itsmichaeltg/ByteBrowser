@@ -192,7 +192,7 @@ let%expect_test "sw" =
   [%expect {| ((1 4)) |}]
 ;;
 
-let fuzzy_find ?(distance = 1) str_1 str_2 =
+let fuzzy_find str_1 str_2 =
   let str_1, str_2 = String.lowercase str_1, String.lowercase str_2 in
   let len = List.length (sw_algo str_1 str_2) in 
   len >= String.length str_2

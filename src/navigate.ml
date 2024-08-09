@@ -12,6 +12,19 @@ let cursor_func =
     ()
 ;;
 
+let search ~(model : State.t) search =
+  let new_matrix = Matrix.filter
+       ~origin:(State.get_origin model)
+       (State.get_full_options model)
+       ~search in
+       print_endline search;
+
+  print_s [%sexp (new_matrix:Matrix.t)];
+  State.get_updated_choices
+    model
+    new_matrix
+;;
+
 let rename ~(model : State.t) new_name =
   let new_path =
     String.concat
@@ -39,6 +52,7 @@ let rename ~(model : State.t) new_name =
         ~data:siblings
   in
   ( Format.sprintf {|mv %s %s|} (State.get_current_path model) new_path
+    |> Sys_unix.command
   , State.get_model_with_new_current_path
       model
       (String.concat [ State.get_parent model; "/"; new_name ]) )
@@ -101,6 +115,8 @@ let update event (model : State.t) =
     | Event.KeyDown (Key "i", Ctrl) ->
       ( State.get_updated_model model ~action:Toggle_show_hidden_files
       , Command.Noop )
+    | Event.KeyDown (Key "o", Ctrl) ->
+      State.get_updated_model model ~action:Search, Command.Noop
     | Event.KeyDown (Key "h", Ctrl) ->
       State.get_updated_model model ~action:Collapse, Command.Noop
     | Event.KeyDown (Key "m", Ctrl) ->
@@ -136,12 +152,19 @@ let update event (model : State.t) =
              ~action:(Save_query_chat updated_chat)
          , Command.Noop )
        | false ->
-         let com, model =
-           Leaves.Text_input.current_text (State.get_text model)
-           |> rename ~model
-         in
-         let _ = Sys_unix.command com in
-         State.get_model_after_writing model, Command.Noop)
+         if State.get_is_renaming model
+         then (
+           let _, model =
+             Leaves.Text_input.current_text (State.get_text model)
+             |> rename ~model
+           in
+           State.get_model_after_writing model, Command.Noop)
+         else (
+           let model =
+             Leaves.Text_input.current_text (State.get_text model)
+             |> search ~model
+           in
+           State.get_model_after_writing model, Command.Noop))
     | Event.KeyDown ((Key _ | Space), _modifier)
       when State.get_start_chatting model ->
       let text = Leaves.Text_input.update (State.get_text model) event in
@@ -197,11 +220,7 @@ let get_view (model : State.t) ~origin ~max_depth =
 let get_initial_state ~origin ~max_depth ~show_hidden ~sort : State.t =
   let tree =
     Matrix.create ()
-    |> Matrix.get_adjacency_matrix
-         ~origin
-         ~max_depth
-         ~show_hidden
-         ~sort
+    |> Matrix.get_adjacency_matrix ~origin ~max_depth ~show_hidden ~sort
   in
   let children =
     match Matrix.find tree origin with

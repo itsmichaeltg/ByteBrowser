@@ -10,6 +10,7 @@ type dir =
   | Right
 
 type action =
+  | Search
   | Cursor of dir
   | Shortcut of string
   | Preview
@@ -40,6 +41,7 @@ val get_is_writing : t -> bool
 val get_text : t -> Text_input.t
 val get_parent : t -> string
 val get_is_loading : t -> bool
+val get_is_renaming : t -> bool
 val get_summarization : t -> string
 val get_box_dimension : t -> int
 val get_is_moving : t -> bool
@@ -51,6 +53,9 @@ val get_model_after_writing : t -> t
 val get_model_with_new_text : t -> Text_input.t -> t
 val get_model_with_new_current_path : t -> string -> t
 val get_matrix_info : t -> Matrix.Info.t
+val get_updated_choices : t -> Matrix.t -> t
+val get_full_options : t -> Matrix.t
+val get_origin : t -> string
 
 val init
   :  choices:Matrix.t
