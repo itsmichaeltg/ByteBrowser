@@ -97,7 +97,7 @@ let update event (model : State.t) =
     | Event.KeyDown (Enter, _modifier) ->
       let model = State.get_updated_model model ~action:Cd in
       model, exit 0
-    | Event.KeyDown (Key k, Ctrl) when is_num k ->
+    | Event.KeyDown (Key k, _modifier) when is_num k ->
       ( State.get_updated_model model ~action:(Update_box_dimension k)
       , Command.Noop )
     | Event.KeyDown (Key "n", Ctrl) ->
