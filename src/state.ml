@@ -39,7 +39,6 @@ type t =
   ; paths_to_collapse : String.Set.t
   ; box_dimention : int
   ; show_relative_dirs : bool
-  ; show_hidden_files : bool
   }
 
 type dir =
@@ -66,7 +65,6 @@ type action =
   | Collapse
   | Update_box_dimension of string
   | Toggle_show_relative_dirs
-  | Toggle_show_hidden_files
 
 let blank_text =
   Leaves.Text_input.make
@@ -92,7 +90,6 @@ let get_is_loading t = t.is_loading
 let get_current_path t = t.current_path
 let get_box_dimension t = t.box_dimention
 let get_show_relative_dirs t = t.show_relative_dirs
-let get_show_hidden_files t = t.show_hidden_files
 let get_text t = t.text
 let get_is_renaming t = t.is_renaming
 let get_parent t = t.parent
@@ -109,10 +106,6 @@ let get_paths_to_collapse t = t.paths_to_collapse
 
 let get_updated_model_for_toggle_show_relative_dirs t =
   { t with show_relative_dirs = not t.show_relative_dirs }
-;;
-
-let get_updated_model_for_toggle_show_hidden_files t =
-  { t with show_hidden_files = not t.show_hidden_files }
 ;;
 
 let get_updated_model_for_summarize t =
@@ -147,8 +140,15 @@ let get_updated_model_for_query t =
     { t with is_writing = true; text = blank_text; start_chatting = true }
 ;;
 
+let apply_styles_to_title title =
+  "\x1b[0;22;3;4;48;5;23;38;5;118m" ^ title
+
+let get_title path =
+  apply_styles_to_title
+    (Styles.normalize_string ("querying " ^ Matrix.get_name path))
+
 let get_updated_model_for_save_query_chat t ~chat =
-  { t with query_chat = chat; text = blank_text }
+  { t with query_chat = get_title t.current_path ^ "\n\n\x1b[0m" ^ chat; text = blank_text }
 ;;
 
 let get_model_with_new_current_path t new_current_path =
@@ -185,7 +185,6 @@ let init
   ~is_moving
   ~move_from
   ~summarization
-  ~query_chat
   ~start_chatting
   ~seen_summarizations
   ~matrix_info
@@ -203,7 +202,7 @@ let init
   ; is_moving
   ; move_from
   ; summarization
-  ; query_chat
+  ; query_chat = get_title current_path ^ "\n\n\x1b[0m"
   ; start_chatting
   ; seen_summarizations
   ; is_renaming = false
@@ -213,7 +212,6 @@ let init
   ; paths_to_collapse = Set.empty (module String)
   ; box_dimention = 5
   ; show_relative_dirs = false
-  ; show_hidden_files = false
   }
 ;;
 
@@ -429,7 +427,13 @@ let get_updated_model_for_reduce_tree t =
 ;;
 
 let get_updated_model_for_collapse t =
-  { t with paths_to_collapse = Set.add t.paths_to_collapse t.current_path }
+  match Set.mem t.paths_to_collapse t.current_path with
+  | true ->
+    { t with
+      paths_to_collapse = Set.remove t.paths_to_collapse t.current_path
+    }
+  | false ->
+    { t with paths_to_collapse = Set.add t.paths_to_collapse t.current_path }
 ;;
 
 let number_to_int number =
@@ -470,7 +474,5 @@ let get_updated_model t ~(action : action) =
     get_updated_model_for_updating_box_dimensions t ~number
   | Toggle_show_relative_dirs ->
     get_updated_model_for_toggle_show_relative_dirs t
-  | Toggle_show_hidden_files ->
-    get_updated_model_for_toggle_show_hidden_files t
   | Original -> get_updated_model_for_original t
 ;;

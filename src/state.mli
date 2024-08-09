@@ -27,13 +27,11 @@ type action =
   | Collapse
   | Update_box_dimension of string
   | Toggle_show_relative_dirs
-  | Toggle_show_hidden_files
 
 val get_updated_model : t -> action:action -> t
 val remove_last_path : string -> string
 val get_preview : t -> string
 val get_show_relative_dirs : t -> bool
-val get_show_hidden_files : t -> bool
 val get_curr_choices : t -> Matrix.t
 val get_show_reduced_tree : t -> bool
 val get_paths_to_collapse : t -> (string, String.comparator_witness) Set.t
@@ -71,7 +69,6 @@ val init
   -> is_moving:bool
   -> move_from:string
   -> summarization:string
-  -> query_chat:string
   -> start_chatting:bool
   -> seen_summarizations:(string, string, String.comparator_witness) Map.t
   -> matrix_info:Matrix.Info.t

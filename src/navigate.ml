@@ -114,9 +114,6 @@ let update event (model : State.t) =
       State.get_updated_model model ~action:Rename, Command.Noop
     | Event.KeyDown (Key "k", Ctrl) ->
       State.get_updated_model model ~action:Summarize, Command.Noop
-    | Event.KeyDown (Key "i", Ctrl) ->
-      ( State.get_updated_model model ~action:Toggle_show_hidden_files
-      , Command.Noop )
     | Event.KeyDown (Key "b", Ctrl) ->
       State.get_updated_model model ~action:Original, Command.Noop
     | Event.KeyDown (Key "o", Ctrl) ->
@@ -144,16 +141,14 @@ let update event (model : State.t) =
     | Event.KeyDown (Enter, _modifier) ->
       (match State.get_start_chatting model with
        | true ->
-         let chat_so_far =
-           State.get_query_chat model
-           ^ Leaves.Text_input.current_text (State.get_text model)
+         let question =
+           (* State.get_query_chat model *)
+           Leaves.Text_input.current_text (State.get_text model)
          in
-         let updated_chat =
-           Querying.query chat_so_far ~info:(State.get_summarization model)
+         let new_chat =
+           Querying.query question ~info:(State.get_summarization model)
          in
-         ( State.get_updated_model
-             model
-             ~action:(Save_query_chat updated_chat)
+         ( State.get_updated_model model ~action:(Save_query_chat new_chat)
          , Command.Noop )
        | false ->
          if State.get_is_renaming model
@@ -168,13 +163,6 @@ let update event (model : State.t) =
              Leaves.Text_input.current_text (State.get_text model)
              |> search ~model
            in
-           Out_channel.write_all
-             "./tmp"
-             ~data:
-               (Sexp.to_string
-                  [%message
-                    (State.get_curr_choices model : Matrix.t)
-                      (State.get_origin model : string)]);
            State.get_model_after_writing model, Command.Noop))
     | Event.KeyDown ((Key _ | Space), _modifier)
       when State.get_start_chatting model ->
@@ -202,7 +190,6 @@ let visualize_tree (model : State.t) ~origin ~max_depth =
       ~paths_to_collapse:(State.get_paths_to_collapse model)
       ~box_dimension:(State.get_box_dimension model)
       ~show_relative_dirs:(State.get_show_relative_dirs model)
-      ~show_hidden_files:(State.get_show_hidden_files model)
   in
   Format.asprintf "%s" tree
   ^
@@ -265,7 +252,6 @@ let get_initial_state ~origin ~max_depth ~show_hidden ~sort : State.t =
     ~is_moving:false
     ~move_from:""
     ~summarization:""
-    ~query_chat:""
     ~start_chatting:false
     ~seen_summarizations:(Map.empty (module String))
 ;;
