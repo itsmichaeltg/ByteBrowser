@@ -75,37 +75,37 @@ Users will not have to press anything to initially visualize the tree.
 [![asciicast](https://asciinema.org/a/3P36gnW8l9bQkD9FfcUcndhpI.svg)](https://asciinema.org/a/3P36gnW8l9bQkD9FfcUcndhpI)
 
 # Demo
-<script src="https://asciinema.org/a/HPjIIxW14dDIN3w9BFKiRkBtG.js" id="asciicast-HPjIIxW14dDIN3w9BFKiRkBtG" async="true"></script>
+[![asciicast](https://asciinema.org/a/ged53OWdGRDrf0wKvuuwsBjza.svg)](https://asciinema.org/a/ged53OWdGRDrf0wKvuuwsBjza)
 
 # Previewing
-<script src="https://asciinema.org/a/rC50JEs3y6SfakLVaRhpN0oy7.js" id="asciicast-rC50JEs3y6SfakLVaRhpN0oy7" async="true"></script>
+[![asciicast](https://asciinema.org/a/GbmGm8WDg5sIHzxUqHGeYA10a.svg)](https://asciinema.org/a/GbmGm8WDg5sIHzxUqHGeYA10a)
 
 # Querying
-<script src="https://asciinema.org/a/B6RpAinEZUtXtem2QaplJXzoX.js" id="asciicast-B6RpAinEZUtXtem2QaplJXzoX" async="true"></script>
+[![asciicast](https://asciinema.org/a/pdVr40qmQU8OLhJonjORa68hc.svg)](https://asciinema.org/a/pdVr40qmQU8OLhJonjORa68hc)
 
 # Relative Dirs
-<script src="https://asciinema.org/a/G1GaN1gAKPA8IrsD8ulEOZWFw.js" id="asciicast-G1GaN1gAKPA8IrsD8ulEOZWFw" async="true"></script>
+[![asciicast](https://asciinema.org/a/NHkXOVMDX5YIcEK7ce6iRERHf.svg)](https://asciinema.org/a/NHkXOVMDX5YIcEK7ce6iRERHf)
 
 # Rename/Remove
-<script src="https://asciinema.org/a/DPTBgzVw6Y1G3IsFS8LOT4lPa.js" id="asciicast-DPTBgzVw6Y1G3IsFS8LOT4lPa" async="true"></script>
+[![asciicast](https://asciinema.org/a/MMlcR5OSbsossH9w1eT3kb4cZ.svg)](https://asciinema.org/a/MMlcR5OSbsossH9w1eT3kb4cZ)
 
 # Change Directory
-<script src="https://asciinema.org/a/9aE5vVWIvqWu25h3D094m1me2.js" id="asciicast-9aE5vVWIvqWu25h3D094m1me2" async="true"></script>
+[![asciicast](https://asciinema.org/a/XrtoVKlVy2HRq9slAthTCIKJX.svg)](https://asciinema.org/a/XrtoVKlVy2HRq9slAthTCIKJX)
 
 # Search
-<script src="https://asciinema.org/a/h3T66FlsX9fdY1G9t8Ak37UC3.js" id="asciicast-h3T66FlsX9fdY1G9t8Ak37UC3" async="true"></script>
+[![asciicast](https://asciinema.org/a/IOwPU2CA1SpTdWnjCefGiIyGO.svg)](https://asciinema.org/a/IOwPU2CA1SpTdWnjCefGiIyGO)
 
 # Open file
-<script src="https://asciinema.org/a/jtn0UHQVYHdN0Ix0IY90cmMQJ.js" id="asciicast-jtn0UHQVYHdN0Ix0IY90cmMQJ" async="true"></script>
+[![asciicast](https://asciinema.org/a/FIMRdvrpfWRHntkiMlf2a247g.svg)](https://asciinema.org/a/FIMRdvrpfWRHntkiMlf2a247g)
 
 # Reduce Tree
-<script src="https://asciinema.org/a/scwgkZVHmanMfDe5TrZAM4rA7.js" id="asciicast-scwgkZVHmanMfDe5TrZAM4rA7" async="true"></script>
+[![asciicast](https://asciinema.org/a/rCDgk93VmxCctC4xEEslCLIPA.svg)](https://asciinema.org/a/rCDgk93VmxCctC4xEEslCLIPA)
 
 # Jump
-<script src="https://asciinema.org/a/38kw8mU0HBdSbMHmRVvlzd27i.js" id="asciicast-38kw8mU0HBdSbMHmRVvlzd27i" async="true"></script>
+[![asciicast](https://asciinema.org/a/GAv5yI7MuxmGmLJWvn9v97zqZ.svg)](https://asciinema.org/a/GAv5yI7MuxmGmLJWvn9v97zqZ)
 
 # Version Control
-<script src="https://asciinema.org/a/L4VrJxRyabUllsztnHxuLEQK7.js" id="asciicast-L4VrJxRyabUllsztnHxuLEQK7" async="true"></script>
+[![asciicast](https://asciinema.org/a/h6bvoSNrvGKNrVzwoMihpjMwv.svg)](https://asciinema.org/a/h6bvoSNrvGKNrVzwoMihpjMwv)
 
 ## <a name="_ai0y08qey181"></a>**Implementation Phases**
 The features are independent from each other, so the order of feature implementations does not matter too much. Generally, we are thinking of implementing the ability to take in inputs, visualize, and display some of our more interesting features.
