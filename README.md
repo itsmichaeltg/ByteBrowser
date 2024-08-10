@@ -34,13 +34,18 @@ Additionally, we plan to add options to preview files, display statistics of fil
 
 ## Setup
 ```
-$ git clone https://github.com/itsmichaeltg/jsip-final-project.git
+$ git clone https://github.com/itsmichaeltg/ByteBrowser.git
 ```
 ```
-$ mv jsip-final-project/ /home/ubuntu
+$ cd ByteBrowser/
 ```
+For Bash Systems (Ubuntu)
 ```
-$ echo "" >> /home/ubuntu/.bashrc && echo "alias bb='source /home/ubuntu/jsip-final-project/bb \$@'" >> /home/ubuntu/.bashrc
+$ echo "" >> $HOME/.bashrc && echo "alias bb='source '"${PWD}"'/bb \$@'" >> $HOME/.bashrc
+```
+For Zsh Systems (Mac)
+```
+$ echo "" >> $HOME/.zshrc && echo "alias bb='source '"${PWD}"'/bb \$@'" >> $HOME/.zshrc
 ```
 ```
 $ source /home/ubuntu/.bashrc
