@@ -41,14 +41,14 @@ $ cd ByteBrowser/
 ```
 For Bash Systems (Ubuntu)
 ```
-$ echo "" >> $HOME/.bashrc && echo "alias bb='source '"${PWD}"'/bb \$@'" >> $HOME/.bashrc
+$ echo "" >> $HOME/.bashrc && echo "alias bb='source "${PWD}"/bb \$@'" >> $HOME/.bashrc
 ```
 ```
 $ source $HOME/.bashrc
 ```
 For Zsh Systems (Mac)
 ```
-$ echo "" >> $HOME/.zshrc && echo "alias bb='source '"${PWD}"'/bb \$@'" >> $HOME/.zshrc
+$ echo "" >> $HOME/.zshrc && echo "alias bb='source "${PWD}"/bb \$@'" >> $HOME/.zshrc
 ```
 ```
 $ source $HOME/.zshrc
