@@ -43,12 +43,15 @@ For Bash Systems (Ubuntu)
 ```
 $ echo "" >> $HOME/.bashrc && echo "alias bb='source '"${PWD}"'/bb \$@'" >> $HOME/.bashrc
 ```
+```
+$ source $HOME/.bashrc
+```
 For Zsh Systems (Mac)
 ```
 $ echo "" >> $HOME/.zshrc && echo "alias bb='source '"${PWD}"'/bb \$@'" >> $HOME/.zshrc
 ```
 ```
-$ source /home/ubuntu/.bashrc
+$ source $HOME/.zshrc
 ```
 ## Run
 ```
