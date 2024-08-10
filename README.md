@@ -116,8 +116,8 @@ The features are independent from each other, so the order of feature implementa
 |MintTea integration (basic implementation of navigation) + Modifications of files (rename, delete, and move)|Michael Girma|07/22/2024|07/26/2024|Completed|
 |Summarization (get data, implementing RAG pipeline)|Jity Woldemichael|07/29/2024|08/2/2024|Completed|
 |Visual optimizations (sorting based on recency, scaling tree based on location, hiding unwanted directories)|Michael Girma|07/29/2024|08/2/2024|Completed|
-|<p>Navigation optimizations</p><p>(jumping to files based on numbers, searching files by keywords)</p>|Jity Woldemichael|08/05/2024|08/09/2024|Completed|
-|Finalization program flow + reliable use of bash + search + version control|Michael Girma|08/05/2024|08/09/2024|Completed|
+|<p>Navigation optimizations</p><p>(jumping to files based on numbers)</p>|Jity Woldemichael|08/05/2024|08/09/2024|Completed|
+|Finalization program flow + reliable use of bash + fuzzy search + version control|Michael Girma|08/05/2024|08/09/2024|Completed|
 ## <a name="_b7i8bpeae152"></a>**Testing**
 Aside from unit testing individual components and testing our program with users every time we add a meaningful feature, we have a test directory that contains nested directories and files where we test our program in our development process.  
 ## <a name="_pe36v5b5x5jh"></a>**Technical Must Haves**
