@@ -46,7 +46,7 @@ $ echo "" >> $HOME/.bashrc && echo "alias bb='source '"${PWD}"'/bb \$@'" >> $HOM
 ```
 $ source $HOME/.bashrc
 ```
-<! -- For Zsh Systems (Mac) -->
+<!-- For Zsh Systems (Mac)
 ```
 $ echo "" >> $HOME/.zshrc && echo "alias bb='source '"${PWD}"'/bb \$@'" >> $HOME/.zshrc
 ```
