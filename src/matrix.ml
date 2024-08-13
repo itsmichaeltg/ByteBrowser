@@ -62,7 +62,7 @@ let is_directory t (value : string) = mem t value
 let get_children t path = find t path
 
 let write_and_read origin =
-  let write_path = "./bin/files.txt" in
+  let write_path = "~/ByteBrowser/bin/files.txt" in
   let _ =
     Format.sprintf "ls -t %s > %s" origin write_path |> Sys_unix.command
   in

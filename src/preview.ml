@@ -1,19 +1,19 @@
 open! Core
 
 let path_to_write_to =
-  "./bin/code_to_be_highlighted.txt"
+  "~/ByteBrowser/bin/code_to_be_highlighted.txt"
 ;;
 
 let path_to_script =
-  "./src/syntax_highlighting_script.py"
+  "~/ByteBrowser/src/syntax_highlighting_script.py"
 ;;
 
 let path_to_read_from =
-  "./bin/highlighted_code.txt"
+  "~/ByteBrowser/bin/highlighted_code.txt"
 ;;
 
 let path_to_write_file_name_to =
-  "./bin/path_to_preview.txt"
+  "~/ByteBrowser/bin/path_to_preview.txt"
 ;;
 
 let apply_syntax_highlight (lines : string list) path =

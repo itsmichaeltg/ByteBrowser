@@ -1,33 +1,33 @@
 open! Core
 
 let path_to_write_prompt_to =
-  "./bin/query_prompt.txt"
+  "~/ByteBrowser/bin/query_prompt.txt"
 ;;
 
-let path_to_script = "./src/querying_script.py"
+let path_to_script = "~/ByteBrowser/src/querying_script.py"
 
 let path_to_write_info_to =
-  "./bin/query_info.txt"
+  "~/ByteBrowser/bin/query_info.txt"
 ;;
 
 let path_to_read_from =
-  "./bin/query_answer.txt"
+  "~/ByteBrowser/bin/query_answer.txt"
 ;;
 
 let path_to_write_to_for_viewing =
-  "./bin/code_to_be_highlighted.txt"
+  "~/ByteBrowser/bin/code_to_be_highlighted.txt"
 ;;
 
 let path_to_highlighting_script =
-  "./src/syntax_highlighting_script.py"
+  "~/ByteBrowser/src/syntax_highlighting_script.py"
 ;;
 
 let path_to_read_from_for_viewing =
-  "./bin/highlighted_code.txt"
+  "~/ByteBrowser/bin/highlighted_code.txt"
 ;;
 
 let path_to_write_file_name_to =
-  "./bin/path_to_preview.txt"
+  "~/ByteBrowser/bin/path_to_preview.txt"
 ;;
 
 let apply_syntax_highlight str =

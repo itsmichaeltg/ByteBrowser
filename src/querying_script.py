@@ -3,9 +3,9 @@ import os
 from dotenv import load_dotenv, dotenv_values
 from openai import OpenAI
 
-path_to_write_to = "./bin/query_answer.txt"
-path_to_read_for_query_prompt = "./bin/query_prompt.txt"
-path_to_read_for_query_info = "./bin/query_info.txt"
+path_to_write_to = "~/ByteBrowser/bin/query_answer.txt"
+path_to_read_for_query_prompt = "~/ByteBrowser/bin/query_prompt.txt"
+path_to_read_for_query_info = "~/ByteBrowser/bin/query_info.txt"
 
 load_dotenv()
 

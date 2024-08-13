@@ -3,8 +3,8 @@ import os
 from dotenv import load_dotenv, dotenv_values
 from openai import OpenAI
 
-path_to_write_to = "./bin/completion.txt"
-path_to_read_from = "./bin/file_contents.txt"
+path_to_write_to = "~/ByteBrowser/bin/completion.txt"
+path_to_read_from = "~/ByteBrowser/bin/file_contents.txt"
 
 load_dotenv()
 

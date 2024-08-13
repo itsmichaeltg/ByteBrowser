@@ -1,8 +1,8 @@
 path_to_read_code_from = (
-    "./bin/code_to_be_highlighted.txt"
+    "~/ByteBrowser/bin/code_to_be_highlighted.txt"
 )
-path_to_write_to = "./bin/highlighted_code.txt"
-path_to_read_file_path_from = "./bin/path_to_preview.txt"
+path_to_write_to = "~/ByteBrowser/bin/highlighted_code.txt"
+path_to_read_file_path_from = "~/ByteBrowser/bin/path_to_preview.txt"
 
 from pygments import highlight
 from pygments.lexers import get_lexer_for_filename
