@@ -1,8 +1,9 @@
+home_dir = os.getenv('HOME')
 path_to_read_code_from = (
-    "~/ByteBrowser/bin/code_to_be_highlighted.txt"
+    home_dir + "/ByteBrowser/bin/code_to_be_highlighted.txt"
 )
-path_to_write_to = "~/ByteBrowser/bin/highlighted_code.txt"
-path_to_read_file_path_from = "~/ByteBrowser/bin/path_to_preview.txt"
+path_to_write_to =  home_dir + "/ByteBrowser/bin/highlighted_code.txt"
+path_to_read_file_path_from =  home_dir + "/ByteBrowser/bin/path_to_preview.txt"
 
 from pygments import highlight
 from pygments.lexers import get_lexer_for_filename

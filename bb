@@ -1,6 +1,6 @@
 #!/bin/bash
-tmp_path="~/ByteBrowser/bin/path.txt"
-command="~/ByteBrowser/main.exe"
+tmp_path="$HOME/ByteBrowser/bin/path.txt"
+command="$HOME/ByteBrowser/main.exe"
 for arg in "$@"
 do
     if [[ $arg =~ ^-?[0-9]+$ ]]; then 

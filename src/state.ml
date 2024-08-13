@@ -2,7 +2,7 @@ open! Core
 open! Leaves
 open! Leaves.Cursor
 
-let write_path = "~/ByteBrowser/bin/path.txt"
+let write_path = Sys_unix.home_directory () ^ "/ByteBrowser//bin/path.txt"
 
 let cursor_func =
   Leaves.Cursor.make

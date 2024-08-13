@@ -1,29 +1,23 @@
 open! Core
 
-let path_to_read_from = "~/ByteBrowser/bin/completion.txt"
-
-let path_to_script =
-  "~/ByteBrowser/src/summarization_script.py"
-;;
-
-let path_to_write_to =
-  "~/ByteBrowser/bin/file_contents.txt"
-;;
+let path_to_read_from = Sys_unix.home_directory () ^ "/ByteBrowser//bin/completion.txt"
+let path_to_script = Sys_unix.home_directory () ^ "/ByteBrowser//src/summarization_script.py"
+let path_to_write_to = Sys_unix.home_directory () ^ "/ByteBrowser//bin/file_contents.txt"
 
 let path_to_write_to_for_viewing =
-  "~/ByteBrowser/bin/code_to_be_highlighted.txt"
+  Sys_unix.home_directory () ^ "/ByteBrowser//bin/code_to_be_highlighted.txt"
 ;;
 
 let path_to_highlighting_script =
-  "~/ByteBrowser/src/syntax_highlighting_script.py"
+  Sys_unix.home_directory () ^ "/ByteBrowser//src/syntax_highlighting_script.py"
 ;;
 
 let path_to_read_from_for_viewing =
-  "~/ByteBrowser/bin/highlighted_code.txt"
+  Sys_unix.home_directory () ^ "/ByteBrowser//bin/highlighted_code.txt"
 ;;
 
 let path_to_write_file_name_to =
-  "~/ByteBrowser/bin/path_to_preview.txt"
+  Sys_unix.home_directory () ^ "/ByteBrowser//bin/path_to_preview.txt"
 ;;
 
 let rec find_paths_to_skim tree origin =
@@ -59,14 +53,18 @@ let apply_syntax_highlight summary =
   Out_channel.write_all path_to_write_file_name_to ~data:"";
   Out_channel.write_all path_to_write_to_for_viewing ~data:summary;
   let _ = Sys_unix.command ("python3 " ^ path_to_highlighting_script) in
-  let highlighted_summary = In_channel.read_all path_to_read_from_for_viewing in
+  let highlighted_summary =
+    In_channel.read_all path_to_read_from_for_viewing
+  in
   Sys_unix.remove path_to_read_from_for_viewing;
   Sys_unix.remove path_to_write_file_name_to;
   Sys_unix.remove path_to_write_to_for_viewing;
   highlighted_summary
 ;;
 
-let apply_styles_to_title title = "\x1b[0;22;3;4;48;5;23;38;5;118m" ^ title ^ "\x1b[0m\n"
+let apply_styles_to_title title =
+  "\x1b[0;22;3;4;48;5;23;38;5;118m" ^ title ^ "\x1b[0m\n"
+;;
 
 let get_title path =
   apply_styles_to_title
@@ -77,3 +75,4 @@ let generate (tree : Matrix.t) (origin : string) =
   let summary = generate_summary tree origin in
   let title = get_title origin in
   apply_styles_to_title title ^ apply_syntax_highlight summary
+;;

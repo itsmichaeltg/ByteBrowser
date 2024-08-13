@@ -1,6 +1,6 @@
 #!/bin/bash
-path="~/ByteBrowser/bin/path.txt"
-command="~/ByteBrowser/_build/default/bin/main.exe ${1} ${2}"
+path="$HOME/ByteBrowser/bin/path.txt"
+command="$HOME/ByteBrowser/_build/default/bin/main.exe ${1} ${2}"
 if [ "$2" = "dir" ]; then 
     command="${command} ${3} ${4}"
     if [[ "$6" =~ ^[0-9]+$ ]]; then

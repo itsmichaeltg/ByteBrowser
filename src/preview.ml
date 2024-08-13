@@ -1,23 +1,23 @@
 open! Core
 
 let path_to_write_to =
-  "~/ByteBrowser/bin/code_to_be_highlighted.txt"
+  Sys_unix.home_directory () ^ "/ByteBrowser/bin/code_to_be_highlighted.txt"
 ;;
 
 let path_to_script =
-  "~/ByteBrowser/src/syntax_highlighting_script.py"
+  Sys_unix.home_directory () ^ "/ByteBrowser/src/syntax_highlighting_script.py"
 ;;
 
-let path_to_read_from =
-  "~/ByteBrowser/bin/highlighted_code.txt"
-;;
+let path_to_read_from = Sys_unix.home_directory () ^ "/ByteBrowser/bin/highlighted_code.txt"
 
 let path_to_write_file_name_to =
-  "~/ByteBrowser/bin/path_to_preview.txt"
+  Sys_unix.home_directory () ^ "/ByteBrowser/bin/path_to_preview.txt"
 ;;
 
 let apply_syntax_highlight (lines : string list) path =
-  Out_channel.write_all path_to_write_file_name_to ~data:(Matrix.get_name path);
+  Out_channel.write_all
+    path_to_write_file_name_to
+    ~data:(Matrix.get_name path);
   Out_channel.write_lines path_to_write_to lines;
   let _ = Sys_unix.command ("python3 " ^ path_to_script ^ " " ^ path) in
   let highlighted_lines = In_channel.read_lines path_to_read_from in
@@ -64,3 +64,4 @@ let preview_without_styles path ~num_lines =
   let lst = List.append [ "" ] (In_channel.read_lines path) in
   List.slice lst 0 (min num_lines (List.length lst))
   |> String.concat ~sep:"\n"
+;;
