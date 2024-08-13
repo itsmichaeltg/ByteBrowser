@@ -1,6 +1,6 @@
 #!/bin/bash
-tmp_path="/home/ubuntu/jsip-final-project/bin/path.txt"
-command="/home/ubuntu/jsip-final-project/_build/default/bin/main.exe"
+tmp_path="./bin/path.txt"
+command="./main.exe"
 for arg in "$@"
 do
     if [[ $arg =~ ^-?[0-9]+$ ]]; then 

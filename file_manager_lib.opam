@@ -6,9 +6,9 @@ maintainer: ["Maintainer Name"]
 authors: ["Jity, Michael"]
 license: "LICENSE"
 tags: ["topics" "to describe" "your" "project"]
-homepage: "https://github.com/itsmichaeltg/jsip-final-project"
+homepage: "https://github.com/itsmichaeltg/ByteBrowser"
 doc: "https://url/to/documentation"
-bug-reports: "https://github.com/itsmichaeltg/jsip-final-project/issues"
+bug-reports: "https://github.com/itsmichaeltg/ByteBrowser/issues"
 depends: [
   "dune" {>= "3.15"}
   "odoc" {with-doc}
@@ -27,4 +27,4 @@ build: [
     "@doc" {with-doc}
   ]
 ]
-dev-repo: "git+https://github.com/itsmichaeltg/jsip-final-project.git"
+dev-repo: "git+https://github.com/itsmichaeltg/ByteBrowser.git"

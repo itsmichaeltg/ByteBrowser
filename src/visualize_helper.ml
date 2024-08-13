@@ -28,7 +28,7 @@ let get_color_for_file path : string list =
   let extension = Matrix.get_extension_of_file path in
   let file_extension_to_color_json =
     Yojson.Safe.from_file
-      "/home/ubuntu/jsip-final-project/src/file_extension_to_color.json"
+      "./src/file_extension_to_color.json"
   in
   let field_val_assoc =
     file_extension_to_color_json |> Yojson.Safe.Util.to_assoc

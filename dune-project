@@ -3,7 +3,7 @@
 (name file_manager_lib)
 
 (source
- (github itsmichaeltg/jsip-final-project))
+ (github itsmichaeltg/ByteBrowser))
 
 (generate_opam_files true)
 

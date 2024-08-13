@@ -1,6 +1,6 @@
 #!/bin/bash
-path="/home/ubuntu/jsip-final-project/bin/path.txt"
-command="/home/ubuntu/jsip-final-project/_build/default/bin/main.exe ${1} ${2}"
+path="./bin/path.txt"
+command="./_build/default/bin/main.exe ${1} ${2}"
 if [ "$2" = "dir" ]; then 
     command="${command} ${3} ${4}"
     if [[ "$6" =~ ^[0-9]+$ ]]; then
