@@ -1,3 +1,5 @@
+import os
+
 home_dir = os.getenv('HOME')
 path_to_read_code_from = (
     home_dir + "/ByteBrowser/bin/code_to_be_highlighted.txt"
