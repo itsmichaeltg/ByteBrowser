@@ -49,14 +49,13 @@ $ echo "" >> $HOME/.bashrc && echo "alias bb='source "${PWD}"/bb \$@'" >> $HOME/
 ```
 $ source $HOME/.bashrc
 ```
-<!-- For Zsh Systems (Mac)
+For Zsh Systems (Mac)
 ```
-$ echo "" >> $HOME/.zshrc && echo "alias bb='source "${PWD}"/bb \$@'" >> $HOME/.zshrc
+$ echo "" >> $HOME/.zshrc && echo "alias bb='source "${PWD}"/mac_bb \$@'" >> $HOME/.zshrc
 ```
 ```
 $ source $HOME/.zshrc
 ```
--->
 ## Run
 ```
 $ bb [path] [max-depth] [show-hidden] [sort-by-time]
