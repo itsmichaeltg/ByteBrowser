@@ -34,6 +34,9 @@ Additionally, we plan to add options to preview files, display statistics of fil
 
 ## Setup
 ```
+cd
+```
+```
 $ git clone https://github.com/itsmichaeltg/ByteBrowser.git
 ```
 ```
